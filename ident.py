@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import sys
 
 from pychord import note_to_chord
