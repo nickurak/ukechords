@@ -14,7 +14,7 @@ def get_orders(vals):
 
 def get_chords(notes):
     for seq in get_orders(notes):
-        yield from note_to_chord(seq)
+        yield from [c.chord for c in note_to_chord(seq) if not "/" in c.chord]
 
 def increment(position, max_pos):
     n = 0
