@@ -46,3 +46,17 @@ for index, note in enumerate(notes):
 def get_shape_notes(shape, base=['G', 'C', 'E', 'A']):
     for index, value in enumerate(shape):
         yield notes[(vals[base[index]] + value) % len(notes)]
+
+chord_shapes = dict()
+
+for max_fret in range(0, 6):
+    print(f'getting chords for max_fret={max_fret}')
+    for shape in get_shapes(min_fret=max_fret, max_fret=max_fret):
+        for chord in get_chords(set(get_shape_notes(shape))):
+            if not chord in chord_shapes:
+                chord_shapes[chord] = list([shape])
+            else:
+                chord_shapes[chord].append(shape)
+
+for chord in chord_shapes:
+    print(f"{chord}: {chord_shapes[chord]}")
