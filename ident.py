@@ -2,6 +2,8 @@
 
 from pychord import note_to_chord
 
+import sys
+
 def get_orders(vals):
     for index, value in enumerate(vals):
         list2 = list(vals)
@@ -49,14 +51,25 @@ def get_shape_notes(shape, base=['G', 'C', 'E', 'A']):
 
 chord_shapes = dict()
 
-for max_fret in range(0, 6):
-    print(f'getting chords for max_fret={max_fret}')
-    for shape in get_shapes(min_fret=max_fret, max_fret=max_fret):
-        for chord in get_chords(set(get_shape_notes(shape))):
-            if not chord in chord_shapes:
-                chord_shapes[chord] = list([shape])
-            else:
-                chord_shapes[chord].append(shape)
+def scan_chords(stop_on=None):
+    for max_fret in range(0, 6):
+        print(f'getting chords for max_fret={max_fret}')
+        for shape in get_shapes(min_fret=max_fret, max_fret=max_fret):
+            for chord in get_chords(set(get_shape_notes(shape))):
+                if not chord in chord_shapes:
+                    chord_shapes[chord] = list([shape])
+                else:
+                    chord_shapes[chord].append(shape)
+                if stop_on and all(elem in chord_shapes.keys()  for elem in stop_on):
+                    return
 
-for chord in chord_shapes:
-    print(f"{chord}: {chord_shapes[chord]}")
+
+chords = sys.argv[1:]
+if len(chords) > 0:
+    scan_chords(stop_on=chords)
+    for chord in chords:
+        print(f"{chord}: {chord_shapes[chord][0]}")
+else:
+    scan_chords()
+    for chord in chord_shapes:
+        print(f"{chord}: {chord_shapes[chord]}")
