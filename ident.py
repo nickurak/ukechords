@@ -76,4 +76,4 @@ if __name__ ==  "__main__":
         for chord in chord_shapes:
             shape = chord_shapes[chord][0]
             #        for shape in chord_shapes[chord]:
-            print(f"{chord}: {shape}")
+            print(f"\\defineukulelechord{{{chord}}}{{{','.join(map(str, shape))}}}")
