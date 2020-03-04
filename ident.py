@@ -52,7 +52,7 @@ def get_shape_notes(shape, base=['G', 'C', 'E', 'A']):
 chord_shapes = dict()
 
 def scan_chords(stop_on=None):
-    for max_fret in range(0, 6):
+    for max_fret in range(0, 12):
         print(f'getting chords for max_fret={max_fret}')
         for shape in get_shapes(min_fret=max_fret, max_fret=max_fret):
             for chord in get_chords(set(get_shape_notes(shape))):
