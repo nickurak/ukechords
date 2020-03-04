@@ -2,6 +2,7 @@
 
 from pychord import note_to_chord
 
+import argparse
 
 def get_orders(vals):
     for index, value in enumerate(vals):
@@ -63,16 +64,17 @@ def scan_chords(stop_on=None):
                     return
 
 
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-c", "--chord")
+    parser.add_argument("-s", "--shape")
+    args = parser.parse_args()
+    if args.chord:
+        scan_chords()
+        print(f"{args.chord}: {chord_shapes[args.chord]}")
+    if args.shape:
+        shape=list(map(int, args.shape.split(',')))
+        print(f"{shape}: {list(get_chords(set(get_shape_notes(shape))))}")
 
 if __name__ ==  "__main__":
-    chords = sys.argv[1:]
-    if len(chords) > 0:
-        scan_chords(stop_on=chords)
-        for chord in chords:
-            print(f"{chord}: {chord_shapes[chord][0]}")
-    else:
-        scan_chords()
-        for chord in chord_shapes:
-            shape = chord_shapes[chord][0]
-            #        for shape in chord_shapes[chord]:
-            print(f"\\defineukulelechord{{{chord}}}{{{','.join(map(str, shape))}}}")
+    main()
