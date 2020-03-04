@@ -2,7 +2,6 @@
 
 from pychord import note_to_chord
 
-import sys
 
 def get_orders(vals):
     for index, value in enumerate(vals):
