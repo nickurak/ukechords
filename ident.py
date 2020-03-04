@@ -64,12 +64,16 @@ def scan_chords(stop_on=None):
                     return
 
 
-chords = sys.argv[1:]
-if len(chords) > 0:
-    scan_chords(stop_on=chords)
-    for chord in chords:
-        print(f"{chord}: {chord_shapes[chord][0]}")
-else:
-    scan_chords()
-    for chord in chord_shapes:
-        print(f"{chord}: {chord_shapes[chord]}")
+
+if __name__ ==  "__main__":
+    chords = sys.argv[1:]
+    if len(chords) > 0:
+        scan_chords(stop_on=chords)
+        for chord in chords:
+            print(f"{chord}: {chord_shapes[chord][0]}")
+    else:
+        scan_chords()
+        for chord in chord_shapes:
+            shape = chord_shapes[chord][0]
+            #        for shape in chord_shapes[chord]:
+            print(f"{chord}: {shape}")
