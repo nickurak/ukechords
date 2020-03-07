@@ -33,7 +33,7 @@ class ChordCollection(dict):
                 return shapelist
         raise IndexError
 
-def increment(position, max_pos):
+def increment(position, max_pos, base=0):
     n = 0
     while True:
         position[n] += 1
@@ -41,17 +41,17 @@ def increment(position, max_pos):
             if (n+1) >= len(position):
                 position[n] -= 1
                 return False
-            position[n] = 0
+            position[n] = base
             n += 1
         else:
             return True
 
-def get_shapes(strings=4, min_fret=0, max_fret=1):
-    position = [0] * strings
+def get_shapes(strings=4, min_fret=0, max_fret=1, base=0):
+    position = [base] * strings
     while True:
         if max(position) >= min_fret:
             yield list(position)
-        if not increment(position, max_fret):
+        if not increment(position, max_fret, base=base):
             return
 
 def get_shape_difficulty(shape):
@@ -82,13 +82,15 @@ note_intervals = {note: index for index, note in enumerate(chromatic_scale)}
 
 def get_shape_notes(shape, base=('G', 'C', 'E', 'A')):
     for string, position in enumerate(shape):
+        if position == -1:
+            continue
         yield chromatic_scale[note_intervals[base[string]] + position]
 
 chord_shapes = ChordCollection()
 
-def scan_chords(stop_on=None, allowed_notes=None):
+def scan_chords(stop_on=None, allowed_notes=None, base=0):
     for max_fret in range(0, 12):
-        for shape in get_shapes(min_fret=max_fret, max_fret=max_fret):
+        for shape in get_shapes(min_fret=max_fret, max_fret=max_fret, base=base):
             notes = set(get_shape_notes(shape))
             if allowed_notes and not note_subset(notes, allowed_notes):
                 continue
@@ -107,10 +109,12 @@ def main():
     parser.add_argument("-s", "--shape")
     parser.add_argument("-1", "--single", action='store_true')
     parser.add_argument("-d", "--difficulty", action='store_true')
+    parser.add_argument("-m", "--mute", action='store_true')
     parser.add_argument("-n", "--num", type=int)
     args = parser.parse_args()
     if args.chord:
-        scan_chords(allowed_notes=Chord(args.chord).components())
+        base = -1 if args.mute else 0
+        scan_chords(allowed_notes=Chord(args.chord).components(), base=base)
         shapes = chord_shapes[args.chord]
         if args.difficulty:
             shapes.sort(key=get_shape_difficulty)
@@ -121,7 +125,7 @@ def main():
         else:
             print(f"{args.chord}: {shapes}")
     if args.shape:
-        shape=list(map(int, args.shape.split(',')))
+        shape=[ -1 if pos == 'x' else int(pos) for pos in args.shape.split(",")]
         print(f"{shape}: {list(get_chords(set(get_shape_notes(shape))))}")
         if args.difficulty:
             print(f"Difficulty: {get_shape_difficulty(shape)}")
