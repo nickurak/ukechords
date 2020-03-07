@@ -54,6 +54,22 @@ def get_shapes(strings=4, min_fret=0, max_fret=1):
         if not increment(position, max_fret):
             return
 
+def get_shape_difficulty(shape):
+    difficulty = 0.0
+    last_pos = None
+    for pos in shape:
+        if pos != 0:
+            if last_pos:
+                difficulty += abs(pos - last_pos)
+            last_pos = pos
+        elif last_pos:
+            difficulty += 1
+        difficulty += pos
+    barrable = len([1 for pos in shape if pos == min(shape)])
+    if barrable > 1 and min(shape) > 0:
+        difficulty -= barrable * 3
+    return difficulty
+
 def note_subset(subset, superset):
     subset_vals = set(map(note_to_val, subset))
     superset_vals = map(note_to_val, superset)
@@ -88,11 +104,14 @@ def main():
     parser.add_argument("-c", "--chord")
     parser.add_argument("-s", "--shape")
     parser.add_argument("-1", "--single", action='store_true')
+    parser.add_argument("-d", "--difficulty", action='store_true')
     parser.add_argument("-n", "--num", type=int)
     args = parser.parse_args()
     if args.chord:
         scan_chords(allowed_notes=Chord(args.chord).components())
         shapes = chord_shapes[args.chord]
+        if args.difficulty:
+            shapes.sort(key=get_shape_difficulty)
         if args.single:
             print(f"{args.chord}: {shapes[0]}")
         elif args.num:
