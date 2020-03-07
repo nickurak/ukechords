@@ -123,6 +123,8 @@ def main():
     if args.shape:
         shape=list(map(int, args.shape.split(',')))
         print(f"{shape}: {list(get_chords(set(get_shape_notes(shape))))}")
+        if args.difficulty:
+            print(f"Difficulty: {get_shape_difficulty(shape)}")
     if not (args.shape or args.chord):
         parser.print_help(sys.stderr)
         sys.exit(1)
