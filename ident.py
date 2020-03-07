@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import sys
+
 from pychord import note_to_chord
 
 import argparse
@@ -75,6 +77,8 @@ def main():
     if args.shape:
         shape=list(map(int, args.shape.split(',')))
         print(f"{shape}: {list(get_chords(set(get_shape_notes(shape))))}")
-
+    if not (args.shape or args.chord):
+        parser.print_help(sys.stderr)
+        sys.exit(1)
 if __name__ ==  "__main__":
     main()
