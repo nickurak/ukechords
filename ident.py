@@ -20,6 +20,10 @@ def get_chords(notes):
     for seq in get_orders(notes):
         yield from [c.chord for c in note_to_chord(seq) if not "/" in c.chord]
 
+class CircularList(list):
+    def __getitem__(self, index):
+        return super().__getitem__(index % len(self))
+
 def increment(position, max_pos):
     n = 0
     while True:
@@ -42,14 +46,12 @@ def get_shapes(strings=4, min_fret=0, max_fret=1):
             return
 
 
-chromatic_scale = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+chromatic_scale = CircularList(['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'])
 note_intervals = {note: index for index, note in enumerate(chromatic_scale)}
 
 def get_shape_notes(shape, base=('G', 'C', 'E', 'A')):
-    def interval(index, value):
-        return (note_intervals[base[index]] + value) % len(note_intervals)
-    for index, value in enumerate(shape):
-        yield chromatic_scale[interval(index, value)]
+    for string, position in enumerate(shape):
+        yield chromatic_scale[note_intervals[base[string]] + position]
 
 chord_shapes = dict()
 
