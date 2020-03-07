@@ -70,7 +70,6 @@ chord_shapes = ChordCollection()
 
 def scan_chords(stop_on=None, allowed_notes=None):
     for max_fret in range(0, 12):
-        print(f'getting chords for max_fret={max_fret}')
         for shape in get_shapes(min_fret=max_fret, max_fret=max_fret):
             notes = set(get_shape_notes(shape))
             if allowed_notes and not note_subset(notes, allowed_notes):
