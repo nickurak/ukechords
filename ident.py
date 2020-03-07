@@ -87,10 +87,18 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--chord")
     parser.add_argument("-s", "--shape")
+    parser.add_argument("-1", "--single", action='store_true')
+    parser.add_argument("-n", "--num", type=int)
     args = parser.parse_args()
     if args.chord:
         scan_chords(allowed_notes=Chord(args.chord).components())
-        print(f"{args.chord}: {chord_shapes[args.chord]}")
+        shapes = chord_shapes[args.chord]
+        if args.single:
+            print(f"{args.chord}: {shapes[0]}")
+        elif args.num:
+            print(f"{args.chord}: {shapes[:args.num]}")
+        else:
+            print(f"{args.chord}: {shapes}")
     if args.shape:
         shape=list(map(int, args.shape.split(',')))
         print(f"{shape}: {list(get_chords(set(get_shape_notes(shape))))}")
