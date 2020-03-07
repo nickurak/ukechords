@@ -57,14 +57,20 @@ def get_shapes(strings=4, min_fret=0, max_fret=1, base=0):
 def get_shape_difficulty(shape):
     difficulty = 0.0
     last_pos = None
-    for pos in shape:
+    for string, pos in enumerate(shape):
         if pos != 0:
             if last_pos:
                 difficulty += abs(pos - last_pos)
             last_pos = pos
         elif last_pos:
             difficulty += 1
-        difficulty += pos
+        if pos < 0:
+            if  string in [0, len(shape)]:
+                difficulty += 2
+            else:
+                difficulty += 5
+        else:
+            difficulty += pos
     non_zero = [pos for pos in shape if pos > 0]
     if len(non_zero) > 0:
         barrable = len([1 for pos in shape if pos == min(non_zero)])
