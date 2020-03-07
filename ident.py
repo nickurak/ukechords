@@ -42,14 +42,14 @@ def get_shapes(strings=4, min_fret=0, max_fret=1):
             return
 
 
-notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
-vals = {}
-for index, note in enumerate(notes):
-    vals[note] = index
+chromatic_scale = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+note_intervals = {note: index for index, note in enumerate(chromatic_scale)}
 
-def get_shape_notes(shape, base=['G', 'C', 'E', 'A']):
+def get_shape_notes(shape, base=('G', 'C', 'E', 'A')):
+    def interval(index, value):
+        return (note_intervals[base[index]] + value) % len(note_intervals)
     for index, value in enumerate(shape):
-        yield notes[(vals[base[index]] + value) % len(notes)]
+        yield chromatic_scale[interval(index, value)]
 
 chord_shapes = dict()
 
