@@ -3,6 +3,8 @@
 import sys
 
 from pychord import note_to_chord
+from pychord import Chord
+from pychord.utils import note_to_val
 
 import argparse
 
@@ -23,6 +25,13 @@ def get_chords(notes):
 class CircularList(list):
     def __getitem__(self, index):
         return super().__getitem__(index % len(self))
+
+class ChordCollection(dict):
+    def __getitem__(self, chord):
+        for name, shapelist in super().items():
+            if Chord(name) == Chord(chord):
+                return shapelist
+        raise IndexError
 
 def increment(position, max_pos):
     n = 0
@@ -45,6 +54,10 @@ def get_shapes(strings=4, min_fret=0, max_fret=1):
         if not increment(position, max_fret):
             return
 
+def note_subset(subset, superset):
+    subset_vals = set(map(note_to_val, subset))
+    superset_vals = map(note_to_val, superset)
+    return subset_vals.issubset(superset_vals)
 
 chromatic_scale = CircularList(['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'])
 note_intervals = {note: index for index, note in enumerate(chromatic_scale)}
@@ -53,13 +66,16 @@ def get_shape_notes(shape, base=('G', 'C', 'E', 'A')):
     for string, position in enumerate(shape):
         yield chromatic_scale[note_intervals[base[string]] + position]
 
-chord_shapes = dict()
+chord_shapes = ChordCollection()
 
-def scan_chords(stop_on=None):
+def scan_chords(stop_on=None, allowed_notes=None):
     for max_fret in range(0, 12):
         print(f'getting chords for max_fret={max_fret}')
         for shape in get_shapes(min_fret=max_fret, max_fret=max_fret):
-            for chord in get_chords(set(get_shape_notes(shape))):
+            notes = set(get_shape_notes(shape))
+            if allowed_notes and not note_subset(notes, allowed_notes):
+                continue
+            for chord in get_chords(notes):
                 if not chord in chord_shapes:
                     chord_shapes[chord] = list([shape])
                 else:
@@ -74,7 +90,7 @@ def main():
     parser.add_argument("-s", "--shape")
     args = parser.parse_args()
     if args.chord:
-        scan_chords()
+        scan_chords(allowed_notes=Chord(args.chord).components())
         print(f"{args.chord}: {chord_shapes[args.chord]}")
     if args.shape:
         shape=list(map(int, args.shape.split(',')))
