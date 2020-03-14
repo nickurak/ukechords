@@ -114,6 +114,7 @@ def main():
     parser.add_argument("-c", "--chord")
     parser.add_argument("-s", "--shape")
     parser.add_argument("-1", "--single", action='store_true')
+    parser.add_argument("-l", "--latex", action='store_true')
     parser.add_argument("-i", "--ignore-difficulty", action='store_true')
     parser.add_argument("-m", "--mute", action='store_true')
     parser.add_argument("-n", "--num", type=int)
@@ -126,6 +127,8 @@ def main():
             shapes.sort(key=get_shape_difficulty)
         if args.single:
             print(f"{args.chord}: {shapes[0]}")
+        elif args.latex:
+            print(f"\\defineukulelechord{{{args.chord}}}{{{','.join(map(str, shapes[0]))}}}")
         elif args.num:
             print(f"{args.chord}: {shapes[:args.num]}")
         else:
