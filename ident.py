@@ -94,8 +94,8 @@ def get_shape_notes(shape, base=('G', 'C', 'E', 'A')):
 
 chord_shapes = ChordCollection()
 
-def scan_chords(stop_on=None, allowed_notes=None, base=0):
-    for max_fret in range(0, 12):
+def scan_chords(stop_on=None, allowed_notes=None, base=0, max_fret=12):
+    for max_fret in range(0, max_fret):
         for shape in get_shapes(min_fret=max_fret, max_fret=max_fret, base=base):
             notes = set(get_shape_notes(shape))
             if allowed_notes and not note_subset(notes, allowed_notes):
