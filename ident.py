@@ -121,14 +121,14 @@ def main():
     parser.add_argument("-n", "--num", type=int)
     args = parser.parse_args()
     base = -1 if args.mute else 0
+    if args.single:
+        args.num = 1
     if args.chord:
         scan_chords(allowed_notes=Chord(args.chord).components(), base=base)
         shapes = chord_shapes[args.chord]
         if not args.ignore_difficulty:
             shapes.sort(key=get_shape_difficulty)
-        if args.single:
-            print(f"{args.chord}: {shapes[0]}")
-        elif args.latex:
+        if args.latex:
             print(f"\\defineukulelechord{{{args.chord}}}{{{','.join(map(str, shapes[0]))}}}")
         elif args.num:
             print(f"{args.chord}: {shapes[:args.num]}")
