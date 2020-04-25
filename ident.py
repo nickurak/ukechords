@@ -119,9 +119,11 @@ def main():
     parser.add_argument("-i", "--ignore-difficulty", action='store_true')
     parser.add_argument("-m", "--mute", action='store_true')
     parser.add_argument("-n", "--num", type=int)
+    parser.add_argument("-d", "--max-difficulty", type=int)
     args = parser.parse_args()
     base = -1 if args.mute else 0
     num = None
+    max_difficulty = args.max_difficulty if args.max_difficulty else 29
     if args.single:
         num = 1
     if args.num:
@@ -137,6 +139,8 @@ def main():
         else:
             for shape in shapes[:num]:
                 difficulty = get_shape_difficulty(shape)
+                if difficulty > max_difficulty:
+                    continue
                 print(f"{args.chord}: {','.join(map(str, shape))}" + "\t difficulty:" + str(difficulty))
     if args.all_chords:
         scan_chords(base=base, max_fret=7)
