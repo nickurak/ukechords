@@ -115,7 +115,7 @@ def main():
     parser.add_argument("-s", "--shape")
     parser.add_argument("-1", "--single", action='store_true')
     parser.add_argument("-l", "--latex", action='store_true')
-    parser.add_argument("-a", "--all", action='store_true')
+    parser.add_argument("-a", "--all-chords", action='store_true')
     parser.add_argument("-i", "--ignore-difficulty", action='store_true')
     parser.add_argument("-m", "--mute", action='store_true')
     parser.add_argument("-n", "--num", type=int)
@@ -134,7 +134,7 @@ def main():
             print(f"{args.chord}: {shapes[:args.num]}")
         else:
             print(f"{args.chord}: {shapes}")
-    if args.all:
+    if args.all_chords:
         scan_chords(base=base, max_fret=7)
         for chord in chord_shapes:
             if not args.ignore_difficulty:
@@ -147,7 +147,7 @@ def main():
         print(f"{shape}: {list(get_chords(set(get_shape_notes(shape))))}")
         if not args.ignore_difficulty:
             print(f"Difficulty: {get_shape_difficulty(shape)}")
-    if not (args.shape or args.chord or args.all):
+    if not (args.shape or args.chord or args.all_chords):
         parser.print_help(sys.stderr)
         sys.exit(1)
 if __name__ ==  "__main__":
