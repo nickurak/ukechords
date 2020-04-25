@@ -60,7 +60,7 @@ def get_shape_difficulty(shape):
     for string, pos in enumerate(shape):
         if pos != 0:
             if last_pos:
-                difficulty += abs(pos - last_pos)
+                difficulty += (pos - last_pos)**2
             last_pos = pos
         elif last_pos:
             difficulty += 1
