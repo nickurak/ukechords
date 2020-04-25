@@ -136,7 +136,8 @@ def main():
             print(f"\\defineukulelechord{{{args.chord}}}{{{','.join(map(str, shapes[0]))}}}")
         else:
             for shape in shapes[:num]:
-                print(f"{args.chord}: {shapes}")
+                difficulty = get_shape_difficulty(shape)
+                print(f"{args.chord}: {','.join(map(str, shape))}" + "\t difficulty:" + str(difficulty))
     if args.all_chords:
         scan_chords(base=base, max_fret=7)
         for chord in chord_shapes:
