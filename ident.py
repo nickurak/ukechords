@@ -144,7 +144,7 @@ def main():
                 print(f"{args.chord}: {','.join(map(str, shape))}" + "\t difficulty:" + str(difficulty))
     if args.all_chords:
         scan_chords(base=base, max_fret=7)
-        for chord in chord_shapes:
+        for chord in sorted(chord_shapes):
             if not args.ignore_difficulty:
                 chord_shapes[chord].sort(key=get_shape_difficulty)
             shape = chord_shapes[chord][0]
