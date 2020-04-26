@@ -73,7 +73,9 @@ def get_shape_difficulty(shape):
             difficulty += pos
     barrable = len([1 for pos in shape if pos == min(shape)])
     if barrable > 1 and min(shape) > 0:
-        difficulty -= barrable * 3
+        barre_difficulty = get_shape_difficulty([x-min(shape) for x in shape]) + min(shape) + 2
+        if barre_difficulty < difficulty:
+            return difficulty
     return difficulty
 
 def note_subset(subset, superset):
