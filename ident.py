@@ -75,7 +75,7 @@ def get_shape_difficulty(shape):
     if barrable > 1 and min(shape) > 0:
         barre_difficulty = get_shape_difficulty([x-min(shape) for x in shape]) + min(shape) + 2
         if barre_difficulty < difficulty:
-            return difficulty
+            return barre_difficulty
     return difficulty
 
 def note_subset(subset, superset):
