@@ -1,0 +1,7 @@
+#!/bin/bash
+
+SCRIPTDIR="$(dirname $(readlink -fn $0))"
+
+. ${SCRIPTDIR}/bin/activate
+
+exec python ${SCRIPTDIR}/ident.py "$@"
