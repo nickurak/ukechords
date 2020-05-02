@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+# pylint: disable=missing-function-docstring,missing-class-docstring
+# pylint: disable=missing-module-docstring,invalid-name
+
 import sys
 import argparse
 
