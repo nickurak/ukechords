@@ -129,7 +129,12 @@ def main():
     if args.num:
         num = args.num
     if args.chord:
-        scan_chords(allowed_notes=Chord(args.chord).components(), base=base)
+        try:
+            notes = Chord(args.chord).components()
+        except ValueError:
+            print(f"Unable to lookup chord \"{args.chord}\"")
+            return 2
+        scan_chords(allowed_notes=notes, base=base)
         if args.chord not in chord_shapes:
             print(f"\"{args.chord}\" not found")
             return 1
