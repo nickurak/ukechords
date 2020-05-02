@@ -130,6 +130,9 @@ def main():
         num = args.num
     if args.chord:
         scan_chords(allowed_notes=Chord(args.chord).components(), base=base)
+        if args.chord not in chord_shapes:
+            print(f"\"{args.chord}\" not found")
+            return 1
         shapes = chord_shapes[args.chord]
         num = num if num else len(shapes)
         if not args.ignore_difficulty:
