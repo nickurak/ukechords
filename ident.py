@@ -127,6 +127,10 @@ def main():
     base = -1 if args.mute else 0
     num = None
     max_difficulty = args.max_difficulty if args.max_difficulty else 29
+    if list(map(bool, [args.chord, args.shape, args.all_chords])).count(True) != 1:
+        print("Provide exactly one of --all-chords or --chord or --shape")
+        parser.print_help(sys.stderr)
+        return 5
     if args.single:
         num = 1
     if args.num:
@@ -153,7 +157,6 @@ def main():
                 if difficulty > max_difficulty:
                     continue
                 print(f"{args.chord}: {','.join(map(str, shape))}" + "\t difficulty:" + str(difficulty))
-        return 0
     if args.all_chords:
         scan_chords(base=base, max_fret=7)
         for chord in sorted(chord_shapes):
@@ -166,16 +169,11 @@ def main():
             else:
                 difficulty = get_shape_difficulty(shape)
                 print(f"{chord}: {','.join(map(str, shape))}" + "\t difficulty:" + str(difficulty))
-        return 0
     if args.shape:
         shape = [-1 if pos == 'x' else int(pos) for pos in args.shape.split(",")]
         print(f"{shape}: {list(get_chords(set(get_shape_notes(shape))))}")
         if not args.ignore_difficulty:
             print(f"Difficulty: {get_shape_difficulty(shape)}")
-        return 0
-    if not (args.shape or args.chord or args.all_chords):
-        parser.print_help(sys.stderr)
-        return 3
-    return 4
+    return 0
 if __name__ == "__main__":
     sys.exit(main())
