@@ -125,14 +125,13 @@ def main():
     parser.add_argument("-d", "--max-difficulty", type=int)
     args = parser.parse_args()
     base = -1 if args.mute else 0
-    num = None
     max_difficulty = args.max_difficulty if args.max_difficulty else 29
     if list(map(bool, [args.chord, args.shape, args.all_chords])).count(True) != 1:
         print("Provide exactly one of --all-chords or --chord or --shape")
         parser.print_help(sys.stderr)
         return 5
     if args.single:
-        num = 1
+        args.num = 1
     if args.num:
         num = args.num
     if args.chord:
@@ -146,13 +145,14 @@ def main():
             print(f"\"{args.chord}\" not found")
             return 1
         shapes = chord_shapes[args.chord]
-        num = num if num else len(shapes)
+        if not args.num:
+            args.num = len(shapes)
         if not args.ignore_difficulty:
             shapes.sort(key=get_shape_difficulty)
         if args.latex:
             print(f"\\defineukulelechord{{{args.chord}}}{{{','.join(map(str, shapes[0]))}}}")
         else:
-            for shape in shapes[:num]:
+            for shape in shapes[:args.num]:
                 difficulty = get_shape_difficulty(shape)
                 if difficulty > max_difficulty:
                     continue
