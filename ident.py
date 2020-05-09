@@ -10,6 +10,15 @@ from pychord import note_to_chord
 from pychord import Chord
 from pychord.utils import note_to_val
 
+from pychord.constants import QUALITY_DICT
+
+#Hack -- we shouldn't be editting constants, but we can, and do.
+for name, items in list(QUALITY_DICT.items()):
+    no5name = name + 'no5'
+    if '/' in name or not 7 in items:
+        continue
+    new = tuple(filter(lambda x: x != 7, items))
+    QUALITY_DICT[no5name] = new
 
 def get_orders(vals):
     for index, value in enumerate(vals):
@@ -22,6 +31,7 @@ def get_orders(vals):
             yield [value]
 
 def get_chords(notes):
+
     for seq in get_orders(notes):
         yield from [c.chord for c in note_to_chord(seq) if not "/" in c.chord]
 
