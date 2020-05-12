@@ -67,6 +67,13 @@ def get_shapes(strings=4, min_fret=0, max_fret=1, base=0):
         if not increment(position, max_fret, base=base):
             return
 
+def round_result(f):
+    def round_func(shape):
+        res = f(shape)
+        return round(res, 1)
+    return round_func
+
+@round_result
 def get_shape_difficulty(shape):
     difficulty = 0.0
     last_pos = None
