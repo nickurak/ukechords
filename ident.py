@@ -69,8 +69,8 @@ def get_shapes(strings=4, min_fret=0, max_fret=1, base=0):
 
 def round_result(f):
     def round_func(shape):
-        res = f(shape)
-        return round(res, 1)
+        res, desc = f(shape)
+        return round(res, 1), desc
     return round_func
 
 @round_result
@@ -93,10 +93,10 @@ def get_shape_difficulty(shape):
             difficulty += pos
     barrable = len([1 for pos in shape if pos == min(shape)])
     if barrable > 1 and min(shape) > 0:
-        barre_difficulty = get_shape_difficulty([x-min(shape) for x in shape]) + min(shape)*2 + 2
+        barre_difficulty = get_shape_difficulty([x-min(shape) for x in shape])[0] + min(shape)*2 + 2
         if barre_difficulty < difficulty:
-            return barre_difficulty
-    return difficulty
+            return barre_difficulty, f"barre {min(shape)}, else {round(difficulty, 1)}"
+    return difficulty, None
 
 def note_subset(subset, superset):
     subset_vals = set(map(note_to_val, subset))
@@ -128,6 +128,10 @@ def scan_chords(stop_on=None, allowed_notes=None, base=0, max_fret=12):
                 if stop_on and all(elem in chord_shapes.keys()  for elem in stop_on):
                     return
 
+def diff_string(difficulty, desc):
+    if desc:
+        return f"{difficulty} ({desc})"
+    return str(difficulty)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -165,32 +169,32 @@ def main():
         if not args.num:
             args.num = len(shapes)
         if not args.ignore_difficulty:
-            shapes.sort(key=get_shape_difficulty)
+            shapes.sort(key=lambda x: get_shape_difficulty(x)[0])
         if args.latex:
             print(f"\\defineukulelechord{{{args.chord}}}{{{','.join(map(str, shapes[0]))}}}")
         else:
             for shape in shapes[:args.num]:
-                difficulty = get_shape_difficulty(shape)
+                difficulty, desc = get_shape_difficulty(shape)
                 if difficulty > max_difficulty:
                     continue
-                print(f"{args.chord}: {','.join(map(str, shape))}" + "\t difficulty:" + str(difficulty))
+                print(f"{args.chord}: {','.join(map(str, shape))}\t difficulty: {diff_string(difficulty, desc)}")
     if args.all_chords:
         scan_chords(base=base, max_fret=7)
         for chord in sorted(chord_shapes):
             if not args.ignore_difficulty:
-                chord_shapes[chord].sort(key=get_shape_difficulty)
+                chord_shapes[chord].sort(key=lambda x: get_shape_difficulty(x)[0])
             shape = chord_shapes[chord][0]
             if args.latex:
                 lchord = chord.replace('M', 'maj')
                 print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shape))}}}")
             else:
-                difficulty = get_shape_difficulty(shape)
-                print(f"{chord}: {','.join(map(str, shape))}" + "\t difficulty:" + str(difficulty))
+                difficulty, desc = get_shape_difficulty(shape)
+                print(f"{chord}: {','.join(map(str, shape))}\t difficulty: {diff_string(difficulty, desc)}")
     if args.shape:
         shape = [-1 if pos == 'x' else int(pos) for pos in args.shape.split(",")]
         print(f"{shape}: {list(get_chords(set(get_shape_notes(shape))))}")
         if not args.ignore_difficulty:
-            print(f"Difficulty: {get_shape_difficulty(shape)}")
+            print(f"Difficulty: {diff_string(*get_shape_difficulty(shape))}")
     return 0
 if __name__ == "__main__":
     sys.exit(main())
