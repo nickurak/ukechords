@@ -139,12 +139,27 @@ def diff_string(difficulty, desc):
         return f"{difficulty} ({desc})"
     return str(difficulty)
 
+def draw_shape(shape):
+    max_pos = max([*shape, 3]) + 1
+    for pos in reversed(shape):
+        chars = [' '] * max_pos
+        if pos > 0:
+            chars[pos - 1] = 'O'
+            print('|', end='')
+        elif pos == 0:
+            print('|', end='')
+        else:
+            print('X', end='')
+        print('|'.join(chars), end='')
+        print('|')
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--chord")
     parser.add_argument("-s", "--shape")
     parser.add_argument("-1", "--single", action='store_true')
     parser.add_argument("-l", "--latex", action='store_true')
+    parser.add_argument("-v", "--visualize", action='store_true')
     parser.add_argument("-a", "--all-chords", action='store_true')
     parser.add_argument("-i", "--ignore-difficulty", action='store_true')
     parser.add_argument("-m", "--mute", action='store_true')
@@ -179,6 +194,8 @@ def main():
         if args.latex:
             lchord = chord.replace('M', 'maj')
             print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shapes[0]))}}}")
+        if args.visualize:
+            draw_shape(shapes[0])
         else:
             for shape in shapes[:args.num]:
                 difficulty, desc = get_shape_difficulty(shape)
@@ -194,11 +211,15 @@ def main():
             if args.latex:
                 lchord = chord.replace('M', 'maj')
                 print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shape))}}}")
+            elif args.visualize:
+                draw_shape(shapes[0])
             else:
                 difficulty, desc = get_shape_difficulty(shape)
                 print(f"{chord}: {','.join(map(str, shape))}\t difficulty: {diff_string(difficulty, desc)}")
     if args.shape:
         shape = [-1 if pos == 'x' else int(pos) for pos in args.shape.split(",")]
+        if args.visualize:
+            draw_shape(shape)
         print(f"{shape}: {list(get_chords(set(get_shape_notes(shape))))}")
         if not args.ignore_difficulty:
             print(f"Difficulty: {diff_string(*get_shape_difficulty(shape))}")
