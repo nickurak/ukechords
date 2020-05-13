@@ -143,6 +143,9 @@ def draw_shape(shape):
     max_pos = max([*shape, 3]) + 1
     for pos in reversed(shape):
         chars = [' '] * max_pos
+        for mark in [3,5,7,10,12]:
+            if mark < max_pos + 1:
+                chars[mark-1] = "-"
         if pos > 0:
             chars[pos - 1] = 'O'
             print('|', end='')
