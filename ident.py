@@ -40,6 +40,12 @@ class CircularList(list):
         return super().__getitem__(index % len(self))
 
 class ChordCollection(dict):
+    def  __contains__(self, chord):
+        for name in super().keys():
+            if Chord(name) == Chord(chord):
+                return True
+        return False
+
     def __getitem__(self, chord):
         for name, shapelist in super().items():
             if Chord(name) == Chord(chord):
