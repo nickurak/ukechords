@@ -92,9 +92,9 @@ def get_shape_difficulty(shape):
             difficulty += 1
         if pos < 0:
             if  string in [0, len(shape) - 1]:
-                difficulty += 2
-            else:
                 difficulty += 5
+            else:
+                difficulty += 7
         else:
             difficulty += pos
     barrable = len([1 for pos in shape if pos == min(shape)])
