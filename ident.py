@@ -91,7 +91,7 @@ def get_shape_difficulty(shape):
         elif last_pos:
             difficulty += 1
         if pos < 0:
-            if  string in [0, len(shape)]:
+            if  string in [0, len(shape) - 1]:
                 difficulty += 2
             else:
                 difficulty += 5
