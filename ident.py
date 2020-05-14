@@ -139,22 +139,34 @@ def diff_string(difficulty, desc):
         return f"{difficulty} ({desc})"
     return str(difficulty)
 
+marks= {
+    3: ' ╷╵ ',
+    5: ' ╷╵ ',
+    7: ' ╷╵ ',
+    10: ' ╷╵ ',
+    12: '╷╵╷╵',
+}
+
 def draw_shape(shape):
     max_pos = max([*shape, 3]) + 1
-    for pos in reversed(shape):
+    lines = ['─'] * max_pos
+    top = '┌' + '┬'.join(lines) + '┐'
+    bottom = '└' + '┴'.join(lines) + '┘'
+    print(top)
+    for string, pos in enumerate(reversed(shape)):
         chars = [' '] * max_pos
         for mark in [3,5,7,10,12]:
             if mark < max_pos + 1:
-                chars[mark-1] = "-"
-        if pos > 0:
-            chars[pos - 1] = 'O'
-            print('|', end='')
-        elif pos == 0:
-            print('|', end='')
+                chars[mark-1] = marks[mark][string]
+        if pos >= 0:
+            print('│', end='')
+            if pos > 0:
+                chars[pos - 1] = '●'
         else:
-            print('X', end='')
-        print('|'.join(chars), end='')
-        print('|')
+            print('│⃠', end='')
+        print('│'.join(chars), end='')
+        print('│')
+    print(bottom)
 
 def main():
     parser = argparse.ArgumentParser()
