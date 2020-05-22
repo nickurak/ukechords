@@ -182,7 +182,7 @@ def main():
     parser.add_argument("-d", "--max-difficulty", type=int)
     args = parser.parse_args()
     base = -1 if args.mute else 0
-    max_difficulty = args.max_difficulty if args.max_difficulty else 29
+    max_difficulty = args.max_difficulty or 29
     if list(map(bool, [args.chord, args.shape, args.all_chords])).count(True) != 1:
         print("Provide exactly one of --all-chords or --chord or --shape")
         parser.print_help(sys.stderr)
