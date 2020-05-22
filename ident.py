@@ -226,11 +226,11 @@ def main():
             if args.latex:
                 lchord = chord.replace('M', 'maj')
                 print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shape))}}}")
-            elif args.visualize:
-                draw_shape(shapes[0])
             else:
                 difficulty, desc = get_shape_difficulty(shape)
                 print(f"{chord}: {','.join(map(str, shape))}\t difficulty: {diff_string(difficulty, desc)}")
+            if args.visualize:
+                draw_shape(shape)
     if args.shape:
         shape = [-1 if pos == 'x' else int(pos) for pos in args.shape.split(",")]
         if args.visualize:
