@@ -211,8 +211,8 @@ def main():
             if difficulty > max_difficulty:
                 continue
             if args.latex:
-                lchord = chord.replace('M', 'maj')
-                print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shapes[0]))}}}")
+                lchord = args.chord.replace('M', 'maj')
+                print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shape))}}}")
             else:
                 print(f"{args.chord}: {','.join(map(str, shape))}\t difficulty: {diff_string(difficulty, desc)}")
             if args.visualize:
