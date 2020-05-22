@@ -189,8 +189,6 @@ def main():
         return 5
     if args.single:
         args.num = 1
-    if args.num:
-        num = args.num
     if args.chord:
         try:
             notes = Chord(args.chord).components()
