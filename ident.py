@@ -136,9 +136,7 @@ def scan_chords(stop_on=None, allowed_notes=None, base=0, max_fret=12):
                     return
 
 def diff_string(difficulty, desc):
-    if desc:
-        return f"{difficulty} ({desc})"
-    return str(difficulty)
+    return f"{difficulty} ({desc})" if desc else str(difficulty)
 
 marks = {
     3: ' ╷╵ ',
@@ -214,7 +212,11 @@ def main():
                 lchord = args.chord.replace('M', 'maj')
                 print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shape))}}}")
             else:
-                print(f"{args.chord}: {','.join(map(str, shape))}\t difficulty: {diff_string(difficulty, desc)}")
+                print("{}: {}\t difficulty: {}".format(
+                    args.chord,
+                    ','.join(map(str, shape)),
+                    diff_string(difficulty, desc)
+                ))
             if args.visualize:
                 draw_shape(shape)
     if args.all_chords:
@@ -228,7 +230,11 @@ def main():
                 print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shape))}}}")
             else:
                 difficulty, desc = get_shape_difficulty(shape)
-                print(f"{chord}: {','.join(map(str, shape))}\t difficulty: {diff_string(difficulty, desc)}")
+                print("{}: {}\t difficulty: {}".format(
+                    chord,
+                    ','.join(map(str, shape)),
+                    diff_string(difficulty, desc)
+                ))
             if args.visualize:
                 draw_shape(shape)
     if args.shape:
