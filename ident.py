@@ -225,11 +225,13 @@ def main():
             if not args.ignore_difficulty:
                 chord_shapes[chord].sort(key=lambda x: get_shape_difficulty(x)[0])
             shape = chord_shapes[chord][0]
+            difficulty, desc = get_shape_difficulty(shape)
+            if difficulty > max_difficulty:
+                continue
             if args.latex:
                 lchord = chord.replace('M', 'maj')
                 print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shape))}}}")
             else:
-                difficulty, desc = get_shape_difficulty(shape)
                 print("{}: {}\t difficulty: {}".format(
                     chord,
                     ','.join(map(str, shape)),
