@@ -12,13 +12,14 @@ from pychord.utils import note_to_val
 
 from pychord.constants import QUALITY_DICT
 
-#Hack -- we shouldn't be editting constants, but we can, and do.
-for name, items in list(QUALITY_DICT.items()):
-    no5name = name + 'no5'
-    if '/' in name or not 7 in items:
-        continue
-    new = tuple(filter(lambda x: x != 7, items))
-    QUALITY_DICT[no5name] = new
+def add_no5_quality():
+    # Hack -- we shouldn't be editting constants, but we can, and do.
+    for name, items in list(QUALITY_DICT.items()):
+        no5name = name + 'no5'
+        if '/' in name or not 7 in items:
+            continue
+        new = tuple(filter(lambda x: x != 7, items))
+        QUALITY_DICT[no5name] = new
 
 def get_orders(vals):
     for index, value in enumerate(vals):
@@ -169,6 +170,7 @@ def draw_shape(shape):
     print(bottom)
 
 def main():
+    add_no5_quality()
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--chord")
     parser.add_argument("-s", "--shape")
