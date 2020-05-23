@@ -122,8 +122,8 @@ def get_shape_notes(shape, base=('G', 'C', 'E', 'A')):
 chord_shapes = ChordCollection()
 
 def scan_chords(stop_on=None, allowed_notes=None, base=0, max_fret=12):
-    for max_fret in range(0, max_fret):
-        for shape in get_shapes(min_fret=max_fret, max_fret=max_fret, base=base):
+    for imax_fret in range(0, max_fret):
+        for shape in get_shapes(min_fret=imax_fret, max_fret=imax_fret, base=base):
             notes = set(get_shape_notes(shape))
             if allowed_notes and not note_subset(notes, allowed_notes):
                 continue
@@ -140,7 +140,7 @@ def diff_string(difficulty, desc):
         return f"{difficulty} ({desc})"
     return str(difficulty)
 
-marks= {
+marks = {
     3: ' ╷╵ ',
     5: ' ╷╵ ',
     7: ' ╷╵ ',
@@ -156,7 +156,7 @@ def draw_shape(shape):
     print(top)
     for string, pos in enumerate(reversed(shape)):
         chars = [' '] * max_pos
-        for mark in [3,5,7,10,12]:
+        for mark in [3, 5, 7, 10, 12]:
             if mark < max_pos + 1:
                 chars[mark-1] = marks[mark][string]
         if pos >= 0:
