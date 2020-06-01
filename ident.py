@@ -244,6 +244,7 @@ def main():
         if args.visualize:
             draw_shape(shape)
         chords = list(get_chords(set(get_shape_notes(shape))))
+        chords.sort(key=lambda c: (len(c), c))
         print(f"{shape}: {chords}")
         if not args.ignore_difficulty:
             print(f"Difficulty: {diff_string(*get_shape_difficulty(shape))}")
