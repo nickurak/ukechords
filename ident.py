@@ -243,7 +243,8 @@ def main():
         shape = [-1 if pos == 'x' else int(pos) for pos in args.shape.split(",")]
         if args.visualize:
             draw_shape(shape)
-        print(f"{shape}: {list(get_chords(set(get_shape_notes(shape))))}")
+        chords = list(get_chords(set(get_shape_notes(shape))))
+        print(f"{shape}: {chords}")
         if not args.ignore_difficulty:
             print(f"Difficulty: {diff_string(*get_shape_difficulty(shape))}")
     return 0
