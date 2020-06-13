@@ -87,7 +87,7 @@ def get_shape_difficulty(shape):
     for string, pos in enumerate(shape):
         if pos != 0:
             if last_pos:
-                difficulty += (pos - last_pos)**2 / 2.7
+                difficulty += (pos - last_pos)**2 / 2.2
             last_pos = pos
         elif last_pos:
             difficulty += 1
@@ -101,7 +101,8 @@ def get_shape_difficulty(shape):
     barrable = len([1 for pos in shape if pos == min(shape)])
     if barrable > 1 and min(shape) > 0:
         barre_shape = [x-min(shape) for x in shape]
-        barre_difficulty = get_shape_difficulty(barre_shape)[0] + min(shape)*2 + 2
+        min_barre_extra = min(filter(lambda x: x > 0, barre_shape))
+        barre_difficulty = get_shape_difficulty(barre_shape)[0]*2.2 + min(shape) * 2.0  + min_barre_extra * 2.0
         chords = list(get_chords(set(get_shape_notes(barre_shape))))
         chords.sort(key=lambda c: (len(c), c))
         if barre_difficulty < difficulty:
