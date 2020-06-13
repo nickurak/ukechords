@@ -106,6 +106,7 @@ def get_shape_difficulty(shape):
         chords.sort(key=lambda c: (len(c), c))
         if barre_difficulty < difficulty:
             return barre_difficulty, f"barre {min(shape)} + {chords[0]} , else {round(difficulty, 1)}"
+        return difficulty, f"else {round(barre_difficulty, 1)} barred {min(shape)} + {chords[0]}"
     return difficulty, None
 
 def note_subset(subset, superset):
