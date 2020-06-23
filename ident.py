@@ -101,13 +101,14 @@ def get_shape_difficulty(shape):
     barrable = len([1 for pos in shape if pos == min(shape)])
     if barrable > 1 and min(shape) > 0:
         barre_shape = [x-min(shape) for x in shape]
-        min_barre_extra = min(filter(lambda x: x > 0, barre_shape))
+        min_barre_extra = min([0, *filter(lambda x: x > 0, barre_shape)])
         barre_difficulty = get_shape_difficulty(barre_shape)[0]*2.2 + min(shape) * 2.0  + min_barre_extra * 2.0
         chords = list(get_chords(set(get_shape_notes(barre_shape))))
         chords.sort(key=lambda c: (len(c), c))
+        chord = chords[0] if len(chords) > 0 else '<nc>'
         if barre_difficulty < difficulty:
-            return barre_difficulty, f"barre {min(shape)} + {','.join(map(str, barre_shape))}:{chords[0]} , else {round(difficulty, 1)}"
-        return difficulty, f"else {round(barre_difficulty, 1)} barred {min(shape)} + {','.join(map(str, barre_shape))}:{chords[0]}"
+            return barre_difficulty, f"barre {min(shape)} + {','.join(map(str, barre_shape))}:{chord} , else {round(difficulty, 1)}"
+        return difficulty, f"else {round(barre_difficulty, 1)} barred {min(shape)} + {','.join(map(str, barre_shape))}:{chord}"
     return difficulty, None
 
 def note_subset(subset, superset):
