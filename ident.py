@@ -127,10 +127,12 @@ def get_shape_notes(shape, tuning=('G', 'C', 'E', 'A')):
 
 chord_shapes = ChordCollection()
 
-def scan_chords(stop_on=None, allowed_notes=None, base=0, max_fret=12):
+def scan_chords(stop_on=None, allowed_notes=None, base=0, max_fret=12, tuning=None):
+    if tuning is None:
+        tuning =  ['G', 'C', 'E', 'A']
     for imax_fret in range(0, max_fret):
         for shape in get_shapes(min_fret=imax_fret, max_fret=imax_fret, base=base):
-            notes = set(get_shape_notes(shape))
+            notes = set(get_shape_notes(shape,  tuning=tuning))
             if allowed_notes and not note_subset(notes, allowed_notes):
                 continue
             for chord in get_chords(notes):
@@ -178,6 +180,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--chord")
     parser.add_argument("-s", "--shape")
+    parser.add_argument("-t", "--tuning", default='G,C,E,A')
     parser.add_argument("-1", "--single", action='store_true')
     parser.add_argument("-l", "--latex", action='store_true')
     parser.add_argument("-v", "--visualize", action='store_true')
@@ -201,7 +204,7 @@ def main():
         except ValueError:
             print(f"Unable to lookup chord \"{args.chord}\"")
             return 2
-        scan_chords(allowed_notes=notes, base=base)
+        scan_chords(allowed_notes=notes, base=base, tuning=args.tuning.split(','))
         if args.chord not in chord_shapes:
             print(f"\"{args.chord}\" not found")
             return 1
@@ -226,7 +229,7 @@ def main():
             if args.visualize:
                 draw_shape(shape)
     if args.all_chords:
-        scan_chords(base=base, max_fret=7)
+        scan_chords(base=base, max_fret=7, tuning=args.tuning.split(','))
         for chord in sorted(chord_shapes):
             if not args.ignore_difficulty:
                 chord_shapes[chord].sort(key=lambda x: get_shape_difficulty(x)[0])
@@ -249,7 +252,7 @@ def main():
         shape = [-1 if pos == 'x' else int(pos) for pos in args.shape.split(",")]
         if args.visualize:
             draw_shape(shape)
-        chords = list(get_chords(set(get_shape_notes(shape))))
+        chords = list(get_chords(set(get_shape_notes(shape, tuning=args.tuning.split(',')))))
         chords.sort(key=lambda c: (len(c), c))
         print(f"{shape}: {', '.join(chords)}")
         if not args.ignore_difficulty:
