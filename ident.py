@@ -131,7 +131,7 @@ def scan_chords(stop_on=None, allowed_notes=None, base=0, max_fret=12, tuning=No
     if tuning is None:
         tuning =  ['G', 'C', 'E', 'A']
     for imax_fret in range(0, max_fret):
-        for shape in get_shapes(min_fret=imax_fret, max_fret=imax_fret, base=base):
+        for shape in get_shapes(min_fret=imax_fret, max_fret=imax_fret, base=base, strings=len(tuning)):
             notes = set(get_shape_notes(shape,  tuning=tuning))
             if allowed_notes and not note_subset(notes, allowed_notes):
                 continue
