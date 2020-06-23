@@ -118,11 +118,11 @@ def note_subset(subset, superset):
 chromatic_scale = CircularList(['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'])
 note_intervals = {note: index for index, note in enumerate(chromatic_scale)}
 
-def get_shape_notes(shape, base=('G', 'C', 'E', 'A')):
+def get_shape_notes(shape, tuning=('G', 'C', 'E', 'A')):
     for string, position in enumerate(shape):
         if position == -1:
             continue
-        yield chromatic_scale[note_intervals[base[string]] + position]
+        yield chromatic_scale[note_intervals[tuning[string]] + position]
 
 chord_shapes = ChordCollection()
 
