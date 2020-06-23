@@ -75,13 +75,13 @@ def get_shapes(strings=4, min_fret=0, max_fret=1, base=0):
             return
 
 def round_result(f):
-    def round_func(shape):
-        res, desc = f(shape)
+    def round_func(shape, tuning=None):
+        res, desc = f(shape, tuning)
         return round(res, 1), desc
     return round_func
 
 @round_result
-def get_shape_difficulty(shape):
+def get_shape_difficulty(shape, tuning=None):
     difficulty = 0.0
     last_pos = None
     for string, pos in enumerate(shape):
@@ -102,8 +102,8 @@ def get_shape_difficulty(shape):
     if barrable > 1 and min(shape) > 0:
         barre_shape = [x-min(shape) for x in shape]
         min_barre_extra = min([0, *filter(lambda x: x > 0, barre_shape)])
-        barre_difficulty = get_shape_difficulty(barre_shape)[0]*2.2 + min(shape) * 2.0  + min_barre_extra * 2.0
-        chords = list(get_chords(set(get_shape_notes(barre_shape))))
+        barre_difficulty = get_shape_difficulty(barre_shape, tuning=tuning)[0]*2.2 + min(shape) * 2.0  + min_barre_extra * 2.0
+        chords = list(get_chords(set(get_shape_notes(barre_shape, tuning=tuning))))
         chords.sort(key=lambda c: (len(c), c))
         chord = chords[0] if len(chords) > 0 else '<nc>'
         if barre_difficulty < difficulty:
@@ -163,8 +163,8 @@ def draw_shape(shape):
     for string, pos in enumerate(reversed(shape)):
         chars = [' '] * max_pos
         for mark in [3, 5, 7, 10, 12]:
-            if mark < max_pos + 1:
-                chars[mark-1] = marks[mark][string]
+            if mark < max_pos + 1 and (string - (len(shape) - 4) // 2) < len(marks[mark]):
+                chars[mark-1] = marks[mark][string - (len(shape) - 4) // 2]
         if pos >= 0:
             print('│', end='')
             if pos > 0:
@@ -212,9 +212,9 @@ def main():
         if not args.num:
             args.num = 1 if args.latex or args.visualize else len(shapes)
         if not args.ignore_difficulty:
-            shapes.sort(key=lambda x: get_shape_difficulty(x)[0])
+            shapes.sort(key=lambda x: get_shape_difficulty(x, tuning=args.tuning.split(','))[0])
         for shape in shapes[:args.num]:
-            difficulty, desc = get_shape_difficulty(shape)
+            difficulty, desc = get_shape_difficulty(shape, tuning=args.tuning.split(','))
             if difficulty > max_difficulty:
                 continue
             if args.latex:
@@ -232,9 +232,9 @@ def main():
         scan_chords(base=base, max_fret=7, tuning=args.tuning.split(','))
         for chord in sorted(chord_shapes):
             if not args.ignore_difficulty:
-                chord_shapes[chord].sort(key=lambda x: get_shape_difficulty(x)[0])
+                chord_shapes[chord].sort(key=lambda x: get_shape_difficulty(x, tuning=args.tuning.split(','))[0])
             shape = chord_shapes[chord][0]
-            difficulty, desc = get_shape_difficulty(shape)
+            difficulty, desc = get_shape_difficulty(shape, tuning=args.tuning.split(','))
             if difficulty > max_difficulty:
                 continue
             if args.latex:
@@ -256,7 +256,7 @@ def main():
         chords.sort(key=lambda c: (len(c), c))
         print(f"{shape}: {', '.join(chords)}")
         if not args.ignore_difficulty:
-            print(f"Difficulty: {diff_string(*get_shape_difficulty(shape))}")
+            print(f"Difficulty: {diff_string(*get_shape_difficulty(shape, tuning=args.tuning.split(',')))}")
     return 0
 if __name__ == "__main__":
     sys.exit(main())
