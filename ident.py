@@ -136,11 +136,9 @@ def get_key_notes(key):
         accidental = ""
     root = f"{root}{accidental}"
     if len(extra) == 0 or extra in ["maj", "major"]:
-        type = "major"
-        intervals = [0,2,4,5,7,9,11]
+        intervals = [0, 2, 4, 5, 7, 9, 11]
     elif extra in ["m", "min", "minor"]:
-        type = "minor"
-        intervals = [0,2,3,5,7,8,10]
+        intervals = [0, 2, 3, 5, 7, 8, 10]
     else:
         raise Exception(f"Unknown scale modication \"{extra}\"")
     return [chromatic_scale[interval + note_intervals[root]] for interval in intervals]
