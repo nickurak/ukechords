@@ -207,9 +207,9 @@ def main():
     parser.add_argument("-m", "--mute", action='store_true')
     parser.add_argument("-n", "--num", type=int)
     parser.add_argument("-d", "--max-difficulty", type=int)
-    parser.add_argument("-k", "--key")
+    parser.add_argument("-k", "--key", action='append')
     parser.add_argument("-q", "--qualities")
-    parser.add_argument("-p", "--simple")
+    parser.add_argument("-p", "--simple", action='store_true')
     args = parser.parse_args()
     base = -1 if args.mute else 0
     max_difficulty = args.max_difficulty or 29
@@ -262,8 +262,10 @@ def main():
             if args.visualize:
                 draw_shape(shape)
     if args.all_chords:
-        if args.key:
-            notes = get_key_notes(args.key)
+        notes = []
+        for key in args.key or []:
+            notes.extend(get_key_notes(key))
+        if notes:
             scan_chords(base=base, max_fret=7, allowed_notes=notes, tuning=args.tuning.split(','))
         else:
             scan_chords(base=base, max_fret=7, tuning=args.tuning.split(','))
