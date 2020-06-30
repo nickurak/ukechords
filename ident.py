@@ -208,9 +208,19 @@ def main():
     parser.add_argument("-n", "--num", type=int)
     parser.add_argument("-d", "--max-difficulty", type=int)
     parser.add_argument("-k", "--key")
+    parser.add_argument("-q", "--qualities")
+    parser.add_argument("-p", "--simple")
     args = parser.parse_args()
     base = -1 if args.mute else 0
     max_difficulty = args.max_difficulty or 29
+    if args.qualities and args.simple:
+        print("Provide only one of -p/--simple or -q/--qualities")
+        return 7
+    qualities = False
+    if args.simple:
+        qualities = ['', 'm', '7', 'dim']
+    if args.qualities:
+        qualities = args.qualities.split(',') or False
     if list(map(bool, [args.chord, args.shape, args.all_chords])).count(True) != 1:
         print("Provide exactly one of --all-chords or --chord or --shape")
         parser.print_help(sys.stderr)
@@ -258,6 +268,8 @@ def main():
         else:
             scan_chords(base=base, max_fret=7, tuning=args.tuning.split(','))
         for chord in sorted(chord_shapes):
+            if qualities and Chord(chord).quality.quality not in qualities:
+                continue
             if not args.ignore_difficulty:
                 chord_shapes[chord].sort(key=lambda x: get_shape_difficulty(x, tuning=args.tuning.split(','))[0])
             shape = chord_shapes[chord][0]
