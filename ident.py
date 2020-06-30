@@ -5,6 +5,7 @@
 
 import sys
 import argparse
+import re
 
 from pychord import note_to_chord
 from pychord import Chord
@@ -127,6 +128,23 @@ def get_shape_notes(shape, tuning=('G', 'C', 'E', 'A')):
 
 chord_shapes = ChordCollection()
 
+def get_key_notes(key):
+    match = re.match('^([A-G])([b#]?)(.*)$', key)
+    (root, accidental, extra) = match.groups()
+    if accidental == "b":
+        root = chromatic_scale[note_intervals[root] -1]
+        accidental = ""
+    root = f"{root}{accidental}"
+    if len(extra) == 0 or extra in ["maj", "major"]:
+        type = "major"
+        intervals = [0,2,4,5,7,9,11]
+    elif extra in ["m", "min", "minor"]:
+        type = "minor"
+        intervals = [0,2,3,5,7,8,10]
+    else:
+        raise Exception(f"Unknown scale modication \"{extra}\"")
+    return [chromatic_scale[interval + note_intervals[root]] for interval in intervals]
+
 def scan_chords(stop_on=None, allowed_notes=None, base=0, max_fret=12, tuning=None):
     if tuning is None:
         tuning =  ['G', 'C', 'E', 'A']
@@ -189,6 +207,7 @@ def main():
     parser.add_argument("-m", "--mute", action='store_true')
     parser.add_argument("-n", "--num", type=int)
     parser.add_argument("-d", "--max-difficulty", type=int)
+    parser.add_argument("-k", "--key")
     args = parser.parse_args()
     base = -1 if args.mute else 0
     max_difficulty = args.max_difficulty or 29
@@ -196,6 +215,10 @@ def main():
         print("Provide exactly one of --all-chords or --chord or --shape")
         parser.print_help(sys.stderr)
         return 5
+    if args.key and not args.all_chords:
+        print("--key/k only makes sense with -a")
+        parser.print_help(sys.stderr)
+        return 6
     if args.single:
         args.num = 1
     if args.chord:
@@ -229,7 +252,11 @@ def main():
             if args.visualize:
                 draw_shape(shape)
     if args.all_chords:
-        scan_chords(base=base, max_fret=7, tuning=args.tuning.split(','))
+        if args.key:
+            notes = get_key_notes(args.key)
+            scan_chords(base=base, max_fret=7, allowed_notes=notes, tuning=args.tuning.split(','))
+        else:
+            scan_chords(base=base, max_fret=7, tuning=args.tuning.split(','))
         for chord in sorted(chord_shapes):
             if not args.ignore_difficulty:
                 chord_shapes[chord].sort(key=lambda x: get_shape_difficulty(x, tuning=args.tuning.split(','))[0])
