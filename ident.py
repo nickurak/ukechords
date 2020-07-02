@@ -206,6 +206,7 @@ def main():
     parser.add_argument("-n", "--num", type=int)
     parser.add_argument("-d", "--max-difficulty", type=int)
     parser.add_argument("-k", "--key", action='append')
+    parser.add_argument("-o", "--allowed-chord", action='append')
     parser.add_argument("-q", "--qualities")
     parser.add_argument("-p", "--simple", action='store_true')
     args = parser.parse_args()
@@ -219,7 +220,7 @@ def main():
         qualities = ['', 'm', '7', 'dim']
     if args.qualities:
         qualities = args.qualities.split(',') or False
-    if list(map(bool, [args.chord, args.shape, (args.all_chords or args.key)])).count(True) != 1:
+    if list(map(bool, [args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord)])).count(True) != 1:
         print("Provide exactly one of --all-chords or --chord or --shape")
         parser.print_help(sys.stderr)
         return 5
@@ -255,10 +256,12 @@ def main():
                 ))
             if args.visualize:
                 draw_shape(shape)
-    if args.all_chords or args.key:
+    if args.all_chords or args.key or args.allowed_chord:
         notes = []
         for key in args.key or []:
             notes.extend(get_key_notes(key))
+        for chord in args.allowed_chord or []:
+            notes.extend(Chord(chord).components())
         if notes:
             scan_chords(base=base, max_fret=7, allowed_notes=notes, tuning=args.tuning.split(','))
         else:
