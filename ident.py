@@ -6,6 +6,8 @@
 import sys
 import argparse
 import re
+import os
+import json
 
 from pychord import note_to_chord
 from pychord import Chord
@@ -141,9 +143,33 @@ def get_key_notes(key):
         raise Exception(f"Unknown scale modication \"{extra}\"")
     return [chromatic_scale[interval + note_intervals[root]] for interval in intervals]
 
+
+def cached_fn(allowed_notes, base, max_fret, tuning):
+    an_string = ''.join(allowed_notes or ['%all%'])
+    tn_string = ''.join(tuning)
+    fn = f"cached_shapes_{an_string}_{base}_{max_fret}_{tn_string}.json"
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), fn)
+
+def load_scanned_chords(allowed_notes, base, max_fret, tuning, chord_shapes):
+    fn = cached_fn(allowed_notes, base, max_fret, tuning)
+    if not os.path.exists(fn):
+        return False
+    with open(fn, "r") as cache:
+        j = json.load(cache)
+        for chord, shapes in j.items():
+            chord_shapes[chord] = shapes
+    return True
+
+def save_scanned_chords(allowed_notes, base, max_fret, tuning, chord_shapes):
+    fn = cached_fn(allowed_notes, base, max_fret, tuning)
+    with open(fn, "w") as cache:
+        json.dump(chord_shapes, cache)
+
 def scan_chords(allowed_notes=None, base=0, max_fret=12, tuning=None, chord_shapes=None):
     if tuning is None:
         tuning =  ['G', 'C', 'E', 'A']
+    if load_scanned_chords(allowed_notes=allowed_notes, base=base, max_fret=max_fret, tuning=tuning, chord_shapes=chord_shapes):
+        return
     for imax_fret in range(0, max_fret):
         for shape in get_shapes(min_fret=imax_fret, max_fret=imax_fret, base=base, strings=len(tuning)):
             notes = set(get_shape_notes(shape,  tuning=tuning))
@@ -154,6 +180,7 @@ def scan_chords(allowed_notes=None, base=0, max_fret=12, tuning=None, chord_shap
                     chord_shapes[chord] = list([shape])
                 else:
                     chord_shapes[chord].append(shape)
+    save_scanned_chords(allowed_notes=allowed_notes, base=base, max_fret=max_fret, tuning=tuning, chord_shapes=chord_shapes)
 
 def diff_string(difficulty, desc):
     return f"{difficulty} ({desc})" if desc else str(difficulty)
