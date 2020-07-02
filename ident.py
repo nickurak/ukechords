@@ -126,8 +126,6 @@ def get_shape_notes(shape, tuning=('G', 'C', 'E', 'A')):
             continue
         yield chromatic_scale[note_intervals[tuning[string]] + position]
 
-chord_shapes = ChordCollection()
-
 def get_key_notes(key):
     match = re.match('^([A-G])([b#]?)(.*)$', key)
     (root, accidental, extra) = match.groups()
@@ -143,7 +141,7 @@ def get_key_notes(key):
         raise Exception(f"Unknown scale modication \"{extra}\"")
     return [chromatic_scale[interval + note_intervals[root]] for interval in intervals]
 
-def scan_chords(stop_on=None, allowed_notes=None, base=0, max_fret=12, tuning=None):
+def scan_chords(stop_on=None, allowed_notes=None, base=0, max_fret=12, tuning=None, chord_shapes=None):
     if tuning is None:
         tuning =  ['G', 'C', 'E', 'A']
     for imax_fret in range(0, max_fret):
@@ -216,6 +214,7 @@ def main():
         print("Provide only one of -p/--simple or -q/--qualities")
         return 7
     qualities = False
+    chord_shapes = ChordCollection()
     if args.simple:
         qualities = ['', 'm', '7', 'dim']
     if args.qualities:
@@ -232,7 +231,7 @@ def main():
         except ValueError:
             print(f"Unable to lookup chord \"{args.chord}\"")
             return 2
-        scan_chords(allowed_notes=notes, base=base, tuning=args.tuning.split(','))
+        scan_chords(allowed_notes=notes, base=base, tuning=args.tuning.split(','), chord_shapes=chord_shapes)
         if args.chord not in chord_shapes:
             print(f"\"{args.chord}\" not found")
             return 1
@@ -263,9 +262,9 @@ def main():
         for chord in args.allowed_chord or []:
             notes.extend(Chord(chord).components())
         if notes:
-            scan_chords(base=base, max_fret=7, allowed_notes=notes, tuning=args.tuning.split(','))
+            scan_chords(base=base, max_fret=7, allowed_notes=notes, tuning=args.tuning.split(','), chord_shapes=chord_shapes)
         else:
-            scan_chords(base=base, max_fret=7, tuning=args.tuning.split(','))
+            scan_chords(base=base, max_fret=7, tuning=args.tuning.split(','), chord_shapes=chord_shapes)
         for chord in sorted(chord_shapes):
             if qualities and Chord(chord).quality.quality not in qualities:
                 continue
