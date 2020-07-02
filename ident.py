@@ -141,7 +141,7 @@ def get_key_notes(key):
         raise Exception(f"Unknown scale modication \"{extra}\"")
     return [chromatic_scale[interval + note_intervals[root]] for interval in intervals]
 
-def scan_chords(stop_on=None, allowed_notes=None, base=0, max_fret=12, tuning=None, chord_shapes=None):
+def scan_chords(allowed_notes=None, base=0, max_fret=12, tuning=None, chord_shapes=None):
     if tuning is None:
         tuning =  ['G', 'C', 'E', 'A']
     for imax_fret in range(0, max_fret):
@@ -154,8 +154,6 @@ def scan_chords(stop_on=None, allowed_notes=None, base=0, max_fret=12, tuning=No
                     chord_shapes[chord] = list([shape])
                 else:
                     chord_shapes[chord].append(shape)
-                if stop_on and all(elem in chord_shapes.keys()  for elem in stop_on):
-                    return
 
 def diff_string(difficulty, desc):
     return f"{difficulty} ({desc})" if desc else str(difficulty)
