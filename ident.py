@@ -219,14 +219,10 @@ def main():
         qualities = ['', 'm', '7', 'dim']
     if args.qualities:
         qualities = args.qualities.split(',') or False
-    if list(map(bool, [args.chord, args.shape, args.all_chords])).count(True) != 1:
+    if list(map(bool, [args.chord, args.shape, (args.all_chords or args.key)])).count(True) != 1:
         print("Provide exactly one of --all-chords or --chord or --shape")
         parser.print_help(sys.stderr)
         return 5
-    if args.key and not args.all_chords:
-        print("--key/k only makes sense with -a")
-        parser.print_help(sys.stderr)
-        return 6
     if args.single:
         args.num = 1
     if args.chord:
@@ -259,7 +255,7 @@ def main():
                 ))
             if args.visualize:
                 draw_shape(shape)
-    if args.all_chords:
+    if args.all_chords or args.key:
         notes = []
         for key in args.key or []:
             notes.extend(get_key_notes(key))
