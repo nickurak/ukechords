@@ -242,8 +242,8 @@ def main():
     chord_shapes = ChordCollection()
     if args.simple:
         qualities = ['', 'm', '7', 'dim']
-    if args.qualities:
-        qualities = args.qualities.split(',') or False
+    if args.qualities is not None:
+        qualities = args.qualities.split(',')
     if list(map(bool, [args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord)])).count(True) != 1:
         print("Provide exactly one of --all-chords or --chord or --shape")
         parser.print_help(sys.stderr)
