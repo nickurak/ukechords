@@ -241,7 +241,7 @@ def main():
     qualities = False
     chord_shapes = ChordCollection()
     if args.simple:
-        qualities = ['', 'm', '7', 'dim']
+        qualities = ['', 'm', '7', 'dim', 'maj', 'm7']
     if args.qualities is not None:
         qualities = args.qualities.split(',')
     if list(map(bool, [args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord)])).count(True) != 1:
