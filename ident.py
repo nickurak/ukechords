@@ -255,7 +255,7 @@ def main():
         except ValueError:
             print(f"Unable to lookup chord \"{args.chord}\"")
             return 2
-        scan_chords(allowed_notes=notes, base=base, tuning=args.tuning.split(','), chord_shapes=chord_shapes)
+        scan_chords(base=base, tuning=args.tuning.split(','), chord_shapes=chord_shapes)
         if args.chord not in chord_shapes:
             print(f"\"{args.chord}\" not found")
             return 1
@@ -286,7 +286,7 @@ def main():
         for chord in args.allowed_chord or []:
             notes.extend(Chord(chord).components())
         if notes:
-            scan_chords(base=base, max_fret=7, allowed_notes=notes, tuning=args.tuning.split(','), chord_shapes=chord_shapes)
+            scan_chords(base=base, max_fret=7, tuning=args.tuning.split(','), chord_shapes=chord_shapes)
         else:
             scan_chords(base=base, max_fret=7, tuning=args.tuning.split(','), chord_shapes=chord_shapes)
         for chord in sorted(chord_shapes):
