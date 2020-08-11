@@ -122,7 +122,7 @@ def note_subset(subset, superset):
 chromatic_scale = CircularList(['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'])
 note_intervals = {note: index for index, note in enumerate(chromatic_scale)}
 
-def get_shape_notes(shape, tuning=('G', 'C', 'E', 'A')):
+def get_shape_notes(shape, tuning=None):
     for string, position in enumerate(shape):
         if position == -1:
             continue
@@ -166,8 +166,7 @@ def save_scanned_chords(allowed_notes, base, max_fret, tuning, chord_shapes):
         json.dump(chord_shapes, cache)
 
 def scan_chords(allowed_notes=None, base=0, max_fret=12, tuning=None, chord_shapes=None):
-    if tuning is None:
-        tuning =  ['G', 'C', 'E', 'A']
+    assert(tuning is not None)
     if load_scanned_chords(allowed_notes=allowed_notes, base=base, max_fret=max_fret, tuning=tuning, chord_shapes=chord_shapes):
         return
     for imax_fret in range(0, max_fret):
