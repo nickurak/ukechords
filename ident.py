@@ -285,12 +285,11 @@ def main():
             notes.extend(get_key_notes(key))
         for chord in args.allowed_chord or []:
             notes.extend(Chord(chord).components())
-        if notes:
-            scan_chords(base=base, max_fret=7, tuning=args.tuning.split(','), chord_shapes=chord_shapes)
-        else:
-            scan_chords(base=base, max_fret=7, tuning=args.tuning.split(','), chord_shapes=chord_shapes)
+        scan_chords(base=base, max_fret=7, tuning=args.tuning.split(','), chord_shapes=chord_shapes)
         for chord in sorted(chord_shapes):
             if qualities and Chord(chord).quality.quality not in qualities:
+                continue
+            if notes and not all(note in notes for note in Chord(chord).components()):
                 continue
             if not args.ignore_difficulty:
                 chord_shapes[chord].sort(key=lambda x: get_shape_difficulty(x, tuning=args.tuning.split(','))[0])
