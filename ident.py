@@ -213,6 +213,12 @@ def draw_shape(shape):
         print('│')
     print(bottom)
 
+def error(rc, message, parser=None):
+    print(message, file=sys.stderr)
+    if parser:
+        parser.print_help(sys.stderr)
+    exit(rc)
+
 def main():
     add_no5_quality()
     parser = argparse.ArgumentParser()
@@ -235,8 +241,7 @@ def main():
     base = -1 if args.mute else 0
     max_difficulty = args.max_difficulty or 29
     if args.qualities and args.simple:
-        print("Provide only one of -p/--simple or -q/--qualities")
-        return 7
+        error(7, "Provide only one of -p/--simple or -q/--qualities")
     qualities = False
     chord_shapes = ChordCollection()
     if args.simple:
@@ -244,21 +249,17 @@ def main():
     if args.qualities is not None:
         qualities = args.qualities.split(',')
     if list(map(bool, [args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord)])).count(True) != 1:
-        print("Provide exactly one of --all-chords or --chord or --shape")
-        parser.print_help(sys.stderr)
-        return 5
+        error(5, "Provide exactly one of --all-chords or --chord or --shape", parser)
     if args.single:
         args.num = 1
     if args.chord:
         try:
             notes = Chord(args.chord).components()
         except ValueError:
-            print(f"Unable to lookup chord \"{args.chord}\"")
-            return 2
+            error(2, f"Unable to lookup chord \"{args.chord}\"")
         scan_chords(base=base, tuning=args.tuning.split(','), chord_shapes=chord_shapes)
         if args.chord not in chord_shapes:
-            print(f"\"{args.chord}\" not found")
-            return 1
+            error(1, f"\"{args.chord}\" not found")
         shapes = chord_shapes[args.chord]
         if not args.num:
             args.num = 1 if args.latex or args.visualize else len(shapes)
