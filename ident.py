@@ -147,8 +147,8 @@ def get_key_notes(key):
 def cached_fn(allowed_notes, base, max_fret, tuning):
     an_string = ''.join(allowed_notes or ['%all%'])
     tn_string = ''.join(tuning)
-    fn = f"cached_shapes_{an_string}_{base}_{max_fret}_{tn_string}.json"
-    return os.path.join(os.path.dirname(os.path.abspath(__file__)), fn)
+    fn = f"{an_string}_{base}_{max_fret}_{tn_string}.json"
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), "cached_shapes", fn)
 
 def load_scanned_chords(allowed_notes, base, max_fret, tuning, chord_shapes):
     fn = cached_fn(allowed_notes, base, max_fret, tuning)
