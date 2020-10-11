@@ -46,14 +46,20 @@ class CircularList(list):
 class ChordCollection(dict):
     def  __contains__(self, chord):
         for name in super().keys():
-            if Chord(name) == Chord(chord):
-                return True
+            try:
+                if Chord(name) == Chord(chord):
+                    return True
+            except ValueError:
+                pass
         return False
 
     def __getitem__(self, chord):
         for name, shapelist in super().items():
-            if Chord(name) == Chord(chord):
-                return shapelist
+            try:
+                if Chord(name) == Chord(chord):
+                    return shapelist
+            except ValueError:
+                pass
         raise IndexError
 
 def increment(position, max_pos, base=0):
