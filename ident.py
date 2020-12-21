@@ -230,7 +230,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--chord")
     parser.add_argument("-s", "--shape")
-    parser.add_argument("-t", "--tuning", default='G,C,E,A')
+    parser.add_argument("-t", "--tuning", default='ukulele-c6')
     parser.add_argument("-1", "--single", action='store_true')
     parser.add_argument("-l", "--latex", action='store_true')
     parser.add_argument("-v", "--visualize", action='store_true')
@@ -246,6 +246,13 @@ def main():
     args = parser.parse_args()
     base = -1 if args.mute else 0
     max_difficulty = args.max_difficulty or 29
+    if args.tuning == "ukulele" or args.tuning == "ukulele-c6":
+        args.tuning = "G,C,E,A"
+    elif args.tuning == "ukulele-g6":
+        args.tuning = "D,G,B,E"
+    elif args.tuning == "guitar":
+        args.tuning = "E,A,D,G,B,E"
+
     if args.qualities and args.simple:
         error(7, "Provide only one of -p/--simple or -q/--qualities")
     qualities = False
