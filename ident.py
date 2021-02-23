@@ -171,9 +171,9 @@ def save_scanned_chords(allowed_notes, base, max_fret, tuning, chord_shapes):
     with open(fn, "w") as cache:
         json.dump(chord_shapes, cache)
 
-def scan_chords(allowed_notes=None, base=0, max_fret=12, tuning=None, chord_shapes=None):
+def scan_chords(allowed_notes=None, base=0, max_fret=12, tuning=None, chord_shapes=None, no_cache=False):
     assert(tuning is not None)
-    if load_scanned_chords(allowed_notes=allowed_notes, base=base, max_fret=max_fret, tuning=tuning, chord_shapes=chord_shapes):
+    if not no_cache and load_scanned_chords(allowed_notes=allowed_notes, base=base, max_fret=max_fret, tuning=tuning, chord_shapes=chord_shapes):
         return
     for imax_fret in range(0, max_fret):
         for shape in get_shapes(min_fret=imax_fret, max_fret=imax_fret, base=base, strings=len(tuning)):
@@ -243,6 +243,7 @@ def main():
     parser.add_argument("-o", "--allowed-chord", action='append')
     parser.add_argument("-q", "--qualities")
     parser.add_argument("-p", "--simple", action='store_true')
+    parser.add_argument("--no-cache", action='store_true')
     args = parser.parse_args()
     base = -1 if args.mute else 0
     max_difficulty = args.max_difficulty or 29
@@ -270,7 +271,7 @@ def main():
             notes = Chord(args.chord).components()
         except ValueError:
             error(2, f"Unable to lookup chord \"{args.chord}\"")
-        scan_chords(base=base, tuning=args.tuning.split(','), chord_shapes=chord_shapes)
+        scan_chords(base=base, tuning=args.tuning.split(','), chord_shapes=chord_shapes, no_cache=args.no_cache)
         if args.chord not in chord_shapes:
             error(1, f"\"{args.chord}\" not found")
         shapes = chord_shapes[args.chord]
@@ -299,7 +300,7 @@ def main():
             notes.extend(get_key_notes(key))
         for chord in args.allowed_chord or []:
             notes.extend(Chord(chord).components())
-        scan_chords(base=base, max_fret=7, tuning=args.tuning.split(','), chord_shapes=chord_shapes)
+        scan_chords(base=base, max_fret=7, tuning=args.tuning.split(','), chord_shapes=chord_shapes, no_cache=args.no_cache)
         for chord in sorted(chord_shapes):
             if qualities and Chord(chord).quality.quality not in qualities:
                 continue
