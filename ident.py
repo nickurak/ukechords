@@ -24,6 +24,15 @@ def add_no5_quality():
         new = tuple(filter(lambda x: x != 7, items))
         QUALITY_DICT[no5name] = new
 
+def add_b5_quality():
+    # Hack -- we shouldn't be editting constants, but we can, and do.
+    for name, items in list(QUALITY_DICT.items()):
+        b5name = name + '-5'
+        if '/' in name or not 7 in items:
+            continue
+        new = tuple(map(lambda x: x if x != 7 else x - 1, items))
+        QUALITY_DICT[b5name] = new
+
 def get_orders(vals):
     for index, value in enumerate(vals):
         list2 = list(vals)
@@ -227,6 +236,7 @@ def error(rc, message, parser=None):
 
 def main():
     add_no5_quality()
+    add_b5_quality()
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--chord")
     parser.add_argument("-s", "--shape")
