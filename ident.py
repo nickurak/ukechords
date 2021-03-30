@@ -52,24 +52,47 @@ class CircularList(list):
     def __getitem__(self, index):
         return super().__getitem__(index % len(self))
 
-class ChordCollection(dict):
+class ChordCollection():
+    def __init__(self):
+        self.d = dict()
+
     def  __contains__(self, chord):
-        for name in super().keys():
+        cchord = Chord(chord)
+        for name, (_, ichord) in self.d.items():
             try:
-                if Chord(name) == Chord(chord):
+                if ichord == cchord:
                     return True
             except ValueError:
                 pass
         return False
 
+    def __setitem__(self, chord, val):
+        self.d[chord] = (val, Chord(chord))
+
     def __getitem__(self, chord):
-        for name, shapelist in super().items():
+        cchord = Chord(chord)
+        for name, (shapelist, ichord) in self.d.items():
             try:
-                if Chord(name) == Chord(chord):
+                if ichord == cchord:
                     return shapelist
             except ValueError:
                 pass
         raise IndexError
+
+    def keys(self):
+        return self.d.keys()
+
+    def writeJSON(self, file):
+        file.write("{")
+        first = True
+        for name, (shapelist, _) in self.d.items():
+            if not first:
+                file.write(",")
+            first = False
+            file.write(f'"{name}":')
+            file.write(json.dumps(shapelist))
+        file.write("}")
+
 
 def increment(position, max_pos, base=0):
     n = 0
@@ -178,7 +201,7 @@ def load_scanned_chords(allowed_notes, base, max_fret, tuning, chord_shapes):
 def save_scanned_chords(allowed_notes, base, max_fret, tuning, chord_shapes):
     fn = cached_fn(allowed_notes, base, max_fret, tuning)
     with open(fn, "w") as cache:
-        json.dump(chord_shapes, cache)
+        chord_shapes.writeJSON(cache)
 
 def scan_chords(allowed_notes=None, base=0, max_fret=12, tuning=None, chord_shapes=None, no_cache=False):
     assert(tuning is not None)
@@ -311,7 +334,7 @@ def main():
         for chord in args.allowed_chord or []:
             notes.extend(Chord(chord).components())
         scan_chords(base=base, max_fret=7, tuning=args.tuning.split(','), chord_shapes=chord_shapes, no_cache=args.no_cache)
-        for chord in sorted(chord_shapes):
+        for chord in sorted(chord_shapes.keys()):
             if qualities and Chord(chord).quality.quality not in qualities:
                 continue
             if notes and not all(note in notes for note in Chord(chord).components()):
