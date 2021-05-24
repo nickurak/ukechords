@@ -17,7 +17,7 @@ from pychord.utils import note_to_val
 from pychord.constants import QUALITY_DICT
 
 def add_no5_quality():
-    # Hack -- we shouldn't be editting constants, but we can, and do.
+    # Hack -- we shouldn't be editting constants, but we can, and do. LOL.
     for name, items in list(QUALITY_DICT.items()):
         no5name = name + 'no5'
         if '/' in name or not 7 in items:
@@ -26,7 +26,7 @@ def add_no5_quality():
         QUALITY_DICT[no5name] = new
 
 def add_b5_quality():
-    # Hack -- we shouldn't be editting constants, but we can, and do.
+    # Hack -- we shouldn't be editting constants, but we can, and do. LOL.
     for name, items in list(QUALITY_DICT.items()):
         b5name = name + '-5'
         if '/' in name or not 7 in items:
