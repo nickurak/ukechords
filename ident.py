@@ -316,6 +316,8 @@ def main():
         args.tuning = "D,G,B,E"
     elif args.tuning == "guitar":
         args.tuning = "E,A,D,G,B,E"
+    elif args.tuning == "mandolin":
+        args.tuning = "G,D,E,A"
 
     if args.qualities and args.simple:
         error(7, "Provide only one of -p/--simple or -q/--qualities")
