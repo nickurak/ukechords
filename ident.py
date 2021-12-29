@@ -7,7 +7,6 @@ import sys
 import argparse
 import re
 import os
-import json
 import pickle
 
 from pychord import find_chords_from_notes
@@ -86,18 +85,6 @@ class ChordCollection():
 
     def keys(self):
         return self.d.keys()
-
-    def writeJSON(self, file):
-        file.write("{")
-        first = True
-        for name, (shapelist, _) in self.d.items():
-            if not first:
-                file.write(",")
-            first = False
-            file.write(f'"{name}":')
-            file.write(json.dumps(shapelist))
-        file.write("}")
-
 
 def increment(position, max_pos, base=0):
     n = 0
@@ -187,55 +174,24 @@ def get_key_notes(key):
     return [chromatic_scale[interval + note_intervals[root]] for interval in intervals]
 
 
-def cached_fn(allowed_notes, base, max_fret, tuning, fmt="json"):
+def cached_fn(allowed_notes, base, max_fret, tuning):
     an_string = ''.join(allowed_notes or ['%all%'])
     tn_string = ''.join(tuning)
-    fn = f"{an_string}_{base}_{max_fret}_{tn_string}.{fmt}"
+    fn = f"{an_string}_{base}_{max_fret}_{tn_string}.pcl"
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), "cached_shapes", fn)
 
-def load_scanned_chords_pcl(allowed_notes, base, max_fret, tuning, chord_shapes):
-    fn = cached_fn(allowed_notes, base, max_fret, tuning, fmt="pcl")
+def load_scanned_chords(allowed_notes, base, max_fret, tuning, chord_shapes):
+    fn = cached_fn(allowed_notes, base, max_fret, tuning)
     if not os.path.exists(fn):
         return False
     with open(fn, "rb") as cache:
         chord_shapes.d |= pickle.load(cache)
     return True
 
-def load_scanned_chords_json(allowed_notes, base, max_fret, tuning, chord_shapes):
+def save_scanned_chords(allowed_notes, base, max_fret, tuning, chord_shapes):
     fn = cached_fn(allowed_notes, base, max_fret, tuning)
-    fn_pcl = cached_fn(allowed_notes, base, max_fret, tuning, fmt="pcl")
-    if not os.path.exists(fn):
-        return False
-    with open(fn, "r") as cache:
-        j = json.load(cache)
-        for chord, shapes in j.items():
-            chord_shapes[chord] = shapes
-    if not os.path.exists(fn_pcl):
-        save_scanned_chords_pcl(allowed_notes, base, max_fret, tuning, chord_shapes)
-    return True
-
-def load_scanned_chords(allowed_notes, base, max_fret, tuning, chord_shapes):
-    fn_json = cached_fn(allowed_notes, base, max_fret, tuning, fmt="json")
-    fn_pcl = cached_fn(allowed_notes, base, max_fret, tuning, fmt="pcl")
-    if os.path.exists(fn_pcl):
-        return load_scanned_chords_pcl(allowed_notes, base, max_fret, tuning, chord_shapes)
-    if os.path.exists(fn_json):
-        return load_scanned_chords_json(allowed_notes, base, max_fret, tuning, chord_shapes)
-    return False
-
-def save_scanned_chords_pcl(allowed_notes, base, max_fret, tuning, chord_shapes):
-    fn = cached_fn(allowed_notes, base, max_fret, tuning, fmt="pcl")
     with open(fn, "wb") as cache:
         pickle.dump(chord_shapes.d, cache)
-
-def save_scanned_chords_json(allowed_notes, base, max_fret, tuning, chord_shapes):
-    fn = cached_fn(allowed_notes, base, max_fret, tuning)
-    with open(fn, "w") as cache:
-        chord_shapes.writeJSON(cache)
-
-def save_scanned_chords(allowed_notes, base, max_fret, tuning, chord_shapes):
-    save_scanned_chords_pcl(allowed_notes, base, max_fret, tuning, chord_shapes)
-    save_scanned_chords_json(allowed_notes, base, max_fret, tuning, chord_shapes)
 
 def scan_chords(allowed_notes=None, base=0, max_fret=12, tuning=None, chord_shapes=None, no_cache=False):
     assert(tuning is not None)
