@@ -32,6 +32,8 @@ def add_b5_quality():
         b5name = name + '-5'
         if '/' in name or not 7 in quality.components:
             continue
+        if quality.components != (0, 4, 7):
+            continue
         new = tuple(map(lambda x: x if x != 7 else x - 1, quality.components))
         new_qs.append((b5name, new))
     for name, new in new_qs:
