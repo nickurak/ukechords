@@ -254,7 +254,7 @@ def error(rc, message, parser=None):
     print(message, file=sys.stderr)
     if parser:
         parser.print_help(sys.stderr)
-    exit(rc)
+    sys.exit(rc)
 
 def main():
     add_no5_quality()
