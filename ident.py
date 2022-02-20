@@ -321,11 +321,7 @@ def main():
                 lchord = args.chord.replace('M', 'maj')
                 print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shape))}}}")
             else:
-                print("{}: {}\t difficulty: {}".format(
-                    args.chord,
-                    ','.join(map(str, shape)),
-                    diff_string(difficulty, desc)
-                ))
+                print(f"{args.chord}: {','.join(map(str, shape))}\t difficulty: {diff_string(difficulty, desc)}")
             if args.visualize:
                 draw_shape(shape)
     if args.all_chords or args.key or args.allowed_chord:
@@ -353,11 +349,7 @@ def main():
                 lchord = chord.replace('M', 'maj')
                 print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shape))}}}")
             else:
-                print("{}: {}\t difficulty: {}".format(
-                    chord,
-                    ','.join(map(str, shape)),
-                    diff_string(difficulty, desc)
-                ))
+                print(f"{chord}: {','.join(map(str, shape))}\t difficulty: {diff_string(difficulty, desc)}")
             if args.visualize:
                 draw_shape(shape)
     if args.shape:
