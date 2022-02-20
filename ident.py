@@ -279,7 +279,7 @@ def main():
     args = parser.parse_args()
     base = -1 if args.mute else 0
     max_difficulty = args.max_difficulty or 29
-    if args.tuning == "ukulele" or args.tuning == "ukulele-c6":
+    if args.tuning in ("ukulele", "ukulele-c6"):
         args.tuning = "G,C,E,A"
     elif args.tuning == "ukulele-g6":
         args.tuning = "D,G,B,E"
