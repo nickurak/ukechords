@@ -13,6 +13,9 @@ from pychord import find_chords_from_notes
 from pychord import Chord, QualityManager
 from pychord.utils import note_to_val
 
+class UnknownKeyException(Exception):
+    pass
+
 def add_no5_quality():
     new_qs = []
     # Hack -- get list of existing qualities
@@ -170,7 +173,7 @@ def get_key_notes(key):
     mods |= {q: [0, 2, 4, 7, 9] for q in ["p", "pent", "pentatonic"]}
     match = re.match(f'^([A-G][b#]?)({"|".join(mods.keys())})$', key)
     if not match:
-        raise Exception(f"Unknown key \"{key}\"")
+        raise UnknownKeyException(f"Unknown key \"{key}\"")
     (root, extra) = match.groups()
     intervals = mods[extra]
     return [chromatic_scale[interval + note_intervals[root]] for interval in intervals]
