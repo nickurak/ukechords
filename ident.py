@@ -203,8 +203,8 @@ def save_scanned_chords(allowed_notes, base, max_fret, tuning, max_difficulty, c
         pickle.dump(chord_shapes.d, cache)
 
 def scan_chords(allowed_notes=None, base=0, max_fret=12, tuning=None, chord_shapes=None, no_cache=False, max_difficulty=None):
-    assert(tuning is not None)
-    assert(max_difficulty is not None)
+    assert tuning is not None
+    assert max_difficulty is not None
     if not no_cache and load_scanned_chords(allowed_notes=allowed_notes, base=base, max_fret=max_fret, tuning=tuning, max_difficulty=max_difficulty, chord_shapes=chord_shapes):
         return
     for shape in get_shapes(min_fret=0, max_fret=max_fret, base=base, strings=len(tuning), max_difficulty=max_difficulty):
