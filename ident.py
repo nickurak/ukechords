@@ -63,11 +63,11 @@ class CircularList(list):
 
 class ChordCollection():
     def __init__(self):
-        self.d = dict()
+        self.d = {}
 
     def  __contains__(self, chord):
         cchord = Chord(chord)
-        for name, (_, ichord) in self.d.items():
+        for _, (_, ichord) in self.d.items():
             try:
                 if ichord == cchord:
                     return True
@@ -80,7 +80,7 @@ class ChordCollection():
 
     def __getitem__(self, chord):
         cchord = Chord(chord)
-        for name, (shapelist, ichord) in self.d.items():
+        for _, (shapelist, ichord) in self.d.items():
             try:
                 if ichord == cchord:
                     return shapelist
