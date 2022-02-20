@@ -169,7 +169,7 @@ def get_key_notes(key):
     mods |= {q: [0, 2, 3, 4, 7, 9] for q in ["blues", "majblues", "majorblues"]}
     mods |= {q: [0, 2, 4, 7, 9] for q in ["p", "pent", "pentatonic"]}
     match = re.match(f'^([A-G][b#]?)({"|".join(mods.keys())})$', key)
-    if not match.groups:
+    if not match:
         raise Exception(f"Unknown key \"{key}\"")
     (root, extra) = match.groups()
     intervals = mods[extra]
