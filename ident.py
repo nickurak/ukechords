@@ -165,10 +165,10 @@ def get_shape_notes(shape, tuning=None):
 def get_key_notes(key):
     mods = {q: [0, 2, 4, 5, 7, 9, 11] for q in ["", "maj", "major"]}
     mods |= {q: [0, 2, 3, 5, 7, 8, 10] for q in ["m", "min", "minor"]}
-    match = re.match('^([A-G][b#]?)(.*)$', key)
+    match = re.match(f'^([A-G][b#]?)({"|".join(mods.keys())})$', key)
+    if not match:
+        raise Exception(f"Unknown key \"{key}\"")
     (root, extra) = match.groups()
-    if extra not in mods:
-        raise Exception(f"Unknown scale modication \"{extra}\"")
     intervals = mods[extra]
     return [chromatic_scale[interval + note_intervals[root]] for interval in intervals]
 
