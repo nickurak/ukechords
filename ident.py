@@ -147,9 +147,9 @@ def get_shape_difficulty(shape, tuning=None):
             chords.sort(key=lambda c: (len(c), c))
             chord = chords[0] if len(chords) > 0 else '<nc>'
             barre_chord_string = f"{','.join(map(str, barre_shape))}:{chord}"
-            details = f"else {round(barre_difficulty, 1)}: barred {min(shape)} + {barre_chord_string}" if tuning else None
+            details = f"else {barre_difficulty:.1f}: barred {min(shape)} + {barre_chord_string}" if tuning else None
         if barre_difficulty < difficulty:
-            details =  f"barre {min(shape)} + {barre_chord_string}, else {round(difficulty, 1)}" if tuning else None
+            details =  f"barre {min(shape)} + {barre_chord_string}, else {difficulty:.1f}" if tuning else None
             difficulty = barre_difficulty
     return difficulty, details
 
