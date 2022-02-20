@@ -137,17 +137,21 @@ def get_shape_difficulty(shape, tuning=None):
         else:
             difficulty += pos
     barrable = len([1 for pos in shape if pos == min(shape)])
+    details = None
     if barrable > 1 and min(shape) > 0:
         barre_shape = [x-min(shape) for x in shape]
         min_barre_extra = min([0, *filter(lambda x: x > 0, barre_shape)])
         barre_difficulty = get_shape_difficulty(barre_shape, tuning=tuning)[0]*2.2 + min(shape) * 3.0  + min_barre_extra * 4.0
-        chords = list(get_chords(set(get_shape_notes(barre_shape, tuning=tuning))))
-        chords.sort(key=lambda c: (len(c), c))
-        chord = chords[0] if len(chords) > 0 else '<nc>'
+        if tuning:
+            chords = list(get_chords(set(get_shape_notes(barre_shape, tuning=tuning))))
+            chords.sort(key=lambda c: (len(c), c))
+            chord = chords[0] if len(chords) > 0 else '<nc>'
+            barre_chord_string = f"{','.join(map(str, barre_shape))}:{chord}"
+            details = f"else {round(barre_difficulty, 1)}: barred {min(shape)} + {barre_chord_string}" if tuning else None
         if barre_difficulty < difficulty:
-            return barre_difficulty, f"barre {min(shape)} + {','.join(map(str, barre_shape))}:{chord}, else {round(difficulty, 1)}"
-        return difficulty, f"else {round(barre_difficulty, 1)}: barred {min(shape)} + {','.join(map(str, barre_shape))}:{chord}"
-    return difficulty, None
+            details =  f"barre {min(shape)} + {barre_chord_string}, else {round(difficulty, 1)}" if tuning else None
+            difficulty = barre_difficulty
+    return difficulty, details
 
 def note_subset(subset, superset):
     subset_vals = set(map(note_to_val, subset))
