@@ -163,12 +163,8 @@ def get_shape_notes(shape, tuning=None):
         yield chromatic_scale[note_intervals[tuning[string]] + position]
 
 def get_key_notes(key):
-    match = re.match('^([A-G])([b#]?)(.*)$', key)
-    (root, accidental, extra) = match.groups()
-    if accidental == "b":
-        root = chromatic_scale[note_intervals[root] -1]
-        accidental = ""
-    root = f"{root}{accidental}"
+    match = re.match('^([A-G][b#]?)(.*)$', key)
+    (root, extra) = match.groups()
     if len(extra) == 0 or extra in ["maj", "major"]:
         intervals = [0, 2, 4, 5, 7, 9, 11]
     elif extra in ["m", "min", "minor"]:
