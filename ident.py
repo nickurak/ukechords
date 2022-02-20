@@ -327,7 +327,10 @@ def main():
     if args.all_chords or args.key or args.allowed_chord:
         notes = []
         for key in args.key or []:
-            notes.extend(get_key_notes(key))
+            try:
+                notes.extend(get_key_notes(key))
+            except UnknownKeyException as e:
+                error(10, e)
         for chord in args.allowed_chord or []:
             notes.extend(Chord(chord).components())
         scan_chords(base=base, max_fret=7, tuning=args.tuning.split(','), chord_shapes=chord_shapes, no_cache=args.no_cache)
