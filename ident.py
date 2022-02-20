@@ -152,7 +152,9 @@ def note_subset(subset, superset):
     return subset_vals.issubset(superset_vals)
 
 chromatic_scale = CircularList(['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'])
+flat_scale = CircularList(['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'])
 note_intervals = {note: index for index, note in enumerate(chromatic_scale)}
+note_intervals |= {note: index for index, note in enumerate(flat_scale)}
 
 def get_shape_notes(shape, tuning=None):
     for string, position in enumerate(shape):
