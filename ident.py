@@ -164,7 +164,10 @@ note_intervals = {note: index for index, note in enumerate(chromatic_scale)}
 note_intervals |= {note: index for index, note in enumerate(flat_scale)}
 
 def normalizer(input, scale):
-    return [scale[note_intervals[note]] for note in input]
+    if isinstance(input, list):
+        return [scale[note_intervals[note]] for note in input]
+    else:
+        return scale[note_intervals[input]]
 
 
 def sharpify(input):
