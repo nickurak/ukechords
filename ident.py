@@ -163,6 +163,9 @@ flat_scale = CircularList(['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A',
 note_intervals = {note: index for index, note in enumerate(chromatic_scale)}
 note_intervals |= {note: index for index, note in enumerate(flat_scale)}
 
+def sharpify(notes):
+    return [chromatic_scale[note_intervals[note]] for note in notes]
+
 def get_shape_notes(shape, tuning=None):
     for string, position in enumerate(shape):
         if position == -1:
@@ -338,7 +341,7 @@ def main():
         for chord in sorted(chord_shapes.keys()):
             if qualities and Chord(chord).quality.quality not in qualities:
                 continue
-            if notes and not all(note in notes for note in Chord(chord).components()):
+            if notes and not all(note in sharpify(notes) for note in sharpify(Chord(chord).components())):
                 continue
             if not args.ignore_difficulty:
                 chord_shapes[chord].sort(key=lambda x: get_shape_difficulty(x, tuning=args.tuning.split(','))[0])
