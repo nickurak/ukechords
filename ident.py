@@ -211,12 +211,13 @@ def cached_fn(allowed_notes, base, max_fret, tuning, max_difficulty):
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), "cached_shapes", fn)
 
 def load_scanned_chords(allowed_notes, base, max_fret, tuning, max_difficulty, chord_shapes):
-    fn = cached_fn(allowed_notes, base, max_fret, tuning, max_difficulty)
-    if not os.path.exists(fn):
-        return False
-    with open(fn, "rb") as cache:
-        chord_shapes.d |= pickle.load(cache)
-    return True
+    for imax_difficulty in range(max_difficulty, 100):
+        fn = cached_fn(allowed_notes, base, max_fret, tuning, imax_difficulty)
+        if os.path.exists(fn):
+            with open(fn, "rb") as cache:
+                chord_shapes.d |= pickle.load(cache)
+                return True
+    return False
 
 def save_scanned_chords(allowed_notes, base, max_fret, tuning, max_difficulty, chord_shapes):
     fn = cached_fn(allowed_notes, base, max_fret, tuning, max_difficulty)
