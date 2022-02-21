@@ -172,6 +172,10 @@ def get_shape_notes(shape, tuning=None):
             continue
         yield chromatic_scale[note_intervals[tuning[string]] + position]
 
+
+def is_flat(note):
+    return note[-1] == "b"
+
 def get_key_notes(key):
     mods = {q: [0, 2, 4, 5, 7, 9, 11] for q in ["", "maj", "major"]}
     mods |= {q: [0, 2, 3, 5, 7, 8, 10] for q in ["m", "min", "minor"]}
@@ -183,6 +187,8 @@ def get_key_notes(key):
         raise UnknownKeyException(f"Unknown key \"{key}\"")
     (root, extra) = match.groups()
     intervals = mods[extra]
+    if is_flat(root):
+        return [flat_scale[interval + note_intervals[root]] for interval in intervals]
     return [chromatic_scale[interval + note_intervals[root]] for interval in intervals]
 
 
