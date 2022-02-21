@@ -276,6 +276,7 @@ def main():
     parser.add_argument("-q", "--qualities")
     parser.add_argument("-p", "--simple", action='store_true')
     parser.add_argument("--no-cache", action='store_true')
+    parser.add_argument("--show-key")
     args = parser.parse_args()
     base = -1 if args.mute else 0
     max_difficulty = args.max_difficulty or 29
@@ -296,8 +297,8 @@ def main():
         qualities = ['', 'm', '7', 'dim', 'maj', 'm7']
     if args.qualities is not None:
         qualities = args.qualities.split(',')
-    if list(map(bool, [args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord)])).count(True) != 1:
-        error(5, "Provide exactly one of --all-chords or --chord or --shape", parser)
+    if list(map(bool, [args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord), args.show_key])).count(True) != 1:
+        error(5, "Provide exactly one of --all-chords or --chord or --shape or --show-key", parser)
     if args.single:
         args.num = 1
     if args.chord:
@@ -361,6 +362,8 @@ def main():
         print(f"{shape}: {', '.join(chords)}")
         if not args.ignore_difficulty:
             print(f"Difficulty: {diff_string(*get_shape_difficulty(shape, tuning=args.tuning.split(',')))}")
+    if args.show_key:
+        print(f"{', '.join(get_key_notes(args.show_key))}")
     return 0
 if __name__ == "__main__":
     sys.exit(main())
