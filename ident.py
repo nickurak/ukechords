@@ -163,8 +163,17 @@ flat_scale = CircularList(['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A',
 note_intervals = {note: index for index, note in enumerate(chromatic_scale)}
 note_intervals |= {note: index for index, note in enumerate(flat_scale)}
 
-def sharpify(notes):
-    return [chromatic_scale[note_intervals[note]] for note in notes]
+def normalizer(input, scale):
+    return [scale[note_intervals[note]] for note in input]
+
+
+def sharpify(input):
+    return normalizer(input, chromatic_scale)
+
+
+def flatify(input):
+    return normalizer(input, flat_scale)
+
 
 def get_shape_notes(shape, tuning=None):
     for string, position in enumerate(shape):
