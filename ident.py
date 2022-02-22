@@ -361,7 +361,9 @@ def main():
         if notes and any(map(is_flat, notes)):
             force_flat = True
         scan_chords(base=base, max_fret=7, tuning=args.tuning.split(','), chord_shapes=chord_shapes, no_cache=args.no_cache, max_difficulty=max_difficulty)
-        for chord in sorted(chord_shapes.keys()):
+        ichords = list(chord_shapes.keys())
+        ichords.sort(key=lambda x: (note_intervals[Chord(x).root], x))
+        for chord in ichords:
             if force_flat:
                 chord = flatify(Chord(chord).root) + Chord(chord).quality.quality
             if qualities and Chord(chord).quality.quality not in qualities:
