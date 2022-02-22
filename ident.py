@@ -299,6 +299,7 @@ def main():
     parser.add_argument("-p", "--simple", action='store_true')
     parser.add_argument("--no-cache", action='store_true')
     parser.add_argument("--show-key")
+    parser.add_argument("-f", "--force-flat", action='store_true')
     args = parser.parse_args()
     base = -1 if args.mute else 0
     max_difficulty = args.max_difficulty or 29
@@ -314,7 +315,7 @@ def main():
     if args.qualities and args.simple:
         error(7, "Provide only one of -p/--simple or -q/--qualities")
     qualities = False
-    force_flat = False
+    force_flat = args.force_flat
     chord_shapes = ChordCollection()
     if args.simple:
         qualities = ['', 'm', '7', 'dim', 'maj', 'm7']
