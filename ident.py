@@ -95,11 +95,11 @@ def increment(position, max_pos, base=0):
             return True
 
 def get_shapes(strings=4, min_fret=0, max_fret=1, base=0, max_difficulty=29):
-    position = [base] * strings
+    shape = [base] * strings
     while True:
-        if max(position) >= min_fret and get_shape_difficulty(position)[0] <= max_difficulty:
-            yield list(position)
-        if not increment(position, max_fret, base=base):
+        if max(shape) >= min_fret and get_shape_difficulty(shape)[0] <= max_difficulty:
+            yield list(shape)
+        if not increment(shape, max_fret, base=base):
             return
 
 def get_shape_difficulty(shape, tuning=None):
