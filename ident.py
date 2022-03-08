@@ -161,7 +161,7 @@ def flatify(input):
     return normalizer(input, flat_scale)
 
 
-def get_shape_notes(shape, tuning=None):
+def get_shape_notes(shape, tuning):
     for string, position in enumerate(shape):
         if position == -1:
             continue
