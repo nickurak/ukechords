@@ -136,11 +136,6 @@ def get_shape_difficulty(shape, tuning=None):
             difficulty = barre_difficulty
     return difficulty, details
 
-def note_subset(subset, superset):
-    subset_vals = set(map(note_to_val, subset))
-    superset_vals = map(note_to_val, superset)
-    return subset_vals.issubset(superset_vals)
-
 chromatic_scale = CircularList(['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'])
 flat_scale = CircularList(['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'])
 note_intervals = {note: index for index, note in enumerate(chromatic_scale)}
