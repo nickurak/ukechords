@@ -14,8 +14,10 @@ from pychord import find_chords_from_notes
 from pychord import Chord, QualityManager
 from pychord.utils import note_to_val
 
+
 class UnknownKeyException(Exception):
     pass
+
 
 def add_no5_quality():
     new_qs = []
@@ -28,6 +30,7 @@ def add_no5_quality():
         new_qs.append((no5name, new))
     for name, new in new_qs:
         QualityManager().set_quality(name, new)
+
 
 def add_b5_quality():
     new_qs = []
@@ -43,13 +46,16 @@ def add_b5_quality():
     for name, new in new_qs:
         QualityManager().set_quality(name, new)
 
+
 def get_chords(notes):
     for seq in itertools.permutations(notes):
         yield from [c.chord for c in find_chords_from_notes(seq) if not "/" in c.chord]
 
+
 class CircularList(list):
     def __getitem__(self, index):
         return super().__getitem__(index % len(self))
+
 
 class ChordCollection():
     def __init__(self):
@@ -81,6 +87,7 @@ class ChordCollection():
     def keys(self):
         return self.d.keys()
 
+
 def increment(position, max_pos, base=0):
     n = 0
     while True:
@@ -94,6 +101,7 @@ def increment(position, max_pos, base=0):
         else:
             return True
 
+
 def get_shapes(strings=4, max_fret=1, base=0, max_difficulty=29):
     shape = [base] * strings
     while True:
@@ -101,6 +109,7 @@ def get_shapes(strings=4, max_fret=1, base=0, max_difficulty=29):
             yield list(shape)
         if not increment(shape, max_fret, base=base):
             return
+
 
 def get_shape_difficulty(shape, tuning=None):
     difficulty = 0.0
@@ -136,10 +145,12 @@ def get_shape_difficulty(shape, tuning=None):
             difficulty = barre_difficulty
     return difficulty, details
 
+
 chromatic_scale = CircularList(['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'])
 flat_scale = CircularList(['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'])
 note_intervals = {note: index for index, note in enumerate(chromatic_scale)}
 note_intervals |= {note: index for index, note in enumerate(flat_scale)}
+
 
 def normalizer(input, scale):
     if isinstance(input, list):
@@ -165,6 +176,7 @@ def get_shape_notes(shape, tuning):
 
 def is_flat(note):
     return note[-1] == "b"
+
 
 def get_key_notes(key):
     mods = {q: [0, 2, 4, 5, 7, 9, 11] for q in ["", "maj", "major"]}
@@ -196,10 +208,12 @@ def load_scanned_chords(base, max_fret, tuning, max_difficulty, chord_shapes):
                 return True
     return False
 
+
 def save_scanned_chords(base, max_fret, tuning, max_difficulty, chord_shapes):
     fn = cached_fn(base, max_fret, tuning, max_difficulty)
     with open(fn, "wb") as cache:
         pickle.dump(chord_shapes.d, cache)
+
 
 def scan_chords(base=0, max_fret=12, tuning=None, chord_shapes=None, no_cache=False, max_difficulty=None):
     assert tuning is not None
@@ -218,6 +232,7 @@ def scan_chords(base=0, max_fret=12, tuning=None, chord_shapes=None, no_cache=Fa
 def diff_string(difficulty, desc):
     return f"{difficulty:.1f} ({desc})" if desc else f"{difficulty:.1f}"
 
+
 marks = {
     3: ' ╷╵ ',
     5: ' ╷╵ ',
@@ -225,6 +240,7 @@ marks = {
     10: ' ╷╵ ',
     12: '╷╵╷╵',
 }
+
 
 def draw_shape(shape):
     max_pos = max([*shape, 3]) + 1
@@ -247,11 +263,13 @@ def draw_shape(shape):
         print('│')
     print(bottom)
 
+
 def error(rc, message, parser=None):
     print(message, file=sys.stderr)
     if parser:
         parser.print_help(sys.stderr)
     sys.exit(rc)
+
 
 def main():
     add_no5_quality()
