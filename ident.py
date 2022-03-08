@@ -94,10 +94,10 @@ def increment(position, max_pos, base=0):
         else:
             return True
 
-def get_shapes(strings=4, min_fret=0, max_fret=1, base=0, max_difficulty=29):
+def get_shapes(strings=4, max_fret=1, base=0, max_difficulty=29):
     shape = [base] * strings
     while True:
-        if max(shape) >= min_fret and get_shape_difficulty(shape)[0] <= max_difficulty:
+        if max(shape) >= 0 and get_shape_difficulty(shape)[0] <= max_difficulty:
             yield list(shape)
         if not increment(shape, max_fret, base=base):
             return
@@ -211,7 +211,7 @@ def scan_chords(base=0, max_fret=12, tuning=None, chord_shapes=None, no_cache=Fa
     assert max_difficulty is not None
     if not no_cache and load_scanned_chords(base=base, max_fret=max_fret, tuning=tuning, max_difficulty=max_difficulty, chord_shapes=chord_shapes):
         return
-    for shape in get_shapes(min_fret=0, max_fret=max_fret, base=base, strings=len(tuning), max_difficulty=max_difficulty):
+    for shape in get_shapes(max_fret=max_fret, base=base, strings=len(tuning), max_difficulty=max_difficulty):
         notes = set(get_shape_notes(shape,  tuning=tuning))
         for chord in get_chords(notes):
             if not chord in chord_shapes:
