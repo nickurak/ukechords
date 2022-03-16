@@ -112,7 +112,7 @@ def get_shapes(strings=4, max_fret=1, base=0, max_difficulty=29):
 
 
 def get_shape_difficulty(shape, tuning=None):
-    difficulty = 0.0
+    difficulty = 0.0 + max(shape)/10.0
     last_pos = None
     for string, pos in enumerate(shape):
         if pos != 0:
