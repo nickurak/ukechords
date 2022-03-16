@@ -115,7 +115,7 @@ def get_shape_difficulty(shape, tuning=None):
     difficulty = 0.0 + max(shape)/10.0
     last_pos = None
     for string, pos in enumerate(shape):
-        if pos != 0:
+        if pos > 0:
             if last_pos:
                 difficulty += (pos - last_pos -1)**2 / 1.5
             last_pos = pos
