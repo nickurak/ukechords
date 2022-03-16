@@ -349,7 +349,7 @@ def main():
             notes.extend(Chord(chord).components())
         if notes and any(map(is_flat, notes)):
             force_flat = True
-        scan_chords(base=base, max_fret=7, tuning=args.tuning.split(','), chord_shapes=chord_shapes, no_cache=args.no_cache, max_difficulty=max_difficulty)
+        scan_chords(base=base, tuning=args.tuning.split(','), chord_shapes=chord_shapes, no_cache=args.no_cache, max_difficulty=max_difficulty)
         ichords = list(chord_shapes.keys())
         sort_offset = 0
         if args.key:
