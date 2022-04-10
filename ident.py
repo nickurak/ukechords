@@ -283,7 +283,6 @@ def main():
     parser.add_argument("-l", "--latex", action='store_true')
     parser.add_argument("-v", "--visualize", action='store_true')
     parser.add_argument("-a", "--all-chords", action='store_true')
-    parser.add_argument("-i", "--ignore-difficulty", action='store_true')
     parser.add_argument("-m", "--mute", action='store_true')
     parser.add_argument("-n", "--num", type=int)
     parser.add_argument("-d", "--max-difficulty", type=int)
@@ -324,10 +323,9 @@ def main():
         if args.chord not in chord_shapes:
             error(1, f"\"{args.chord}\" not found")
         shapes = chord_shapes[args.chord]
+        shapes.sort(key=lambda x: get_shape_difficulty(x)[0])
         if not args.num:
             args.num = 1 if args.latex or args.visualize else len(shapes)
-        if not args.ignore_difficulty:
-            shapes.sort(key=lambda x: get_shape_difficulty(x)[0])
         for shape in shapes[:args.num]:
             difficulty, desc = get_shape_difficulty(shape, tuning=args.tuning.split(','))
             if difficulty > max_difficulty:
@@ -357,14 +355,13 @@ def main():
             sort_offset = note_intervals[get_key_notes(args.key[0])[0]]
         ichords.sort(key=lambda x: ((note_intervals[Chord(x).root] - sort_offset) % len(chromatic_scale), x))
         for chord in ichords:
+            chord_shapes[chord].sort(key=lambda x: get_shape_difficulty(x)[0])
             if force_flat:
                 chord = flatify(Chord(chord).root) + Chord(chord).quality.quality
             if qualities and Chord(chord).quality.quality not in qualities:
                 continue
             if notes and not all(note in sharpify(notes) for note in sharpify(Chord(chord).components())):
                 continue
-            if not args.ignore_difficulty:
-                chord_shapes[chord].sort(key=lambda x: get_shape_difficulty(x)[0])
             shape = chord_shapes[chord][0]
             difficulty, desc = get_shape_difficulty(shape, tuning=args.tuning.split(','))
             if difficulty > max_difficulty:
@@ -383,8 +380,7 @@ def main():
         chords = list(get_chords(set(get_shape_notes(shape, tuning=args.tuning.split(',')))))
         chords.sort(key=lambda c: (len(c), c))
         print(f"{shape}: {', '.join(chords)}")
-        if not args.ignore_difficulty:
-            print(f"Difficulty: {diff_string(*get_shape_difficulty(shape, tuning=args.tuning.split(',')))}")
+        print(f"Difficulty: {diff_string(*get_shape_difficulty(shape, tuning=args.tuning.split(',')))}")
     if args.show_key:
         print(f"{', '.join(get_key_notes(args.show_key))}")
     return 0
