@@ -271,6 +271,12 @@ def error(rc, message, parser=None):
         parser.print_help(sys.stderr)
     sys.exit(rc)
 
+def rank_shape_by_difficulty(shape):
+    return get_shape_difficulty(shape)[0]
+
+def rank_shape_by_high_fret(shape):
+    return sorted(shape, reverse=True)
+
 
 def main():
     add_no5_quality()
@@ -293,9 +299,11 @@ def main():
     parser.add_argument("--no-cache", action='store_true')
     parser.add_argument("--show-key")
     parser.add_argument("-f", "--force-flat", action='store_true')
+    parser.add_argument("-b", "--sort-by-position",  action='store_true')
     args = parser.parse_args()
     base = -1 if args.mute else 0
     max_difficulty = args.max_difficulty or 29
+    shape_ranker = rank_shape_by_high_fret if args.sort_by_position else rank_shape_by_difficulty
     if args.tuning in ("ukulele", "ukulele-c6"):
         args.tuning = "G,C,E,A"
     elif args.tuning == "ukulele-g6":
@@ -323,7 +331,7 @@ def main():
         if args.chord not in chord_shapes:
             error(1, f"\"{args.chord}\" not found")
         shapes = chord_shapes[args.chord]
-        shapes.sort(key=lambda x: get_shape_difficulty(x)[0])
+        shapes.sort(key=shape_ranker)
         if not args.num:
             args.num = 1 if args.latex or args.visualize else len(shapes)
         for shape in shapes[:args.num]:
@@ -355,7 +363,7 @@ def main():
             sort_offset = note_intervals[get_key_notes(args.key[0])[0]]
         ichords.sort(key=lambda x: ((note_intervals[Chord(x).root] - sort_offset) % len(chromatic_scale), x))
         for chord in ichords:
-            chord_shapes[chord].sort(key=lambda x: get_shape_difficulty(x)[0])
+            chord_shapes[chord].sort(key=shape_ranker)
             if force_flat:
                 chord = flatify(Chord(chord).root) + Chord(chord).quality.quality
             if qualities and Chord(chord).quality.quality not in qualities:
