@@ -316,7 +316,6 @@ def main():
     if args.qualities and args.simple:
         error(7, "Provide only one of -p/--simple or -q/--qualities")
     qualities = False
-    force_flat = args.force_flat
     chord_shapes = ChordCollection()
     if args.simple:
         qualities = ['', 'm', '7', 'dim', 'maj', 'm7']
@@ -355,7 +354,7 @@ def main():
         for chord in args.allowed_chord or []:
             notes.extend(Chord(chord).components())
         if notes and any(map(is_flat, notes)):
-            force_flat = True
+            args.force_flat = True
         scan_chords(base=base, tuning=args.tuning.split(','), chord_shapes=chord_shapes, no_cache=args.no_cache, max_difficulty=max_difficulty)
         ichords = list(chord_shapes.keys())
         sort_offset = 0
@@ -364,7 +363,7 @@ def main():
         ichords.sort(key=lambda x: ((note_intervals[Chord(x).root] - sort_offset) % len(chromatic_scale), x))
         for chord in ichords:
             chord_shapes[chord].sort(key=shape_ranker)
-            if force_flat:
+            if args.force_flat:
                 chord = flatify(Chord(chord).root) + Chord(chord).quality.quality
             if qualities and Chord(chord).quality.quality not in qualities:
                 continue
