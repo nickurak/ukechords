@@ -312,7 +312,7 @@ def main():
         args.tuning = "E,A,D,G,B,E"
     elif args.tuning == "mandolin":
         args.tuning = "G,D,E,A"
-
+    tuning = args.tuning.split(',')
     if args.qualities and args.simple:
         error(7, "Provide only one of -p/--simple or -q/--qualities")
     qualities = False
@@ -326,7 +326,7 @@ def main():
     if args.single:
         args.num = 1
     if args.chord:
-        scan_chords(base=base, tuning=args.tuning.split(','), chord_shapes=chord_shapes, no_cache=args.no_cache, max_difficulty=max_difficulty)
+        scan_chords(base=base, tuning=tuning, chord_shapes=chord_shapes, no_cache=args.no_cache, max_difficulty=max_difficulty)
         if args.chord not in chord_shapes:
             error(1, f"\"{args.chord}\" not found")
         shapes = chord_shapes[args.chord]
@@ -334,7 +334,7 @@ def main():
         if not args.num:
             args.num = 1 if args.latex or args.visualize else len(shapes)
         for shape in shapes[:args.num]:
-            difficulty, desc = get_shape_difficulty(shape, tuning=args.tuning.split(','))
+            difficulty, desc = get_shape_difficulty(shape, tuning=tuning)
             if difficulty > max_difficulty:
                 continue
             if args.latex:
@@ -384,7 +384,7 @@ def main():
         shape = [-1 if pos == 'x' else int(pos) for pos in args.shape.split(",")]
         if args.visualize:
             draw_shape(shape)
-        chords = list(get_chords(set(get_shape_notes(shape, tuning=args.tuning.split(',')))))
+        chords = list(get_chords(set(get_shape_notes(shape, tuning=tuning))))
         chords.sort(key=lambda c: (len(c), c))
         print(f"{shape}: {', '.join(chords)}")
         print(f"Difficulty: {diff_string(*get_shape_difficulty(shape, tuning=args.tuning.split(',')))}")
