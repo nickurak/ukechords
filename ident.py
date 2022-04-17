@@ -333,7 +333,11 @@ def main():
         shapes.sort(key=shape_ranker)
         if not args.num:
             args.num = 1 if args.latex or args.visualize else len(shapes)
+        chord_names = None
         for shape in shapes[:args.num]:
+            if not chord_names:
+                other_names = [c for c in get_chords(set(get_shape_notes(shape, tuning=tuning))) if c != args.chord]
+                chord_names = ",".join([args.chord] + sorted(other_names))
             difficulty, desc = get_shape_difficulty(shape, tuning=tuning)
             if difficulty > max_difficulty:
                 continue
@@ -341,7 +345,7 @@ def main():
                 lchord = args.chord.replace('M', 'maj')
                 print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shape))}}}")
             else:
-                print(f"{args.chord}: {','.join(map(str, shape))}\t difficulty: {diff_string(difficulty, desc)}")
+                print(f"{chord_names}: {','.join(map(str, shape))}\t difficulty: {diff_string(difficulty, desc)}")
             if args.visualize:
                 draw_shape(shape)
     if args.all_chords or args.key or args.allowed_chord:
