@@ -32,21 +32,6 @@ def add_no5_quality():
         QualityManager().set_quality(name, new)
 
 
-def add_b5_quality():
-    new_qs = []
-    # Hack -- get list of existing qualities
-    for name, quality in QualityManager()._qualities.items():
-        b5name = name + '-5'
-        if '/' in name or not 7 in quality.components:
-            continue
-        if quality.components != (0, 4, 7):
-            continue
-        new = tuple(map(lambda x: x if x != 7 else x - 1, quality.components))
-        new_qs.append((b5name, new))
-    for name, new in new_qs:
-        QualityManager().set_quality(name, new)
-
-
 def get_chords(notes):
     for seq in itertools.permutations(notes):
         yield from [c.chord for c in find_chords_from_notes(seq) if not "/" in c.chord]
@@ -280,7 +265,6 @@ def rank_shape_by_high_fret(shape):
 
 def main():
     add_no5_quality()
-    add_b5_quality()
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--chord", help="Show how to play <CHORD>")
     parser.add_argument("-s", "--shape", help="Show what chord(s) this <SHAPE> plays")
