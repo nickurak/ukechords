@@ -310,6 +310,10 @@ def main():
     if args.single:
         args.num = 1
     if args.chord:
+        try:
+            c = Chord(args.chord)
+        except ValueError as e:
+            error(2, f"Error looking up chord {args.chord}: {e}")
         scan_chords(base=base, tuning=tuning, chord_shapes=chord_shapes, no_cache=args.no_cache, max_difficulty=max_difficulty)
         if args.chord not in chord_shapes:
             error(1, f"\"{args.chord}\" not found")
