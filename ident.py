@@ -169,6 +169,8 @@ def get_scales():
                (["blues", "majblues", "majorblues"], [0, 2, 3, 4, 7, 9]),
                (["p", "pent", "pentatonic", "majpentatonic"], [0, 2, 4, 7, 9]),
                (["mp", "mpent", "minorpentatonic"], [0, 3, 5, 7, 10]),
+               (['phdom'], [0, 1, 4, 5, 7, 8, 10]),
+               (['phmod'], [0, 1, 3, 5, 7, 8, 10]),
                ]
 
     mods = {}
