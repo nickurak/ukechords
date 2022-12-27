@@ -316,6 +316,7 @@ def main():
     parser.add_argument("-p", "--simple", action='store_true', help="Limit to chords with major, minor, dim, and maj7/min7 qualities")
     parser.add_argument("--no-cache", action='store_true', help="Ignore any available cached chord/shape information")
     parser.add_argument("--show-key", help="Show the notes in the specified <KEY>", metavar="KEY")
+    parser.add_argument("--show-notes", action='store_true', help="Show the notes in chord")
     parser.add_argument("-f", "--force-flat", action='store_true', help="Show flat-variations of chord roots")
     parser.add_argument("-b", "--sort-by-position",  action='store_true', help="Sort to minimize high-position instead of difficulty")
     args = parser.parse_args()
@@ -346,6 +347,9 @@ def main():
     if args.chord:
         try:
             c = Chord(args.chord)
+            if args.show_notes:
+                notes = c.components()
+                print(f"Notes: {', '.join(notes)}")
         except ValueError as e:
             error(2, f"Error looking up chord {args.chord}: {e}")
         scan_chords(base=base, tuning=tuning, chord_shapes=chord_shapes, no_cache=args.no_cache, max_difficulty=max_difficulty)
