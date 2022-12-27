@@ -301,6 +301,7 @@ def main():
     add_no5_quality()
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--chord", help="Show how to play <CHORD>")
+    parser.add_argument("--notes", help="Show what chord(s) these <NOTES> play")
     parser.add_argument("-s", "--shape", help="Show what chord(s) this <SHAPE> plays")
     parser.add_argument("-t", "--tuning", default='ukulele-c6', help="comma-separated notes for string tuning")
     parser.add_argument("-1", "--single", action='store_true', help="Show only 1 shape for each chord")
@@ -340,8 +341,8 @@ def main():
         qualities = ['', 'm', '7', 'dim', 'maj', 'm7']
     if args.qualities is not None:
         qualities = args.qualities.split(',')
-    if list(map(bool, [args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord), args.show_key])).count(True) != 1:
-        error(5, "Provide exactly one of --all-chords, --chord, --shape, or --show-key", parser)
+    if list(map(bool, [args.notes, args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord), args.show_key])).count(True) != 1:
+        error(5, "Provide exactly one of --all-chords, --chord, --shape, --notes, or --show-key", parser)
     if args.single:
         args.num = 1
     if args.chord:
@@ -410,14 +411,21 @@ def main():
                 print(f"{chord}: {','.join(map(str, shape))}\t difficulty: {diff_string(difficulty, desc)}")
             if args.visualize:
                 draw_shape(shape)
-    if args.shape:
-        shape = [-1 if pos == 'x' else int(pos) for pos in args.shape.split(",")]
-        if args.visualize:
-            draw_shape(shape)
-        chords = list(get_chords(set(get_shape_notes(shape, tuning=tuning))))
+    if args.shape or args.notes:
+        if args.shape:
+            shape = [-1 if pos == 'x' else int(pos) for pos in args.shape.split(",")]
+            if args.visualize:
+                draw_shape(shape)
+            notes = set(get_shape_notes(shape, tuning=tuning))
+            prefix = args.shape
+        if args.notes:
+            notes = set(args.notes.split(","))
+            prefix = ",".join(notes)
+        chords = list(get_chords(notes))
         chords.sort(key=lambda c: (len(c), c))
-        print(f"{shape}: {', '.join(chords)}")
-        print(f"Difficulty: {diff_string(*get_shape_difficulty(shape, tuning=args.tuning.split(',')))}")
+        print(f"[{prefix}]: {', '.join(chords)}")
+        if args.shape:
+            print(f"Difficulty: {diff_string(*get_shape_difficulty(shape, tuning=args.tuning.split(',')))}")
     if args.show_key:
         other_keys = get_dupe_scales(args.show_key)
         if other_keys:
