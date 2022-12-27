@@ -180,6 +180,27 @@ def get_scales():
 
     return mods
 
+def get_dupe_scales(key):
+    mods = get_scales()
+
+    match = re.match(f'^([A-G][b#]?)({"|".join(mods.keys())})$', key)
+    if not match:
+        raise UnknownKeyException(f"Unknown key \"{key}\"")
+    (root, extra) = match.groups()
+    intervals = mods[extra]
+
+    dupes = {}
+    for inc in range(1, 12):
+        if inc in dupes:
+            continue
+        for name, candidate_intervals in mods.items():
+            transposed_intervals = [(x + inc) % 12 for x in candidate_intervals]
+            if set(intervals) == set(transposed_intervals):
+                transposed_root = chromatic_scale[(note_intervals[root] + inc) % 12]
+                dupes[inc] = f'{transposed_root}{name}'
+
+    return set([dupes[i] for i in dupes.keys()])
+
 def get_key_notes(key):
     mods = get_scales()
 
@@ -394,6 +415,12 @@ def main():
         print(f"{shape}: {', '.join(chords)}")
         print(f"Difficulty: {diff_string(*get_shape_difficulty(shape, tuning=args.tuning.split(',')))}")
     if args.show_key:
+        other_keys = get_dupe_scales(args.show_key)
+        if other_keys:
+            other_str = f" ({', '.join(other_keys)})"
+        else:
+            other_str = ""
+        print(f"{args.show_key}{other_str}:")
         print(f"{', '.join(get_key_notes(args.show_key))}")
     return 0
 if __name__ == "__main__":
