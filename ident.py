@@ -341,7 +341,7 @@ def main():
     if args.qualities is not None:
         qualities = args.qualities.split(',')
     if list(map(bool, [args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord), args.show_key])).count(True) != 1:
-        error(5, "Provide exactly one of --all-chords or --chord or --shape or --show-key", parser)
+        error(5, "Provide exactly one of --all-chords, --chord, --shape, or --show-key", parser)
     if args.single:
         args.num = 1
     if args.chord:
