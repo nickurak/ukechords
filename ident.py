@@ -199,7 +199,7 @@ def get_dupe_scales(key):
                 transposed_root = chromatic_scale[(note_intervals[root] + inc) % 12]
                 dupes[inc] = f'{transposed_root}{name}'
 
-    return set([dupes[i] for i in dupes.keys()])
+    return {val for _, val in dupes.items()}
 
 def get_key_notes(key):
     mods = get_scales()
