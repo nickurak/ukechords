@@ -12,7 +12,6 @@ import itertools
 
 from pychord import find_chords_from_notes
 from pychord import Chord, QualityManager
-from pychord.utils import note_to_val
 
 
 class UnknownKeyException(Exception):
