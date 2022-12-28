@@ -10,6 +10,8 @@ import os
 import pickle
 import itertools
 
+from math import ceil
+
 from pychord import find_chords_from_notes
 from pychord import Chord, QualityManager
 
@@ -220,7 +222,7 @@ def cached_fn(base, max_fret, tuning, max_difficulty):
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), "cached_shapes", fn)
 
 def load_scanned_chords(base, max_fret, tuning, max_difficulty, chord_shapes):
-    for imax_difficulty in range(max_difficulty, 100):
+    for imax_difficulty in range(ceil(max_difficulty), 100):
         fn = cached_fn(base, max_fret, tuning, imax_difficulty)
         if os.path.exists(fn):
             with open(fn, "rb") as cache:
@@ -310,7 +312,7 @@ def main():
     parser.add_argument("-a", "--all-chords", action='store_true', help="Show all matching chords, not just one selected one")
     parser.add_argument("-m", "--mute", action='store_true', help="Include shapes that require muting strings")
     parser.add_argument("-n", "--num", type=int, help="Show <NUM> shapes for the given chord")
-    parser.add_argument("-d", "--max-difficulty", type=int, help="Limit shape-scanning to the given <MAX_DIFFICULTY>", metavar="DIFFICULTY")
+    parser.add_argument("-d", "--max-difficulty", type=float, help="Limit shape-scanning to the given <MAX_DIFFICULTY>", metavar="DIFFICULTY")
     parser.add_argument("-k", "--key", action='append', help="Limit chords to those playable in <KEY> (can be specified multiple times)")
     parser.add_argument("-o", "--allowed-chord", action='append', help="Limit to chords playable by the notes in <CHORD> (specify multiple times)", metavar="CHORD")
     parser.add_argument("-q", "--qualities", help="Limit chords to chords with the specified <QUALITIES>")
