@@ -297,6 +297,10 @@ def rank_shape_by_difficulty(shape):
 def rank_shape_by_high_fret(shape):
     return sorted(shape, reverse=True)
 
+def get_chords_from_notes(notes):
+    chords = list(get_chords(notes))
+    chords.sort(key=lambda c: (len(c), c))
+    return ','.join(chords)
 
 def main():
     add_no5_quality()
@@ -415,16 +419,16 @@ def main():
     if args.shape or args.notes:
         if args.shape:
             shape = [-1 if pos == 'x' else int(pos) for pos in args.shape.split(",")]
+            shapes = [shape]
+            notes = set(get_shape_notes(shape, tuning=tuning))
+            prefix = ",".join([str(x) for x in shape])
+            chords = get_chords_from_notes(notes)
             if args.visualize:
                 draw_shape(shape)
-            notes = set(get_shape_notes(shape, tuning=tuning))
-            prefix = args.shape
+            print(f'{prefix}: {chords}')
         if args.notes:
             notes = set(args.notes.split(","))
-            prefix = ",".join(notes)
-        chords = list(get_chords(notes))
-        chords.sort(key=lambda c: (len(c), c))
-        print(f"[{prefix}]: {', '.join(chords)}")
+            print(f"{','.join(notes)}: {get_chords_from_notes(notes)}")
         if args.shape:
             print(f"Difficulty: {diff_string(*get_shape_difficulty(shape, tuning=args.tuning.split(',')))}")
     if args.show_key:
