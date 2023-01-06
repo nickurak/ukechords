@@ -308,6 +308,7 @@ def main():
     parser.add_argument("-c", "--chord", help="Show how to play <CHORD>")
     parser.add_argument("--notes", help="Show what chord(s) these <NOTES> play")
     parser.add_argument("-s", "--shape", help="Show what chord(s) this <SHAPE> plays")
+    parser.add_argument("--slide", action='store_true', help="Show what chord(s) this <SHAPE> could play when slid up or down")
     parser.add_argument("-t", "--tuning", default='ukulele-c6', help="comma-separated notes for string tuning")
     parser.add_argument("-1", "--single", action='store_true', help="Show only 1 shape for each chord")
     parser.add_argument("-l", "--latex", action='store_true', help="Output chord info in LaTeX format")
@@ -346,6 +347,8 @@ def main():
         qualities = ['', 'm', '7', 'dim', 'maj', 'm7']
     if args.qualities is not None:
         qualities = args.qualities.split(',')
+    if args.slide and not args.shape:
+        error(8, "--silde requries a --shape")
     if list(map(bool, [args.notes, args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord), args.show_key])).count(True) != 1:
         error(5, "Provide exactly one of --all-chords, --chord, --shape, --notes, or --show-key", parser)
     if args.single:
@@ -420,16 +423,22 @@ def main():
         if args.shape:
             shape = [-1 if pos == 'x' else int(pos) for pos in args.shape.split(",")]
             shapes = [shape]
-            notes = set(get_shape_notes(shape, tuning=tuning))
-            prefix = ",".join([str(x) for x in shape])
-            chords = get_chords_from_notes(notes)
-            if args.visualize:
-                draw_shape(shape)
-            print(f'{prefix}: {chords}')
+            if args.slide:
+                for offset in [i for i in range(1, 12)]:
+                    cshape = [(pos + offset) % 12 if pos > 0 else pos for pos in  shape]
+                    shapes.append(cshape)
+            for shape in shapes:
+                notes = set(get_shape_notes(shape, tuning=tuning))
+                prefix = ",".join([str(x) for x in shape])
+                chords = get_chords_from_notes(notes)
+                if args.visualize:
+                    draw_shape(shape)
+                if chords != '':
+                    print(f'{prefix}: {chords}')
         if args.notes:
             notes = set(args.notes.split(","))
             print(f"{','.join(notes)}: {get_chords_from_notes(notes)}")
-        if args.shape:
+        if args.shape and not args.slide:
             print(f"Difficulty: {diff_string(*get_shape_difficulty(shape, tuning=args.tuning.split(',')))}")
     if args.show_key:
         other_keys = get_dupe_scales(args.show_key)
