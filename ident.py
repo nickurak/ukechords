@@ -172,7 +172,8 @@ def get_scales():
                (['phdom'], [0, 1, 4, 5, 7, 8, 10]),
                (['phmod'], [0, 1, 3, 5, 7, 8, 10]),
                (['gypsymajor'], [0, 1, 4, 5, 7, 8, 11]),
-               (['gypsyminor'], [0, 2, 3, 6, 7, 8, 11])
+               (['gypsyminor'], [0, 2, 3, 6, 7, 8, 11]),
+               (['chromatic'], range(0,12))
                ]
 
     mods = {}
