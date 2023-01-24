@@ -265,10 +265,10 @@ marks = {
 
 
 def draw_shape(shape):
-    max_pos = max([*shape, 3]) + 1
+    max_pos = max([*shape, 3])+1
     lines = ['─'] * max_pos
-    top = '┌' + '┬'.join(lines) + '┐'
-    bottom = '└' + '┴'.join(lines) + '┘'
+    top = '╓' + '┬'.join(lines) + '─'
+    bottom = '╙' + '┴'.join(lines) + '─'
     print(top)
     for string, pos in enumerate(reversed(shape)):
         chars = [' '] * max_pos
@@ -276,13 +276,12 @@ def draw_shape(shape):
             if mark < max_pos + 1 and (string - (len(shape) - 4) // 2) < len(marks[mark]):
                 chars[mark-1] = marks[mark][string - (len(shape) - 4) // 2]
         if pos >= 0:
-            print('│', end='')
+            print('║', end='')
             if pos > 0:
                 chars[pos - 1] = '●'
         else:
-            print('│⃠', end='')
-        print('│'.join(chars), end='')
-        print('│')
+            print('║⃠', end='')
+        print('│'.join(chars))
     print(bottom)
 
 
