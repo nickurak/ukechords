@@ -33,6 +33,19 @@ def add_no5_quality():
         QualityManager().set_quality(name, new)
 
 
+def add_7sus2_quality():
+    new_qs = []
+    for name, quality in QualityManager()._qualities.items():
+        if name != 'sus2':
+            continue
+        c = list(quality.components)
+        c.append(10)
+        new_name=f"7{name}"
+        new_qs.append((new_name, tuple(c)))
+    for name, new in new_qs:
+        QualityManager().set_quality(name, new)
+
+
 def get_chords(notes):
     for seq in itertools.permutations(notes):
         yield from [c.chord for c in find_chords_from_notes(seq) if not "/" in c.chord]
@@ -305,6 +318,7 @@ def get_chords_from_notes(notes):
 
 def main():
     add_no5_quality()
+    add_7sus2_quality()
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--chord", help="Show how to play <CHORD>")
     parser.add_argument("--notes", help="Show what chord(s) these <NOTES> play")
