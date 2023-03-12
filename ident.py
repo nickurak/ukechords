@@ -455,6 +455,8 @@ def main():
                     shapes.append(cshape)
             for shape in shapes:
                 notes = set(get_shape_notes(shape, tuning=tuning))
+                if args.show_notes:
+                    print(f"Notes: {', '.join(notes)}")
                 prefix = ",".join([str(x) for x in shape])
                 chords = get_chords_from_notes(notes)
                 if args.visualize:
