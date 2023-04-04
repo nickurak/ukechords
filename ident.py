@@ -406,7 +406,7 @@ def main():
                 lchord = args.chord.replace('M', 'maj')
                 print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shape))}}}")
             else:
-                print(f"{chord_names}: {','.join([str(x) for x in shape])}\t difficulty: {diff_string(difficulty, desc)}")
+                print(f"{chord_names}: {','.join(['x' if x == -1 else str(x) for x in shape])}\t difficulty: {diff_string(difficulty, desc)}")
             if args.visualize:
                 draw_shape(shape)
     if args.all_chords or args.key or args.allowed_chord:
@@ -457,7 +457,7 @@ def main():
                 notes = set(get_shape_notes(shape, tuning=tuning))
                 if args.show_notes:
                     print(f"Notes: {', '.join(notes)}")
-                prefix = ",".join([str(x) for x in shape])
+                prefix = ",".join(["x" if x == -1 else str(x) for x in shape])
                 chords = get_chords_from_notes(notes)
                 if args.visualize:
                     draw_shape(shape)
