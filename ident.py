@@ -101,8 +101,8 @@ def increment(position, max_pos, base=0):
             return True
 
 
-def get_shapes(config, strings=4, max_fret=1, max_difficulty=29):
-    shape = [config.base] * strings
+def get_shapes(config, max_fret=1, max_difficulty=29):
+    shape = [config.base] * len(config.tuning)
     while True:
         if max(shape) >= 0 and get_shape_difficulty(shape)[0] <= max_difficulty:
             yield list(shape)
