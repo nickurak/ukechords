@@ -349,6 +349,9 @@ class UkeConfig():
             self._qualities = ['', 'm', '7', 'dim', 'maj', 'm7']
         if args.qualities is not None:
             self._qualities = args.qualities.split(',')
+        self._slide = args.slide
+        if args.slide and not args.shape:
+            error(8, "--slide requries a --shape")
 
     @property
     def base(self):
@@ -369,6 +372,10 @@ class UkeConfig():
     @property
     def qualities(self):
         return self._qualities
+
+    @property
+    def slide(self):
+        return self._slide
 
 
 def main():
@@ -399,8 +406,6 @@ def main():
     args = parser.parse_args()
     config = UkeConfig(args)
     chord_shapes = ChordCollection()
-    if args.slide and not args.shape:
-        error(8, "--slide requries a --shape")
     if list(map(bool, [args.notes, args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord), args.show_key])).count(True) != 1:
         error(5, "Provide exactly one of --all-chords, --chord, --shape, --notes, or --show-key", parser)
     if args.single:
@@ -475,7 +480,7 @@ def main():
         if args.shape:
             shape = [-1 if pos == 'x' else int(pos) for pos in args.shape.split(",")]
             shapes = [shape]
-            if args.slide:
+            if config.slide:
                 for offset in [i for i in range(1, 12)]:
                     cshape = [(pos + offset) % 12 if pos > 0 else pos for pos in  shape]
                     shapes.append(cshape)
@@ -492,7 +497,7 @@ def main():
         if args.notes:
             notes = set(args.notes.split(","))
             print(f"{','.join(notes)}: {get_chords_from_notes(notes)}")
-        if args.shape and not args.slide:
+        if args.shape and not config.slide:
             print(f"Difficulty: {diff_string(*get_shape_difficulty(shape, config.tuning))}")
     if args.show_key:
         other_keys = get_dupe_scales(args.show_key)
