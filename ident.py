@@ -101,10 +101,10 @@ def increment(position, max_pos, base=0):
             return True
 
 
-def get_shapes(config, max_fret=1, max_difficulty=29):
+def get_shapes(config, max_fret=1):
     shape = [config.base] * len(config.tuning)
     while True:
-        if max(shape) >= 0 and get_shape_difficulty(shape)[0] <= max_difficulty:
+        if max(shape) >= 0 and get_shape_difficulty(shape)[0] <= config.max_difficulty:
             yield list(shape)
         if not increment(shape, max_fret, base=config.base):
             return
@@ -235,8 +235,8 @@ def cached_fn(base, max_fret, tuning, max_difficulty):
     fn = f"cache_{base}_{max_fret}_{tn_string}_{max_difficulty}.pcl"
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), "cached_shapes", fn)
 
-def load_scanned_chords(config, max_fret, max_difficulty, chord_shapes):
-    for imax_difficulty in range(ceil(max_difficulty), 100):
+def load_scanned_chords(config, max_fret, chord_shapes):
+    for imax_difficulty in range(ceil(config.max_difficulty), 100):
         fn = cached_fn(config.base, max_fret, config.tuning, imax_difficulty)
         if os.path.exists(fn):
             with open(fn, "rb") as cache:
@@ -245,19 +245,18 @@ def load_scanned_chords(config, max_fret, max_difficulty, chord_shapes):
     return False
 
 
-def save_scanned_chords(config, max_fret, max_difficulty, chord_shapes):
-    fn = cached_fn(config.base, max_fret, config.tuning, max_difficulty)
+def save_scanned_chords(config, max_fret, chord_shapes):
+    fn = cached_fn(config.base, max_fret, config.tuning, config.max_difficulty)
     with open(fn, "wb") as cache:
         pickle.dump(chord_shapes.d, cache)
 
 
-def scan_chords(config, max_fret=12, chord_shapes=None, no_cache=False, max_difficulty=None):
-    assert max_difficulty is not None
-    if not no_cache and load_scanned_chords(config, max_fret=max_fret, max_difficulty=max_difficulty, chord_shapes=chord_shapes):
+def scan_chords(config, max_fret=12, chord_shapes=None, no_cache=False):
+    if not no_cache and load_scanned_chords(config, max_fret=max_fret, chord_shapes=chord_shapes):
         return
     notes_shapes_map = {}
     notes_chords_map = {}
-    for shape in get_shapes(config, max_fret=max_fret, max_difficulty=max_difficulty):
+    for shape in get_shapes(config, max_fret=max_fret):
         notes = frozenset(get_shape_notes(shape,  tuning=config.tuning))
         if notes in notes_shapes_map:
             notes_shapes_map[notes].append(shape)
@@ -273,7 +272,7 @@ def scan_chords(config, max_fret=12, chord_shapes=None, no_cache=False, max_diff
                 else:
                     chord_shapes[chord].append(shape)
 
-    save_scanned_chords(config, max_fret=max_fret, chord_shapes=chord_shapes, max_difficulty=max_difficulty)
+    save_scanned_chords(config, max_fret=max_fret, chord_shapes=chord_shapes)
 
 def diff_string(difficulty, desc):
     return f"{difficulty:.1f} ({desc})" if desc else f"{difficulty:.1f}"
@@ -342,6 +341,7 @@ class UkeConfig():
         self._base = -1 if args.mute else 0
         self._tuning = get_tuning(args)
         self._shape_ranker = rank_shape_by_high_fret if args.sort_by_position else rank_shape_by_difficulty
+        self._max_difficulty = args.max_difficulty or 29
 
     @property
     def base(self):
@@ -354,6 +354,10 @@ class UkeConfig():
     @property
     def shape_ranker(self):
         return self._shape_ranker
+
+    @property
+    def max_difficulty(self):
+        return self._max_difficulty
 
 
 def main():
@@ -383,7 +387,6 @@ def main():
     parser.add_argument("-b", "--sort-by-position",  action='store_true', help="Sort to minimize high-position instead of difficulty")
     args = parser.parse_args()
     config = UkeConfig(args)
-    max_difficulty = args.max_difficulty or 29
     if args.qualities and args.simple:
         error(7, "Provide only one of -p/--simple or -q/--qualities")
     qualities = False
@@ -406,7 +409,7 @@ def main():
                 print(f"Notes: {', '.join(notes)}")
         except ValueError as e:
             error(2, f"Error looking up chord {args.chord}: {e}")
-        scan_chords(config, chord_shapes=chord_shapes, no_cache=args.no_cache, max_difficulty=max_difficulty)
+        scan_chords(config, chord_shapes=chord_shapes, no_cache=args.no_cache)
         if args.chord not in chord_shapes:
             error(1, f"No shape for \"{args.chord}\" found")
         shapes = chord_shapes[args.chord]
@@ -419,7 +422,7 @@ def main():
                 other_names = [c for c in get_chords(set(get_shape_notes(shape, tuning=config.tuning))) if c != args.chord]
                 chord_names = ",".join([args.chord] + sorted(other_names))
             difficulty, desc = get_shape_difficulty(shape, tuning=config.tuning)
-            if difficulty > max_difficulty:
+            if difficulty > config.max_difficulty:
                 continue
             if args.latex:
                 lchord = args.chord.replace('M', 'maj')
@@ -439,7 +442,7 @@ def main():
             notes.extend(Chord(chord).components())
         if notes and any(map(is_flat, notes)):
             args.force_flat = True
-        scan_chords(config, chord_shapes=chord_shapes, no_cache=args.no_cache, max_difficulty=max_difficulty)
+        scan_chords(config, chord_shapes=chord_shapes, no_cache=args.no_cache)
         ichords = list(chord_shapes.keys())
         sort_offset = 0
         if args.key:
@@ -455,7 +458,7 @@ def main():
                 continue
             shape = chord_shapes[chord][0]
             difficulty, desc = get_shape_difficulty(shape, tuning=config.tuning)
-            if difficulty > max_difficulty:
+            if difficulty > config.max_difficulty:
                 continue
             if args.latex:
                 lchord = chord.replace('M', 'maj')
