@@ -374,7 +374,7 @@ def main():
     if args.qualities is not None:
         qualities = args.qualities.split(',')
     if args.slide and not args.shape:
-        error(8, "--silde requries a --shape")
+        error(8, "--slide requries a --shape")
     if list(map(bool, [args.notes, args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord), args.show_key])).count(True) != 1:
         error(5, "Provide exactly one of --all-chords, --chord, --shape, --notes, or --show-key", parser)
     if args.single:
