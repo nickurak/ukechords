@@ -352,6 +352,11 @@ class UkeConfig():
         self._slide = args.slide
         if args.slide and not args.shape:
             error(8, "--slide requries a --shape")
+        self._num = args.num
+        if args.single:
+            self._num = 1
+        if not self._num and (args.latex or args.visualize):
+            self._num = 1
 
     @property
     def base(self):
@@ -376,6 +381,10 @@ class UkeConfig():
     @property
     def slide(self):
         return self._slide
+
+    @property
+    def num(self):
+        return self._num
 
 
 def main():
@@ -408,8 +417,6 @@ def main():
     chord_shapes = ChordCollection()
     if list(map(bool, [args.notes, args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord), args.show_key])).count(True) != 1:
         error(5, "Provide exactly one of --all-chords, --chord, --shape, --notes, or --show-key", parser)
-    if args.single:
-        args.num = 1
     if args.chord:
         try:
             c = Chord(args.chord)
@@ -423,10 +430,8 @@ def main():
             error(1, f"No shape for \"{args.chord}\" found")
         shapes = chord_shapes[args.chord]
         shapes.sort(key=config.shape_ranker)
-        if not args.num and (args.latex or args.visualize):
-            args.num = 1
         chord_names = None
-        for shape in shapes[:args.num or len(shapes)]:
+        for shape in shapes[:config.num or len(shapes)]:
             if not chord_names:
                 other_names = [c for c in get_chords(set(get_shape_notes(shape, tuning=config.tuning))) if c != args.chord]
                 chord_names = ",".join([args.chord] + sorted(other_names))
