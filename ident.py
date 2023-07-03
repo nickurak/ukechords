@@ -423,10 +423,10 @@ def main():
             error(1, f"No shape for \"{args.chord}\" found")
         shapes = chord_shapes[args.chord]
         shapes.sort(key=config.shape_ranker)
-        if not args.num:
-            args.num = 1 if args.latex or args.visualize else len(shapes)
+        if not args.num and (args.latex or args.visualize):
+            args.num = 1
         chord_names = None
-        for shape in shapes[:args.num]:
+        for shape in shapes[:args.num or len(shapes)]:
             if not chord_names:
                 other_names = [c for c in get_chords(set(get_shape_notes(shape, tuning=config.tuning))) if c != args.chord]
                 chord_names = ",".join([args.chord] + sorted(other_names))
