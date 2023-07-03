@@ -341,6 +341,7 @@ class UkeConfig():
     def __init__(self, args):
         self._base = -1 if args.mute else 0
         self._tuning = get_tuning(args)
+        self._shape_ranker = rank_shape_by_high_fret if args.sort_by_position else rank_shape_by_difficulty
 
     @property
     def base(self):
@@ -349,6 +350,10 @@ class UkeConfig():
     @property
     def tuning(self):
         return self._tuning
+
+    @property
+    def shape_ranker(self):
+        return self._shape_ranker
 
 
 def main():
@@ -379,7 +384,6 @@ def main():
     args = parser.parse_args()
     config = UkeConfig(args)
     max_difficulty = args.max_difficulty or 29
-    shape_ranker = rank_shape_by_high_fret if args.sort_by_position else rank_shape_by_difficulty
     if args.qualities and args.simple:
         error(7, "Provide only one of -p/--simple or -q/--qualities")
     qualities = False
@@ -406,7 +410,7 @@ def main():
         if args.chord not in chord_shapes:
             error(1, f"No shape for \"{args.chord}\" found")
         shapes = chord_shapes[args.chord]
-        shapes.sort(key=shape_ranker)
+        shapes.sort(key=config.shape_ranker)
         if not args.num:
             args.num = 1 if args.latex or args.visualize else len(shapes)
         chord_names = None
@@ -442,7 +446,7 @@ def main():
             sort_offset = note_intervals[get_key_notes(args.key[0])[0]]
         ichords.sort(key=lambda x: ((note_intervals[Chord(x).root] - sort_offset) % len(chromatic_scale), x))
         for chord in ichords:
-            chord_shapes[chord].sort(key=shape_ranker)
+            chord_shapes[chord].sort(key=config.shape_ranker)
             if args.force_flat:
                 chord = flatify(Chord(chord).root) + Chord(chord).quality.quality
             if qualities and Chord(chord).quality.quality not in qualities:
