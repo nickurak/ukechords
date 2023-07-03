@@ -342,6 +342,13 @@ class UkeConfig():
         self._tuning = get_tuning(args)
         self._shape_ranker = rank_shape_by_high_fret if args.sort_by_position else rank_shape_by_difficulty
         self._max_difficulty = args.max_difficulty or 29
+        if args.qualities and args.simple:
+            error(7, "Provide only one of -p/--simple or -q/--qualities")
+        self._qualities = False
+        if args.simple:
+            self._qualities = ['', 'm', '7', 'dim', 'maj', 'm7']
+        if args.qualities is not None:
+            self._qualities = args.qualities.split(',')
 
     @property
     def base(self):
@@ -358,6 +365,10 @@ class UkeConfig():
     @property
     def max_difficulty(self):
         return self._max_difficulty
+
+    @property
+    def qualities(self):
+        return self._qualities
 
 
 def main():
@@ -387,14 +398,7 @@ def main():
     parser.add_argument("-b", "--sort-by-position",  action='store_true', help="Sort to minimize high-position instead of difficulty")
     args = parser.parse_args()
     config = UkeConfig(args)
-    if args.qualities and args.simple:
-        error(7, "Provide only one of -p/--simple or -q/--qualities")
-    qualities = False
     chord_shapes = ChordCollection()
-    if args.simple:
-        qualities = ['', 'm', '7', 'dim', 'maj', 'm7']
-    if args.qualities is not None:
-        qualities = args.qualities.split(',')
     if args.slide and not args.shape:
         error(8, "--slide requries a --shape")
     if list(map(bool, [args.notes, args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord), args.show_key])).count(True) != 1:
@@ -452,7 +456,7 @@ def main():
             chord_shapes[chord].sort(key=config.shape_ranker)
             if args.force_flat:
                 chord = flatify(Chord(chord).root) + Chord(chord).quality.quality
-            if qualities and Chord(chord).quality.quality not in qualities:
+            if config.qualities and Chord(chord).quality.quality not in config.qualities:
                 continue
             if notes and not all(note in sharpify(notes) for note in sharpify(Chord(chord).components())):
                 continue
