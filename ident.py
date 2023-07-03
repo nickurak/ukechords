@@ -389,7 +389,7 @@ def main():
             error(2, f"Error looking up chord {args.chord}: {e}")
         scan_chords(base=base, tuning=tuning, chord_shapes=chord_shapes, no_cache=args.no_cache, max_difficulty=max_difficulty)
         if args.chord not in chord_shapes:
-            error(1, f"\"{args.chord}\" not found")
+            error(1, f"No shape for \"{args.chord}\" found")
         shapes = chord_shapes[args.chord]
         shapes.sort(key=shape_ranker)
         if not args.num:
