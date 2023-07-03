@@ -235,9 +235,9 @@ def cached_fn(base, max_fret, tuning, max_difficulty):
     fn = f"cache_{base}_{max_fret}_{tn_string}_{max_difficulty}.pcl"
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), "cached_shapes", fn)
 
-def load_scanned_chords(config, max_fret, tuning, max_difficulty, chord_shapes):
+def load_scanned_chords(config, max_fret, max_difficulty, chord_shapes):
     for imax_difficulty in range(ceil(max_difficulty), 100):
-        fn = cached_fn(config.base, max_fret, tuning, imax_difficulty)
+        fn = cached_fn(config.base, max_fret, config.tuning, imax_difficulty)
         if os.path.exists(fn):
             with open(fn, "rb") as cache:
                 chord_shapes.d |= pickle.load(cache)
@@ -245,21 +245,20 @@ def load_scanned_chords(config, max_fret, tuning, max_difficulty, chord_shapes):
     return False
 
 
-def save_scanned_chords(config, max_fret, tuning, max_difficulty, chord_shapes):
-    fn = cached_fn(config.base, max_fret, tuning, max_difficulty)
+def save_scanned_chords(config, max_fret, max_difficulty, chord_shapes):
+    fn = cached_fn(config.base, max_fret, config.tuning, max_difficulty)
     with open(fn, "wb") as cache:
         pickle.dump(chord_shapes.d, cache)
 
 
-def scan_chords(config, max_fret=12, tuning=None, chord_shapes=None, no_cache=False, max_difficulty=None):
-    assert tuning is not None
+def scan_chords(config, max_fret=12, chord_shapes=None, no_cache=False, max_difficulty=None):
     assert max_difficulty is not None
-    if not no_cache and load_scanned_chords(config, max_fret=max_fret, tuning=tuning, max_difficulty=max_difficulty, chord_shapes=chord_shapes):
+    if not no_cache and load_scanned_chords(config, max_fret=max_fret, max_difficulty=max_difficulty, chord_shapes=chord_shapes):
         return
     notes_shapes_map = {}
     notes_chords_map = {}
-    for shape in get_shapes(config, max_fret=max_fret, strings=len(tuning), max_difficulty=max_difficulty):
-        notes = frozenset(get_shape_notes(shape,  tuning=tuning))
+    for shape in get_shapes(config, max_fret=max_fret, max_difficulty=max_difficulty):
+        notes = frozenset(get_shape_notes(shape,  tuning=config.tuning))
         if notes in notes_shapes_map:
             notes_shapes_map[notes].append(shape)
             continue
@@ -274,7 +273,7 @@ def scan_chords(config, max_fret=12, tuning=None, chord_shapes=None, no_cache=Fa
                 else:
                     chord_shapes[chord].append(shape)
 
-    save_scanned_chords(config, max_fret=max_fret, tuning=tuning, chord_shapes=chord_shapes, max_difficulty=max_difficulty)
+    save_scanned_chords(config, max_fret=max_fret, chord_shapes=chord_shapes, max_difficulty=max_difficulty)
 
 def diff_string(difficulty, desc):
     return f"{difficulty:.1f} ({desc})" if desc else f"{difficulty:.1f}"
@@ -327,13 +326,29 @@ def get_chords_from_notes(notes):
     chords.sort(key=lambda c: (len(c), c))
     return ','.join(chords)
 
+def get_tuning(args):
+    if args.tuning in ("ukulele", "ukulele-c6"):
+        return ["G", "C", "E", "A"]
+    if args.tuning == "ukulele-g6":
+        return ["D", "G", "B", "E"]
+    if args.tuning == "guitar":
+        return ["E", "A", "D", "G", "B", "E"]
+    if args.tuning == "mandolin":
+        return ["G", "D", "E", "A"]
+    return args.tuning.split(',')
+
 class UkeConfig():
     def __init__(self, args):
         self._base = -1 if args.mute else 0
+        self._tuning = get_tuning(args)
 
     @property
     def base(self):
         return self._base
+
+    @property
+    def tuning(self):
+        return self._tuning
 
 
 def main():
@@ -365,15 +380,6 @@ def main():
     config = UkeConfig(args)
     max_difficulty = args.max_difficulty or 29
     shape_ranker = rank_shape_by_high_fret if args.sort_by_position else rank_shape_by_difficulty
-    if args.tuning in ("ukulele", "ukulele-c6"):
-        args.tuning = "G,C,E,A"
-    elif args.tuning == "ukulele-g6":
-        args.tuning = "D,G,B,E"
-    elif args.tuning == "guitar":
-        args.tuning = "E,A,D,G,B,E"
-    elif args.tuning == "mandolin":
-        args.tuning = "G,D,E,A"
-    tuning = args.tuning.split(',')
     if args.qualities and args.simple:
         error(7, "Provide only one of -p/--simple or -q/--qualities")
     qualities = False
@@ -396,7 +402,7 @@ def main():
                 print(f"Notes: {', '.join(notes)}")
         except ValueError as e:
             error(2, f"Error looking up chord {args.chord}: {e}")
-        scan_chords(config, tuning=tuning, chord_shapes=chord_shapes, no_cache=args.no_cache, max_difficulty=max_difficulty)
+        scan_chords(config, chord_shapes=chord_shapes, no_cache=args.no_cache, max_difficulty=max_difficulty)
         if args.chord not in chord_shapes:
             error(1, f"No shape for \"{args.chord}\" found")
         shapes = chord_shapes[args.chord]
@@ -406,9 +412,9 @@ def main():
         chord_names = None
         for shape in shapes[:args.num]:
             if not chord_names:
-                other_names = [c for c in get_chords(set(get_shape_notes(shape, tuning=tuning))) if c != args.chord]
+                other_names = [c for c in get_chords(set(get_shape_notes(shape, tuning=config.tuning))) if c != args.chord]
                 chord_names = ",".join([args.chord] + sorted(other_names))
-            difficulty, desc = get_shape_difficulty(shape, tuning=tuning)
+            difficulty, desc = get_shape_difficulty(shape, tuning=config.tuning)
             if difficulty > max_difficulty:
                 continue
             if args.latex:
@@ -429,7 +435,7 @@ def main():
             notes.extend(Chord(chord).components())
         if notes and any(map(is_flat, notes)):
             args.force_flat = True
-        scan_chords(config, tuning=args.tuning.split(','), chord_shapes=chord_shapes, no_cache=args.no_cache, max_difficulty=max_difficulty)
+        scan_chords(config, chord_shapes=chord_shapes, no_cache=args.no_cache, max_difficulty=max_difficulty)
         ichords = list(chord_shapes.keys())
         sort_offset = 0
         if args.key:
@@ -444,7 +450,7 @@ def main():
             if notes and not all(note in sharpify(notes) for note in sharpify(Chord(chord).components())):
                 continue
             shape = chord_shapes[chord][0]
-            difficulty, desc = get_shape_difficulty(shape, tuning=args.tuning.split(','))
+            difficulty, desc = get_shape_difficulty(shape, tuning=config.tuning)
             if difficulty > max_difficulty:
                 continue
             if args.latex:
@@ -463,7 +469,7 @@ def main():
                     cshape = [(pos + offset) % 12 if pos > 0 else pos for pos in  shape]
                     shapes.append(cshape)
             for shape in shapes:
-                notes = set(get_shape_notes(shape, tuning=tuning))
+                notes = set(get_shape_notes(shape, tuning=config.tuning))
                 if args.show_notes:
                     print(f"Notes: {', '.join(notes)}")
                 prefix = ",".join(["x" if x == -1 else str(x) for x in shape])
@@ -476,7 +482,7 @@ def main():
             notes = set(args.notes.split(","))
             print(f"{','.join(notes)}: {get_chords_from_notes(notes)}")
         if args.shape and not args.slide:
-            print(f"Difficulty: {diff_string(*get_shape_difficulty(shape, tuning=args.tuning.split(',')))}")
+            print(f"Difficulty: {diff_string(*get_shape_difficulty(shape, config.tuning))}")
     if args.show_key:
         other_keys = get_dupe_scales(args.show_key)
         if other_keys:
