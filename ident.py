@@ -408,7 +408,7 @@ def show_chords_by_shape(config, pshape):
     shape = [-1 if pos == 'x' else int(pos) for pos in pshape.split(",")]
     shapes = [shape]
     if config.slide:
-        for offset in [i for i in range(1, 12)]:
+        for offset in range(1, 12):
             cshape = [(pos + offset) % 12 if pos > 0 else pos for pos in  shape]
             shapes.append(cshape)
     for shape in shapes:
