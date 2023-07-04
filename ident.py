@@ -425,6 +425,9 @@ def show_chords_by_shape(config, pshape):
         print(f"Difficulty: {diff_string(*get_shape_difficulty(shape, config.tuning))}")
 
 
+def show_chords_by_notes(config, notes):
+    print(f"{','.join(notes)}: {get_chords_from_notes(notes)}")
+
 
 class UkeConfig():
     def __init__(self, args):
@@ -460,6 +463,8 @@ class UkeConfig():
         self._allowed_chord = args.allowed_chord
         if args.shape:
             self._command = lambda x: show_chords_by_shape(x, args.shape)
+        if args.notes:
+            self._command = lambda x: show_chords_by_notes(x, set(args.notes.split(",")))
 
     @property
     def base(self):
@@ -571,9 +576,7 @@ def main():
         show_chords_by_shape(config, args.shape)
     if args.notes:
         notes = set(args.notes.split(","))
-        print(f"{','.join(notes)}: {get_chords_from_notes(notes)}")
-        if args.shape and not config.slide:
-            print(f"Difficulty: {diff_string(*get_shape_difficulty(shape, config.tuning))}")
+        show_chords_by_notes(config, notes)
     if args.show_key:
         other_keys = get_dupe_scales(args.show_key)
         if other_keys:
