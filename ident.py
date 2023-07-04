@@ -361,6 +361,7 @@ class UkeConfig():
         self._no_cache = args.no_cache
         self._latex = args.latex
         self._visualize = args.visualize
+        self._force_flat = args.force_flat
 
     @property
     def base(self):
@@ -405,6 +406,14 @@ class UkeConfig():
     @property
     def visualize(self):
         return self._visualize
+
+    @property
+    def force_flat(self):
+        return self._force_flat
+
+    @force_flat.setter
+    def force_flat(self, value):
+        self._force_flat = value
 
 
 def main():
@@ -475,7 +484,7 @@ def main():
         for chord in args.allowed_chord or []:
             notes.extend(Chord(chord).components())
         if notes and any(map(is_flat, notes)):
-            args.force_flat = True
+            config.force_flat = True
         scan_chords(config, chord_shapes=chord_shapes)
         ichords = list(chord_shapes.keys())
         sort_offset = 0
@@ -484,7 +493,7 @@ def main():
         ichords.sort(key=lambda x: ((note_intervals[Chord(x).root] - sort_offset) % len(chromatic_scale), x))
         for chord in ichords:
             chord_shapes[chord].sort(key=config.shape_ranker)
-            if args.force_flat:
+            if config.force_flat:
                 chord = flatify(Chord(chord).root) + Chord(chord).quality.quality
             if config.qualities and Chord(chord).quality.quality not in config.qualities:
                 continue
