@@ -251,8 +251,8 @@ def save_scanned_chords(config, max_fret, chord_shapes):
         pickle.dump(chord_shapes.d, cache)
 
 
-def scan_chords(config, max_fret=12, chord_shapes=None, no_cache=False):
-    if not no_cache and load_scanned_chords(config, max_fret=max_fret, chord_shapes=chord_shapes):
+def scan_chords(config, max_fret=12, chord_shapes=None):
+    if not config.no_cache and load_scanned_chords(config, max_fret=max_fret, chord_shapes=chord_shapes):
         return
     notes_shapes_map = {}
     notes_chords_map = {}
@@ -358,6 +358,7 @@ class UkeConfig():
         if not self._num and (args.latex or args.visualize):
             self._num = 1
         self._show_notes = args.show_notes
+        self._no_cache = args.no_cache
 
     @property
     def base(self):
@@ -390,6 +391,10 @@ class UkeConfig():
     @property
     def show_notes(self):
         return self._show_notes
+
+    @property
+    def no_cache(self):
+        return self._no_cache
 
 
 def main():
@@ -430,7 +435,7 @@ def main():
                 print(f"Notes: {', '.join(notes)}")
         except ValueError as e:
             error(2, f"Error looking up chord {args.chord}: {e}")
-        scan_chords(config, chord_shapes=chord_shapes, no_cache=args.no_cache)
+        scan_chords(config, chord_shapes=chord_shapes)
         if args.chord not in chord_shapes:
             error(1, f"No shape for \"{args.chord}\" found")
         shapes = chord_shapes[args.chord]
@@ -461,7 +466,7 @@ def main():
             notes.extend(Chord(chord).components())
         if notes and any(map(is_flat, notes)):
             args.force_flat = True
-        scan_chords(config, chord_shapes=chord_shapes, no_cache=args.no_cache)
+        scan_chords(config, chord_shapes=chord_shapes)
         ichords = list(chord_shapes.keys())
         sort_offset = 0
         if args.key:
