@@ -445,6 +445,8 @@ class UkeConfig():
         self._tuning = get_tuning(args)
         self._shape_ranker = rank_shape_by_high_fret if args.sort_by_position else rank_shape_by_difficulty
         self._max_difficulty = args.max_difficulty or 29
+        if list(map(bool, [args.notes, args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord), args.show_key])).count(True) != 1:
+            error(5, "Provide exactly one of --all-chords, --chord, --shape, --notes, or --show-key", get_parser())
         if args.qualities and args.simple:
             error(7, "Provide only one of -p/--simple or -q/--qualities")
         self._qualities = False
@@ -578,8 +580,6 @@ def main():
     add_7sus2_quality()
     args = get_args(get_parser())
     config = UkeConfig(args)
-    if list(map(bool, [args.notes, args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord), args.show_key])).count(True) != 1:
-        error(5, "Provide exactly one of --all-chords, --chord, --shape, --notes, or --show-key", get_parser())
     config.command(config)
     return 0
 if __name__ == "__main__":
