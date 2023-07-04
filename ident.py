@@ -429,6 +429,16 @@ def show_chords_by_notes(config, notes):
     print(f"{','.join(notes)}: {get_chords_from_notes(notes)}")
 
 
+def show_key(config, key):
+    other_keys = get_dupe_scales(key)
+    if other_keys:
+        other_str = f" ({', '.join(other_keys)})"
+    else:
+        other_str = ""
+    print(f"{key}{other_str}:")
+    print(f"{', '.join(get_key_notes(key))}")
+
+
 class UkeConfig():
     def __init__(self, args):
         self._base = -1 if args.mute else 0
@@ -465,6 +475,8 @@ class UkeConfig():
             self._command = lambda x: show_chords_by_shape(x, args.shape)
         if args.notes:
             self._command = lambda x: show_chords_by_notes(x, set(args.notes.split(",")))
+        if args.show_key:
+            self._command = lambda x: show_key(x, args.show_key)
 
     @property
     def base(self):
@@ -578,13 +590,7 @@ def main():
         notes = set(args.notes.split(","))
         show_chords_by_notes(config, notes)
     if args.show_key:
-        other_keys = get_dupe_scales(args.show_key)
-        if other_keys:
-            other_str = f" ({', '.join(other_keys)})"
-        else:
-            other_str = ""
-        print(f"{args.show_key}{other_str}:")
-        print(f"{', '.join(get_key_notes(args.show_key))}")
+        show_key(config, args.show_key)
     return 0
 if __name__ == "__main__":
     sys.exit(main())
