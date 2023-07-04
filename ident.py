@@ -449,9 +449,7 @@ class UkeConfig():
         self._force_flat = value
 
 
-def main():
-    add_no5_quality()
-    add_7sus2_quality()
+def get_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--chord", help="Show how to play <CHORD>")
     parser.add_argument("--notes", help="Show what chord(s) these <NOTES> play")
@@ -474,11 +472,21 @@ def main():
     parser.add_argument("--show-notes", action='store_true', help="Show the notes in chord")
     parser.add_argument("-f", "--force-flat", action='store_true', help="Show flat-variations of chord roots")
     parser.add_argument("-b", "--sort-by-position",  action='store_true', help="Sort to minimize high-position instead of difficulty")
-    args = parser.parse_args()
+    return parser
+
+
+def get_args(parser):
+    return parser.parse_args()
+
+
+def main():
+    add_no5_quality()
+    add_7sus2_quality()
+    args = get_args(get_parser())
     config = UkeConfig(args)
     chord_shapes = ChordCollection()
     if list(map(bool, [args.notes, args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord), args.show_key])).count(True) != 1:
-        error(5, "Provide exactly one of --all-chords, --chord, --shape, --notes, or --show-key", parser)
+        error(5, "Provide exactly one of --all-chords, --chord, --shape, --notes, or --show-key", get_parser())
     if args.chord:
         show_chord(config, args.chord)
     if args.all_chords or args.key or args.allowed_chord:
