@@ -336,6 +336,37 @@ def get_tuning(args):
         return ["G", "D", "E", "A"]
     return args.tuning.split(',')
 
+def show_chord(config, chord):
+    chord_shapes = ChordCollection()
+    try:
+        c = Chord(chord)
+        if config.show_notes:
+            notes = c.components()
+            print(f"Notes: {', '.join(notes)}")
+    except ValueError as e:
+        error(2, f"Error looking up chord {chord}: {e}")
+    scan_chords(config, chord_shapes=chord_shapes)
+    if chord not in chord_shapes:
+        error(1, f"No shape for \"{chord}\" found")
+    shapes = chord_shapes[chord]
+    shapes.sort(key=config.shape_ranker)
+    chord_names = None
+    for shape in shapes[:config.num or len(shapes)]:
+        if not chord_names:
+            other_names = [c for c in get_chords(set(get_shape_notes(shape, tuning=config.tuning))) if c != chord]
+            chord_names = ",".join([chord] + sorted(other_names))
+        difficulty, desc = get_shape_difficulty(shape, tuning=config.tuning)
+        if difficulty > config.max_difficulty:
+            continue
+        if config.latex:
+            lchord = chord.replace('M', 'maj')
+            print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shape))}}}")
+        else:
+            print(f"{chord_names}: {','.join(['x' if x == -1 else str(x) for x in shape])}\t difficulty: {diff_string(difficulty, desc)}")
+        if config.visualize:
+            draw_shape(shape)
+
+
 class UkeConfig():
     def __init__(self, args):
         self._base = -1 if args.mute else 0
@@ -362,6 +393,8 @@ class UkeConfig():
         self._latex = args.latex
         self._visualize = args.visualize
         self._force_flat = args.force_flat
+        if args.chord:
+            self._command = lambda x: show_chord(x, args.chord)
 
     @property
     def base(self):
@@ -447,33 +480,7 @@ def main():
     if list(map(bool, [args.notes, args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord), args.show_key])).count(True) != 1:
         error(5, "Provide exactly one of --all-chords, --chord, --shape, --notes, or --show-key", parser)
     if args.chord:
-        try:
-            c = Chord(args.chord)
-            if config.show_notes:
-                notes = c.components()
-                print(f"Notes: {', '.join(notes)}")
-        except ValueError as e:
-            error(2, f"Error looking up chord {args.chord}: {e}")
-        scan_chords(config, chord_shapes=chord_shapes)
-        if args.chord not in chord_shapes:
-            error(1, f"No shape for \"{args.chord}\" found")
-        shapes = chord_shapes[args.chord]
-        shapes.sort(key=config.shape_ranker)
-        chord_names = None
-        for shape in shapes[:config.num or len(shapes)]:
-            if not chord_names:
-                other_names = [c for c in get_chords(set(get_shape_notes(shape, tuning=config.tuning))) if c != args.chord]
-                chord_names = ",".join([args.chord] + sorted(other_names))
-            difficulty, desc = get_shape_difficulty(shape, tuning=config.tuning)
-            if difficulty > config.max_difficulty:
-                continue
-            if config.latex:
-                lchord = args.chord.replace('M', 'maj')
-                print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shape))}}}")
-            else:
-                print(f"{chord_names}: {','.join(['x' if x == -1 else str(x) for x in shape])}\t difficulty: {diff_string(difficulty, desc)}")
-            if config.visualize:
-                draw_shape(shape)
+        show_chord(config, args.chord)
     if args.all_chords or args.key or args.allowed_chord:
         notes = []
         for key in args.key or []:
