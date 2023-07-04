@@ -581,5 +581,6 @@ def main():
     config = UkeConfig(get_args(get_parser()))
     config.command(config)
     return 0
+
 if __name__ == "__main__":
     sys.exit(main())
