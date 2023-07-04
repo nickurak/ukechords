@@ -404,6 +404,27 @@ def show_all(config):
         if config.visualize:
             draw_shape(shape)
 
+def show_chords_by_shape(config, pshape):
+    shape = [-1 if pos == 'x' else int(pos) for pos in pshape.split(",")]
+    shapes = [shape]
+    if config.slide:
+        for offset in [i for i in range(1, 12)]:
+            cshape = [(pos + offset) % 12 if pos > 0 else pos for pos in  shape]
+            shapes.append(cshape)
+    for shape in shapes:
+        notes = set(get_shape_notes(shape, tuning=config.tuning))
+        if config.show_notes:
+            print(f"Notes: {', '.join(notes)}")
+        prefix = ",".join(["x" if x == -1 else str(x) for x in shape])
+        chords = get_chords_from_notes(notes)
+        if config.visualize:
+            draw_shape(shape)
+        if chords != '':
+            print(f'{prefix}: {chords}')
+    if not config.slide:
+        print(f"Difficulty: {diff_string(*get_shape_difficulty(shape, config.tuning))}")
+
+
 
 class UkeConfig():
     def __init__(self, args):
@@ -437,6 +458,8 @@ class UkeConfig():
             self._command = show_all
         self._key = args.key
         self._allowed_chord = args.allowed_chord
+        if args.shape:
+            self._command = lambda x: show_chords_by_shape(x, args.shape)
 
     @property
     def base(self):
@@ -545,22 +568,7 @@ def main():
     if args.all_chords or args.key or args.allowed_chord:
         show_all(config)
     if args.shape:
-        shape = [-1 if pos == 'x' else int(pos) for pos in args.shape.split(",")]
-        shapes = [shape]
-        if config.slide:
-            for offset in [i for i in range(1, 12)]:
-                cshape = [(pos + offset) % 12 if pos > 0 else pos for pos in  shape]
-                shapes.append(cshape)
-        for shape in shapes:
-            notes = set(get_shape_notes(shape, tuning=config.tuning))
-            if config.show_notes:
-                print(f"Notes: {', '.join(notes)}")
-            prefix = ",".join(["x" if x == -1 else str(x) for x in shape])
-            chords = get_chords_from_notes(notes)
-            if config.visualize:
-                draw_shape(shape)
-            if chords != '':
-                print(f'{prefix}: {chords}')
+        show_chords_by_shape(config, args.shape)
     if args.notes:
         notes = set(args.notes.split(","))
         print(f"{','.join(notes)}: {get_chords_from_notes(notes)}")
