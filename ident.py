@@ -580,17 +580,7 @@ def main():
     config = UkeConfig(args)
     if list(map(bool, [args.notes, args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord), args.show_key])).count(True) != 1:
         error(5, "Provide exactly one of --all-chords, --chord, --shape, --notes, or --show-key", get_parser())
-    if args.chord:
-        show_chord(config, args.chord)
-    if args.all_chords or args.key or args.allowed_chord:
-        show_all(config)
-    if args.shape:
-        show_chords_by_shape(config, args.shape)
-    if args.notes:
-        notes = set(args.notes.split(","))
-        show_chords_by_notes(config, notes)
-    if args.show_key:
-        show_key(config, args.show_key)
+    config.command(config)
     return 0
 if __name__ == "__main__":
     sys.exit(main())
