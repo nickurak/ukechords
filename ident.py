@@ -366,6 +366,44 @@ def show_chord(config, chord):
         if config.visualize:
             draw_shape(shape)
 
+def show_all(config):
+    notes = []
+    chord_shapes = ChordCollection()
+    for key in config.key or []:
+        try:
+            notes.extend(get_key_notes(key))
+        except UnknownKeyException as e:
+            error(10, e)
+    for chord in config.allowed_chord or []:
+        notes.extend(Chord(chord).components())
+    if notes and any(map(is_flat, notes)):
+        config.force_flat = True
+    scan_chords(config, chord_shapes=chord_shapes)
+    ichords = list(chord_shapes.keys())
+    sort_offset = 0
+    if config.key:
+        sort_offset = note_intervals[get_key_notes(config.key[0])[0]]
+    ichords.sort(key=lambda x: ((note_intervals[Chord(x).root] - sort_offset) % len(chromatic_scale), x))
+    for chord in ichords:
+        chord_shapes[chord].sort(key=config.shape_ranker)
+        if config.force_flat:
+            chord = flatify(Chord(chord).root) + Chord(chord).quality.quality
+        if config.qualities and Chord(chord).quality.quality not in config.qualities:
+            continue
+        if notes and not all(note in sharpify(notes) for note in sharpify(Chord(chord).components())):
+            continue
+        shape = chord_shapes[chord][0]
+        difficulty, desc = get_shape_difficulty(shape, tuning=config.tuning)
+        if difficulty > config.max_difficulty:
+            continue
+        if config.latex:
+            lchord = chord.replace('M', 'maj')
+            print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shape))}}}")
+        else:
+            print(f"{chord}: {','.join(map(str, shape))}\t difficulty: {diff_string(difficulty, desc)}")
+        if config.visualize:
+            draw_shape(shape)
+
 
 class UkeConfig():
     def __init__(self, args):
@@ -395,6 +433,10 @@ class UkeConfig():
         self._force_flat = args.force_flat
         if args.chord:
             self._command = lambda x: show_chord(x, args.chord)
+        if args.all_chords or args.key or args.allowed_chord or args.key:
+            self._command = show_all
+        self._key = args.key
+        self._allowed_chord = args.allowed_chord
 
     @property
     def base(self):
@@ -448,6 +490,18 @@ class UkeConfig():
     def force_flat(self, value):
         self._force_flat = value
 
+    @property
+    def command(self):
+        return self._command
+
+    @property
+    def key(self):
+        return self._key
+
+    @property
+    def allowed_chord(self):
+        return self._allowed_chord
+
 
 def get_parser():
     parser = argparse.ArgumentParser()
@@ -484,47 +538,12 @@ def main():
     add_7sus2_quality()
     args = get_args(get_parser())
     config = UkeConfig(args)
-    chord_shapes = ChordCollection()
     if list(map(bool, [args.notes, args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord), args.show_key])).count(True) != 1:
         error(5, "Provide exactly one of --all-chords, --chord, --shape, --notes, or --show-key", get_parser())
     if args.chord:
         show_chord(config, args.chord)
     if args.all_chords or args.key or args.allowed_chord:
-        notes = []
-        for key in args.key or []:
-            try:
-                notes.extend(get_key_notes(key))
-            except UnknownKeyException as e:
-                error(10, e)
-        for chord in args.allowed_chord or []:
-            notes.extend(Chord(chord).components())
-        if notes and any(map(is_flat, notes)):
-            config.force_flat = True
-        scan_chords(config, chord_shapes=chord_shapes)
-        ichords = list(chord_shapes.keys())
-        sort_offset = 0
-        if args.key:
-            sort_offset = note_intervals[get_key_notes(args.key[0])[0]]
-        ichords.sort(key=lambda x: ((note_intervals[Chord(x).root] - sort_offset) % len(chromatic_scale), x))
-        for chord in ichords:
-            chord_shapes[chord].sort(key=config.shape_ranker)
-            if config.force_flat:
-                chord = flatify(Chord(chord).root) + Chord(chord).quality.quality
-            if config.qualities and Chord(chord).quality.quality not in config.qualities:
-                continue
-            if notes and not all(note in sharpify(notes) for note in sharpify(Chord(chord).components())):
-                continue
-            shape = chord_shapes[chord][0]
-            difficulty, desc = get_shape_difficulty(shape, tuning=config.tuning)
-            if difficulty > config.max_difficulty:
-                continue
-            if config.latex:
-                lchord = chord.replace('M', 'maj')
-                print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shape))}}}")
-            else:
-                print(f"{chord}: {','.join(map(str, shape))}\t difficulty: {diff_string(difficulty, desc)}")
-            if config.visualize:
-                draw_shape(shape)
+        show_all(config)
     if args.shape or args.notes:
         if args.shape:
             shape = [-1 if pos == 'x' else int(pos) for pos in args.shape.split(",")]
