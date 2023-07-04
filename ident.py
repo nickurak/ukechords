@@ -360,6 +360,7 @@ class UkeConfig():
         self._show_notes = args.show_notes
         self._no_cache = args.no_cache
         self._latex = args.latex
+        self._visualize = args.visualize
 
     @property
     def base(self):
@@ -400,6 +401,10 @@ class UkeConfig():
     @property
     def latex(self):
         return self._latex
+
+    @property
+    def visualize(self):
+        return self._visualize
 
 
 def main():
@@ -458,7 +463,7 @@ def main():
                 print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shape))}}}")
             else:
                 print(f"{chord_names}: {','.join(['x' if x == -1 else str(x) for x in shape])}\t difficulty: {diff_string(difficulty, desc)}")
-            if args.visualize:
+            if config.visualize:
                 draw_shape(shape)
     if args.all_chords or args.key or args.allowed_chord:
         notes = []
@@ -494,7 +499,7 @@ def main():
                 print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shape))}}}")
             else:
                 print(f"{chord}: {','.join(map(str, shape))}\t difficulty: {diff_string(difficulty, desc)}")
-            if args.visualize:
+            if config.visualize:
                 draw_shape(shape)
     if args.shape or args.notes:
         if args.shape:
@@ -510,7 +515,7 @@ def main():
                     print(f"Notes: {', '.join(notes)}")
                 prefix = ",".join(["x" if x == -1 else str(x) for x in shape])
                 chords = get_chords_from_notes(notes)
-                if args.visualize:
+                if config.visualize:
                     draw_shape(shape)
                 if chords != '':
                     print(f'{prefix}: {chords}')
