@@ -544,27 +544,26 @@ def main():
         show_chord(config, args.chord)
     if args.all_chords or args.key or args.allowed_chord:
         show_all(config)
-    if args.shape or args.notes:
-        if args.shape:
-            shape = [-1 if pos == 'x' else int(pos) for pos in args.shape.split(",")]
-            shapes = [shape]
-            if config.slide:
-                for offset in [i for i in range(1, 12)]:
-                    cshape = [(pos + offset) % 12 if pos > 0 else pos for pos in  shape]
-                    shapes.append(cshape)
-            for shape in shapes:
-                notes = set(get_shape_notes(shape, tuning=config.tuning))
-                if config.show_notes:
-                    print(f"Notes: {', '.join(notes)}")
-                prefix = ",".join(["x" if x == -1 else str(x) for x in shape])
-                chords = get_chords_from_notes(notes)
-                if config.visualize:
-                    draw_shape(shape)
-                if chords != '':
-                    print(f'{prefix}: {chords}')
-        if args.notes:
-            notes = set(args.notes.split(","))
-            print(f"{','.join(notes)}: {get_chords_from_notes(notes)}")
+    if args.shape:
+        shape = [-1 if pos == 'x' else int(pos) for pos in args.shape.split(",")]
+        shapes = [shape]
+        if config.slide:
+            for offset in [i for i in range(1, 12)]:
+                cshape = [(pos + offset) % 12 if pos > 0 else pos for pos in  shape]
+                shapes.append(cshape)
+        for shape in shapes:
+            notes = set(get_shape_notes(shape, tuning=config.tuning))
+            if config.show_notes:
+                print(f"Notes: {', '.join(notes)}")
+            prefix = ",".join(["x" if x == -1 else str(x) for x in shape])
+            chords = get_chords_from_notes(notes)
+            if config.visualize:
+                draw_shape(shape)
+            if chords != '':
+                print(f'{prefix}: {chords}')
+    if args.notes:
+        notes = set(args.notes.split(","))
+        print(f"{','.join(notes)}: {get_chords_from_notes(notes)}")
         if args.shape and not config.slide:
             print(f"Difficulty: {diff_string(*get_shape_difficulty(shape, config.tuning))}")
     if args.show_key:
