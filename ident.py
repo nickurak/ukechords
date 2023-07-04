@@ -359,6 +359,7 @@ class UkeConfig():
             self._num = 1
         self._show_notes = args.show_notes
         self._no_cache = args.no_cache
+        self._latex = args.latex
 
     @property
     def base(self):
@@ -395,6 +396,10 @@ class UkeConfig():
     @property
     def no_cache(self):
         return self._no_cache
+
+    @property
+    def latex(self):
+        return self._latex
 
 
 def main():
@@ -448,7 +453,7 @@ def main():
             difficulty, desc = get_shape_difficulty(shape, tuning=config.tuning)
             if difficulty > config.max_difficulty:
                 continue
-            if args.latex:
+            if config.latex:
                 lchord = args.chord.replace('M', 'maj')
                 print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shape))}}}")
             else:
@@ -484,7 +489,7 @@ def main():
             difficulty, desc = get_shape_difficulty(shape, tuning=config.tuning)
             if difficulty > config.max_difficulty:
                 continue
-            if args.latex:
+            if config.latex:
                 lchord = chord.replace('M', 'maj')
                 print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shape))}}}")
             else:
