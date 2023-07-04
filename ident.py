@@ -357,6 +357,7 @@ class UkeConfig():
             self._num = 1
         if not self._num and (args.latex or args.visualize):
             self._num = 1
+        self._show_notes = args.show_notes
 
     @property
     def base(self):
@@ -385,6 +386,10 @@ class UkeConfig():
     @property
     def num(self):
         return self._num
+
+    @property
+    def show_notes(self):
+        return self._show_notes
 
 
 def main():
@@ -420,7 +425,7 @@ def main():
     if args.chord:
         try:
             c = Chord(args.chord)
-            if args.show_notes:
+            if config.show_notes:
                 notes = c.components()
                 print(f"Notes: {', '.join(notes)}")
         except ValueError as e:
@@ -491,7 +496,7 @@ def main():
                     shapes.append(cshape)
             for shape in shapes:
                 notes = set(get_shape_notes(shape, tuning=config.tuning))
-                if args.show_notes:
+                if config.show_notes:
                     print(f"Notes: {', '.join(notes)}")
                 prefix = ",".join(["x" if x == -1 else str(x) for x in shape])
                 chords = get_chords_from_notes(notes)
