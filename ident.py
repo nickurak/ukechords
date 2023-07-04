@@ -425,11 +425,11 @@ def show_chords_by_shape(config, pshape):
         print(f"Difficulty: {diff_string(*get_shape_difficulty(shape, config.tuning))}")
 
 
-def show_chords_by_notes(config, notes):
+def show_chords_by_notes(_, notes):
     print(f"{','.join(notes)}: {get_chords_from_notes(notes)}")
 
 
-def show_key(config, key):
+def show_key(_, key):
     other_keys = get_dupe_scales(key)
     if other_keys:
         other_str = f" ({', '.join(other_keys)})"
