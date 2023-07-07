@@ -4,6 +4,7 @@ set -e
 
 SCRIPTDIR="$(dirname $(readlink -fn $0))"
 
-. ${SCRIPTDIR}/bin/activate
+PYDIR="${HOME}/.local/pyvenv/ukechords/"
+. "$PYDIR/bin/activate"
 
 exec python ${SCRIPTDIR}/ident.py "$@"
