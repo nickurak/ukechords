@@ -370,7 +370,10 @@ def show_all(config):
     sort_offset = 0
     if config.key:
         sort_offset = note_intervals[get_key_notes(config.key[0])[0]]
-    ichords.sort(key=lambda x: ((note_intervals[Chord(x).root] - sort_offset) % len(chromatic_scale), x))
+    def chord_sorter(name):
+        pos = note_intervals[Chord(name).root] - sort_offset
+        return pos % len(chromatic_scale), name
+    ichords.sort(key=chord_sorter)
     for chord in ichords:
         chord_shapes[chord].sort(key=config.shape_ranker)
         if config.force_flat:
