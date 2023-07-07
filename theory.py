@@ -100,6 +100,7 @@ def get_shapes(config, max_fret=1):
 
 
 def get_shape_difficulty(shape, tuning=None):
+    # pylint: disable=line-too-long
     difficulty = 0.0 + max(shape)/10.0
     last_pos = None
     for string, pos in enumerate(shape):
