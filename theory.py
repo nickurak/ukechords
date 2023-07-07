@@ -306,6 +306,10 @@ def get_tuning(args):
         return ["G", "D", "E", "A"]
     return args.tuning.split(',')
 
+def get_other_names(shape, chord_name, tuning):
+    for chord in get_chords(set(get_shape_notes(shape, tuning))):
+        if  chord != chord_name:
+            yield chord
 
 def show_chord(config, chord):
     chord_shapes = ChordCollection()
@@ -324,7 +328,7 @@ def show_chord(config, chord):
     chord_names = None
     for shape in shapes[:config.num or len(shapes)]:
         if not chord_names:
-            other_names = [c for c in get_chords(set(get_shape_notes(shape, tuning=config.tuning))) if c != chord]
+            other_names = get_other_names(shape, chord, config.tuning)
             chord_names = ",".join([chord] + sorted(other_names))
         difficulty, desc = get_shape_difficulty(shape, tuning=config.tuning)
         if difficulty > config.max_difficulty:
