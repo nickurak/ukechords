@@ -353,6 +353,7 @@ def chord_built_from_notes(chord, notes):
 
 
 def show_all(config):
+    # pylint: disable=too-many-branches
     notes = []
     chord_shapes = ChordCollection()
     for key in config.key or []:
