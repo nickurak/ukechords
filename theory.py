@@ -223,7 +223,7 @@ def get_key_notes(key):
 
 
 def scan_chords(config, max_fret=12, chord_shapes=None):
-    if not config.no_cache and load_scanned_chords(config, max_fret=max_fret, chord_shapes=chord_shapes):
+    if not config.no_cache and load_scanned_chords(config, chord_shapes, max_fret):
         return
     notes_shapes_map = {}
     notes_chords_map = {}

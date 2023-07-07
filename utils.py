@@ -18,7 +18,7 @@ def cached_filename(base, max_fret, tuning, max_difficulty):
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), "cached_shapes", filename)
 
 
-def load_scanned_chords(config, max_fret, chord_shapes):
+def load_scanned_chords(config, chord_shapes, max_fret):
     for imax_difficulty in range(ceil(config.max_difficulty), 100):
         filename = cached_filename(config.base, max_fret, config.tuning, imax_difficulty)
         if os.path.exists(filename):
@@ -28,7 +28,7 @@ def load_scanned_chords(config, max_fret, chord_shapes):
     return False
 
 
-def save_scanned_chords(config, max_fret, chord_shapes):
+def save_scanned_chords(config, chord_shapes, max_fret):
     filename = cached_filename(config.base, max_fret, config.tuning, config.max_difficulty)
     with open(filename, "wb") as cache:
         pickle.dump(chord_shapes.dictionary, cache)
