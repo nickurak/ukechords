@@ -7,6 +7,8 @@ from theory import show_chords_by_notes, show_key
 from utils import error
 
 class UkeConfig():
+    # pylint: disable=line-too-long
+    # pylint: disable=too-many-instance-attributes
     def __init__(self, args):
         self._base = -1 if args.mute else 0
         self._tuning = get_tuning(args)
@@ -113,6 +115,7 @@ class UkeConfig():
 
 
 def get_parser():
+    # pylint: disable=line-too-long
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--chord", help="Show how to play <CHORD>")
     parser.add_argument("--notes", help="Show what chord(s) these <NOTES> play")
