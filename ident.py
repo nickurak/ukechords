@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 
-# pylint: disable=missing-function-docstring,missing-class-docstring
-# pylint: disable=missing-module-docstring,invalid-name
-
 import sys
 
 from theory import add_no5_quality, add_7sus2_quality
