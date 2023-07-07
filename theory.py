@@ -345,6 +345,13 @@ def show_chord(config, chord):
             draw_shape(shape)
 
 
+def chord_built_from_notes(chord, notes):
+    for note in sharpify(Chord(chord).components()):
+        if not note in sharpify(notes):
+            return False
+    return True
+
+
 def show_all(config):
     notes = []
     chord_shapes = ChordCollection()
@@ -369,7 +376,7 @@ def show_all(config):
             chord = flatify(Chord(chord).root) + Chord(chord).quality.quality
         if config.qualities and Chord(chord).quality.quality not in config.qualities:
             continue
-        if notes and not all(note in sharpify(notes) for note in sharpify(Chord(chord).components())):
+        if notes and not chord_built_from_notes(chord, notes):
             continue
         shape = chord_shapes[chord][0]
         difficulty, desc = get_shape_difficulty(shape, tuning=config.tuning)
