@@ -223,7 +223,7 @@ def get_key_notes(key):
     return [chromatic_scale[interval + note_intervals[root]] for interval in intervals]
 
 
-def scan_chords(config, max_fret=12, chord_shapes=None):
+def scan_chords(config, chord_shapes, max_fret=12):
     if not config.no_cache and load_scanned_chords(config, chord_shapes, max_fret):
         return
     notes_shapes_map = {}
@@ -316,7 +316,7 @@ def show_chord(config, chord):
             print(f"Notes: {', '.join(notes)}")
     except ValueError as exc:
         error(2, f"Error looking up chord {chord}: {exc}")
-    scan_chords(config, chord_shapes=chord_shapes)
+    scan_chords(config, chord_shapes)
     if chord not in chord_shapes:
         error(1, f"No shape for \"{chord}\" found")
     shapes = chord_shapes[chord]
@@ -350,7 +350,7 @@ def show_all(config):
         notes.extend(Chord(chord).components())
     if notes and any(map(is_flat, notes)):
         config.force_flat = True
-    scan_chords(config, chord_shapes=chord_shapes)
+    scan_chords(config, chord_shapes)
     ichords = list(chord_shapes.keys())
     sort_offset = 0
     if config.key:
