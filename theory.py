@@ -27,10 +27,10 @@ def add_7sus2_quality():
     for name, quality in QualityManager()._qualities.items(): # pylint: disable=protected-access
         if name != 'sus2':
             continue
-        c = list(quality.components)
-        c.append(10)
+        components = list(quality.components)
+        components.append(10)
         new_name=f"7{name}"
-        new_qs.append((new_name, tuple(c)))
+        new_qs.append((new_name, tuple(components)))
     for name, new in new_qs:
         QualityManager().set_quality(name, new)
 
@@ -77,15 +77,15 @@ class ChordCollection():
 
 
 def increment(position, max_pos, base=0):
-    n = 0
+    string = 0
     while True:
-        position[n] += 1
-        if position[n] > max_pos:
-            if (n+1) >= len(position):
-                position[n] -= 1
+        position[string] += 1
+        if position[string] > max_pos:
+            if (string + 1) >= len(position):
+                position[string] -= 1
                 return False
-            position[n] = base
-            n += 1
+            position[string] = base
+            string += 1
         else:
             return True
 
@@ -309,12 +309,12 @@ def get_tuning(args):
 def show_chord(config, chord):
     chord_shapes = ChordCollection()
     try:
-        c = Chord(chord)
+        p_chord = Chord(chord)
         if config.show_notes:
-            notes = c.components()
+            notes = p_chord.components()
             print(f"Notes: {', '.join(notes)}")
-    except ValueError as e:
-        error(2, f"Error looking up chord {chord}: {e}")
+    except ValueError as exc:
+        error(2, f"Error looking up chord {chord}: {exc}")
     scan_chords(config, chord_shapes=chord_shapes)
     if chord not in chord_shapes:
         error(1, f"No shape for \"{chord}\" found")
@@ -343,8 +343,8 @@ def show_all(config):
     for key in config.key or []:
         try:
             notes.extend(get_key_notes(key))
-        except UnknownKeyException as e:
-            error(10, e)
+        except UnknownKeyException as exc:
+            error(10, exc)
     for chord in config.allowed_chord or []:
         notes.extend(Chord(chord).components())
     if notes and any(map(is_flat, notes)):
