@@ -335,9 +335,12 @@ def show_chord(config, chord):
             continue
         if config.latex:
             lchord = chord.replace('M', 'maj')
-            print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shape))}}}")
+            shape_string = ','.join(map(str, shape))
+            print(f"\\defineukulelechord{{{lchord}}}{{{shape_string}}}")
         else:
-            print(f"{chord_names}: {','.join(['x' if x == -1 else str(x) for x in shape])}\t difficulty: {diff_string(difficulty, desc)}")
+            shape_string = ','.join(['x' if x == -1 else str(x) for x in shape])
+            d_string = diff_string(difficulty, desc)
+            print(f"{chord_names}: {shape_string}\t difficulty: {d_string}")
         if config.visualize:
             draw_shape(shape)
 
@@ -376,7 +379,9 @@ def show_all(config):
             lchord = chord.replace('M', 'maj')
             print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shape))}}}")
         else:
-            print(f"{chord}: {','.join(map(str, shape))}\t difficulty: {diff_string(difficulty, desc)}")
+            shape_string = ','.join(map(str, shape))
+            d_string = diff_string(difficulty, desc)
+            print(f"{chord}: {shape_string}\t difficulty: {d_string}")
         if config.visualize:
             draw_shape(shape)
 
