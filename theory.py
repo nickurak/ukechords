@@ -12,7 +12,7 @@ class UnknownKeyException(Exception):
 def add_no5_quality():
     new_qs = []
     # Hack -- get list of existing qualities
-    for name, quality in QualityManager()._qualities.items():
+    for name, quality in QualityManager()._qualities.items(): # pylint: disable=protected-access
         no5name = name + 'no5'
         if '/' in name or not 7 in quality.components:
             continue
@@ -24,7 +24,7 @@ def add_no5_quality():
 
 def add_7sus2_quality():
     new_qs = []
-    for name, quality in QualityManager()._qualities.items():
+    for name, quality in QualityManager()._qualities.items(): # pylint: disable=protected-access
         if name != 'sus2':
             continue
         c = list(quality.components)
