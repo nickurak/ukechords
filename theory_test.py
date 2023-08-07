@@ -31,7 +31,6 @@ def test_sharpify():
     assert all(x == y for x, y in zip(flatify(['Bb', 'A#']), ['Bb', 'Bb']))
 
 
-@pytest.mark.xfail(strict=True)
 def test_force_flat_shape(uke_config):
     uke_config.tuning = ['G', 'C', 'E']
     uke_config.force_flat = True
