@@ -155,11 +155,15 @@ def flatify(arg):
     return normalizer(arg, flat_scale)
 
 
-def get_shape_notes(shape, tuning):
+def get_shape_notes(shape, tuning, force_flat=False):
+    if force_flat:
+        scale = flat_scale
+    else:
+        scale = chromatic_scale
     for string, position in enumerate(shape):
         if position == -1:
             continue
-        yield chromatic_scale[note_intervals[tuning[string]] + position]
+        yield scale[note_intervals[tuning[string]] + position]
 
 
 def is_flat(note):
@@ -289,8 +293,14 @@ def rank_shape_by_high_fret(shape):
     return sorted(shape, reverse=True)
 
 
-def get_chords_from_notes(notes):
-    chords = list(get_chords(notes))
+def get_chords_from_notes(notes, force_flat=False):
+    chords = []
+    for chord in get_chords(notes):
+        if force_flat:
+            flat_chord = flatify(Chord(chord).root) + Chord(chord).quality.quality
+            chords.append(flat_chord)
+        else:
+            chords.append(chord)
     chords.sort(key=lambda c: (len(c), c))
     return ','.join(chords)
 
