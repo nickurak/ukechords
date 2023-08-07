@@ -1,5 +1,3 @@
-import pytest
-
 from theory import sharpify, flatify
 
 
