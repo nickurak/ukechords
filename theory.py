@@ -414,9 +414,9 @@ def get_chords_by_shape(config, pshape):
             cshape = [(pos + offset) % 12 if pos > 0 else pos for pos in  pshape]
             shapes.append(cshape)
     for shape in shapes:
-        notes = set(get_shape_notes(shape, tuning=config.tuning))
+        notes = set(get_shape_notes(shape, tuning=config.tuning, force_flat=config.force_flat))
         prefix = ",".join(["x" if x == -1 else str(x) for x in shape])
-        chords = get_chords_from_notes(notes)
+        chords = get_chords_from_notes(notes, config.force_flat)
         if chords != '':
             yield prefix, chords, notes
 
