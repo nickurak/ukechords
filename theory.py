@@ -397,25 +397,30 @@ def show_all(config):
             draw_shape(shape)
 
 
-def show_chords_by_shape(config, pshape):
-    shape = [-1 if pos == 'x' else int(pos) for pos in pshape.split(",")]
-    shapes = [shape]
+def get_chords_by_shape(config, pshape):
+    shapes = [pshape]
     if config.slide:
         for offset in range(1, 12):
-            cshape = [(pos + offset) % 12 if pos > 0 else pos for pos in  shape]
+            cshape = [(pos + offset) % 12 if pos > 0 else pos for pos in  pshape]
             shapes.append(cshape)
     for shape in shapes:
         notes = set(get_shape_notes(shape, tuning=config.tuning))
-        if config.show_notes:
-            print(f"Notes: {', '.join(notes)}")
         prefix = ",".join(["x" if x == -1 else str(x) for x in shape])
         chords = get_chords_from_notes(notes)
-        if config.visualize:
-            draw_shape(shape)
         if chords != '':
-            print(f'{prefix}: {chords}')
+            yield prefix, chords, notes
+
+def show_chords_by_shape(config, pshape):
+    pshape = [-1 if pos == 'x' else int(pos) for pos in pshape.split(",")]
+    for shape, chords, notes in get_chords_by_shape(config, pshape):
+        if config.show_notes:
+            print(f"Notes: {', '.join(notes)}")
+        if config.visualize:
+            draw_shape([-1 if pos == 'x' else int(pos) for pos in shape.split(',')])
+        print(f'{shape}: {chords}')
+
     if not config.slide:
-        print(f"Difficulty: {diff_string(*get_shape_difficulty(shape, config.tuning))}")
+        print(f"Difficulty: {diff_string(*get_shape_difficulty(pshape, config.tuning))}")
 
 
 def show_chords_by_notes(_, notes):
