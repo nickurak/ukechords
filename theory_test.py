@@ -12,6 +12,7 @@ class UkeTestConfig():
         self.show_notes = False
         self.visualize = False
         self.force_flat = False
+        self.qualities = False
 
 
 @pytest.fixture
