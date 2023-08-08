@@ -419,7 +419,7 @@ def get_chords_by_shape(config, pshape):
         if config.qualities:
             chords = [c for c in chords if Chord(c).quality.quality in config.qualities]
         if chords:
-            yield shape_str, chords, notes
+            yield shape, chords, notes
 
 def show_chords_by_shape(config, pshape):
     pshape = [-1 if pos == 'x' else int(pos) for pos in pshape.split(",")]
@@ -428,7 +428,7 @@ def show_chords_by_shape(config, pshape):
             print(f"Notes: {', '.join(notes)}")
         if config.visualize:
             draw_shape([-1 if pos == 'x' else int(pos) for pos in shape.split(',')])
-        print(f'{shape}: {",".join(chords)}')
+        print(f'{",".join(map(str, shape))}: {",".join(chords)}')
 
     if not config.slide:
         print(f"Difficulty: {diff_string(*get_shape_difficulty(pshape, config.tuning))}")
