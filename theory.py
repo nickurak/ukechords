@@ -416,16 +416,14 @@ def get_chords_by_shape(config, pshape):
         notes = set(get_shape_notes(shape, tuning=config.tuning, force_flat=config.force_flat))
         shape_str = ",".join(["x" if x == -1 else str(x) for x in shape])
         chords = get_chords_from_notes(notes, config.force_flat)
+        if config.qualities:
+            chords = [c for c in chords if Chord(c).quality.quality in config.qualities]
         if chords:
             yield shape_str, chords, notes
 
 def show_chords_by_shape(config, pshape):
     pshape = [-1 if pos == 'x' else int(pos) for pos in pshape.split(",")]
     for shape, chords, notes in get_chords_by_shape(config, pshape):
-        if config.qualities:
-            chords = [c for c in chords if Chord(c).quality.quality in config.qualities]
-            if not chords:
-                continue
         if config.show_notes:
             print(f"Notes: {', '.join(notes)}")
         if config.visualize:
