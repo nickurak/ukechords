@@ -32,3 +32,7 @@ def save_scanned_chords(config, chord_shapes, max_fret):
     filename = cached_filename(config.base, max_fret, config.tuning, config.max_difficulty)
     with open(filename, "wb") as cache:
         pickle.dump(chord_shapes.dictionary, cache)
+
+
+def csv(lst, sep=','):
+    return sep.join(map(str, lst))
