@@ -301,8 +301,7 @@ def get_chords_from_notes(notes, force_flat=False):
             chords.append(flat_chord)
         else:
             chords.append(chord)
-    chords.sort(key=lambda c: (len(c), c))
-    return ','.join(chords)
+    return sorted(chords, key=lambda c: (len(c), c))
 
 
 def get_tuning(args):
@@ -417,7 +416,7 @@ def get_chords_by_shape(config, pshape):
         notes = set(get_shape_notes(shape, tuning=config.tuning, force_flat=config.force_flat))
         shape_str = ",".join(["x" if x == -1 else str(x) for x in shape])
         chords = get_chords_from_notes(notes, config.force_flat)
-        if chords != '':
+        if chords:
             yield shape_str, chords, notes
 
 def show_chords_by_shape(config, pshape):
@@ -427,14 +426,14 @@ def show_chords_by_shape(config, pshape):
             print(f"Notes: {', '.join(notes)}")
         if config.visualize:
             draw_shape([-1 if pos == 'x' else int(pos) for pos in shape.split(',')])
-        print(f'{shape}: {chords}')
+        print(f'{shape}: {",".join(chords)}')
 
     if not config.slide:
         print(f"Difficulty: {diff_string(*get_shape_difficulty(pshape, config.tuning))}")
 
 
 def show_chords_by_notes(_, notes):
-    print(f"{','.join(notes)}: {get_chords_from_notes(notes)}")
+    print(f"{','.join(notes)}: {','.join(get_chords_from_notes(notes))}")
 
 
 def show_key(_, key):
