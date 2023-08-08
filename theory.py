@@ -5,6 +5,7 @@ from pychord import find_chords_from_notes
 from pychord import Chord, QualityManager
 
 from utils import error, load_scanned_chords, save_scanned_chords
+from utils import csv
 
 class UnknownKeyException(Exception):
     pass
@@ -127,7 +128,7 @@ def get_shape_difficulty(shape, tuning=None):
             chords = list(get_chords(set(get_shape_notes(barre_shape, tuning=tuning))))
             chords.sort(key=lambda c: (len(c), c))
             chord = chords[0] if len(chords) > 0 else '<nc>'
-            barre_chord_string = f"{','.join(map(str, barre_shape))}:{chord}"
+            barre_chord_string = f"{csv(barre_shape)}:{chord}"
             details = f"else {barre_difficulty:.1f}: barred {min(shape)} + {barre_chord_string}" if tuning else None
         if barre_difficulty < difficulty:
             details =  f"barre {min(shape)} + {barre_chord_string}, else {difficulty:.1f}" if tuning else None
@@ -338,16 +339,16 @@ def show_chord(config, chord):
     for shape in shapes[:config.num or len(shapes)]:
         if not chord_names:
             other_names = get_other_names(shape, chord, config.tuning)
-            chord_names = ",".join([chord] + sorted(other_names))
+            chord_names = csv([chord] + sorted(other_names))
         difficulty, desc = get_shape_difficulty(shape, tuning=config.tuning)
         if difficulty > config.max_difficulty:
             continue
         if config.latex:
             lchord = chord.replace('M', 'maj')
-            shape_string = ','.join(map(str, shape))
+            shape_string = csv(shape)
             print(f"\\defineukulelechord{{{lchord}}}{{{shape_string}}}")
         else:
-            shape_string = ','.join(['x' if x == -1 else str(x) for x in shape])
+            shape_string = csv(['x' if x == -1 else x for x in shape])
             d_string = diff_string(difficulty, desc)
             print(f"{chord_names}: {shape_string}\t difficulty: {d_string}")
         if config.visualize:
@@ -397,9 +398,9 @@ def show_all(config):
             continue
         if config.latex:
             lchord = chord.replace('M', 'maj')
-            print(f"\\defineukulelechord{{{lchord}}}{{{','.join(map(str, shape))}}}")
+            print(f"\\defineukulelechord{{{lchord}}}{{{csv(shape)}}}")
         else:
-            shape_string = ','.join(map(str, shape))
+            shape_string = csv(shape)
             d_string = diff_string(difficulty, desc)
             print(f"{chord}: {shape_string}\t difficulty: {d_string}")
         if config.visualize:
@@ -414,7 +415,7 @@ def get_chords_by_shape(config, pshape):
             shapes.append(cshape)
     for shape in shapes:
         notes = set(get_shape_notes(shape, tuning=config.tuning, force_flat=config.force_flat))
-        shape_str = ",".join(["x" if x == -1 else str(x) for x in shape])
+        shape_str = csv(["x" if x == -1 else str(x) for x in shape])
         chords = get_chords_from_notes(notes, config.force_flat)
         if config.qualities:
             chords = [c for c in chords if Chord(c).quality.quality in config.qualities]
@@ -425,24 +426,24 @@ def show_chords_by_shape(config, pshape):
     pshape = [-1 if pos == 'x' else int(pos) for pos in pshape.split(",")]
     for shape, chords, notes in get_chords_by_shape(config, pshape):
         if config.show_notes:
-            print(f"Notes: {', '.join(notes)}")
+            print(f"Notes: {csv(notes, sep=', ')}")
         if config.visualize:
             draw_shape([-1 if pos == 'x' else int(pos) for pos in shape.split(',')])
-        print(f'{",".join(map(str, shape))}: {",".join(chords)}')
+        print(f'{csv(shape)}: {csv(chords)}')
 
     if not config.slide:
         print(f"Difficulty: {diff_string(*get_shape_difficulty(pshape, config.tuning))}")
 
 
 def show_chords_by_notes(_, notes):
-    print(f"{','.join(notes)}: {','.join(get_chords_from_notes(notes))}")
+    print(f"{csv(notes)}: {csv(get_chords_from_notes(notes))}")
 
 
 def show_key(_, key):
     other_keys = get_dupe_scales(key)
     if other_keys:
-        other_str = f" ({', '.join(other_keys)})"
+        other_str = f" ({csv(other_keys)})"
     else:
         other_str = ""
     print(f"{key}{other_str}:")
-    print(f"{', '.join(get_key_notes(key))}")
+    print(f"{csv(get_key_notes(key))}")
