@@ -39,7 +39,7 @@ def test_force_flat_shape(uke_config):
     assert len(resp) == 1
     shape, chords, notes = resp[0]
     assert shape == "3,2,1"
-    assert chords == "Bb"
+    assert chords == ['Bb']
     assert notes == set(['Bb', 'F', 'D'])
 
 def test_no_force_flat_shape(uke_config):
@@ -49,5 +49,5 @@ def test_no_force_flat_shape(uke_config):
     assert len(resp) == 1
     shape, chords, notes = resp[0]
     assert shape == "3,2,1"
-    assert chords == "A#"
+    assert chords == ['A#']
     assert notes == set(['A#', 'F', 'D'])
