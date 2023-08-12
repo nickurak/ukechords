@@ -16,6 +16,7 @@ class UkeTestConfig():
         self.visualize = False
         self.force_flat = False
         self.qualities = False
+        self.no_cache = True
 
 
 @pytest.fixture
