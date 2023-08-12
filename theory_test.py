@@ -6,6 +6,7 @@ from theory import sharpify, flatify
 from theory import get_chords_by_shape
 from theory import add_no5_quality, add_7sus2_quality
 from theory import ChordCollection, scan_chords
+from theory import get_key_notes, get_dupe_scales
 
 
 class UkeTestConfig():
@@ -77,3 +78,13 @@ def test_basic_scan(uke_config):
     chord_shapes = ChordCollection()
     scan_chords(uke_config, chord_shapes, max_fret=3)
     assert chord_shapes['C'] is not None
+
+def test_scale():
+    key1 = 'C'
+    key2 = 'Am'
+
+    notes1 = set(get_key_notes(key1))
+    notes2 = set( get_key_notes(key2))
+    assert notes1 == notes2
+    dupes = get_dupe_scales(key1)
+    assert 'Aminor' in dupes
