@@ -1,7 +1,10 @@
 import pytest
 
+from pychord import Chord
+
 from theory import sharpify, flatify
 from theory import get_chords_by_shape
+from theory import add_no5_quality, add_7sus2_quality
 
 
 class UkeTestConfig():
@@ -52,3 +55,15 @@ def test_no_force_flat_shape(uke_config):
     assert shape == [3, 2, 1]
     assert chords == ['A#']
     assert notes == set(['A#', 'F', 'D'])
+
+def test_no5_quality():
+    with pytest.raises(ValueError):
+        Chord('C9no5')
+    add_no5_quality()
+    Chord('C9no5')
+
+def test_7sus2_quality():
+    with pytest.raises(ValueError):
+        Chord('C7sus2')
+    add_7sus2_quality()
+    Chord('C7sus2')
