@@ -5,10 +5,11 @@ from pychord import Chord
 from theory import sharpify, flatify
 from theory import get_chords_by_shape
 from theory import add_no5_quality, add_7sus2_quality
+from theory import ChordCollection, scan_chords
 
 
 class UkeTestConfig():
-    # pylint: disable=too-few-public-methods
+    # pylint: disable=too-few-public-methods,too-many-instance-attributes
     def __init__(self):
         self.slide = False
         self.tuning = ['C', 'E', 'G']
@@ -17,6 +18,8 @@ class UkeTestConfig():
         self.force_flat = False
         self.qualities = False
         self.no_cache = True
+        self.base = 0
+        self.max_difficulty = 20
 
 
 @pytest.fixture
@@ -68,3 +71,9 @@ def test_7sus2_quality():
         Chord('C7sus2')
     add_7sus2_quality()
     Chord('C7sus2')
+
+
+def test_basic_scan(uke_config):
+    chord_shapes = ChordCollection()
+    scan_chords(uke_config, chord_shapes, max_fret=3)
+    assert chord_shapes['C'] is not None
