@@ -6,7 +6,7 @@ def test_no_args(mocker):
     mocker.patch('sys.exit')
 
     parser = get_parser()
-    args = get_args(parser)
+    args = get_args(parser=parser, args=[])
     UkeConfig(args)
 
     args, _ = mock_error.call_args

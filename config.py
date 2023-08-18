@@ -141,5 +141,5 @@ def get_parser():
     return parser
 
 
-def get_args(parser):
-    return parser.parse_args()
+def get_args(parser, args):
+    return parser.parse_args(args)
