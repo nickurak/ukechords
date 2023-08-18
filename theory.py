@@ -53,11 +53,8 @@ class ChordCollection():
     def  __contains__(self, chord):
         cchord = Chord(chord)
         for _, (_, ichord) in self.dictionary.items():
-            try:
-                if ichord == cchord:
-                    return True
-            except ValueError:
-                pass
+            if ichord == cchord:
+                return True
         return False
 
     def __setitem__(self, chord, val):
@@ -66,11 +63,8 @@ class ChordCollection():
     def __getitem__(self, chord):
         cchord = Chord(chord)
         for _, (shapelist, ichord) in self.dictionary.items():
-            try:
-                if ichord == cchord:
-                    return shapelist
-            except ValueError:
-                pass
+            if ichord == cchord:
+                return shapelist
         raise IndexError
 
     def keys(self):
