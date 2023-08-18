@@ -77,7 +77,11 @@ def test_7sus2_quality():
 def test_basic_scan(uke_config):
     chord_shapes = ChordCollection()
     scan_chords(uke_config, chord_shapes, max_fret=3)
+    assert 'C' in chord_shapes
     assert chord_shapes['C'] is not None
+    with pytest.raises(IndexError):
+        _ = chord_shapes['C9']
+    assert 'C' in chord_shapes.keys()
 
 def test_scale():
     key1 = 'C'
