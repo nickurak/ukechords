@@ -10,7 +10,7 @@ from config import UkeConfig, get_args, get_parser
 def main():
     add_no5_quality()
     add_7sus2_quality()
-    config = UkeConfig(get_args(get_parser()))
+    config = UkeConfig(get_args(parser=get_parser(), args=sys.argv[1:]))
     config.command(config)
     return 0
 
