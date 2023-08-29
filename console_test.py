@@ -1,8 +1,5 @@
-import pytest
-
 from ident import main
 
-@pytest.mark.xfail(strict=True)
 def test_list_all(capsys):
     main('-a -t G,C,E -p -k C'.split())
     captured = capsys.readouterr()
