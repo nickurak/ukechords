@@ -344,7 +344,7 @@ def show_chord(config, chord):
         else:
             shape_string = csv(['x' if x == -1 else x for x in shape])
             d_string = diff_string(difficulty, desc)
-            print(f"{chord_names}: {shape_string}\t difficulty: {d_string}")
+            print(f"{chord_names}: {shape_string}\tdifficulty: {d_string}")
         if config.visualize:
             draw_shape(shape)
 
@@ -396,7 +396,7 @@ def show_all(config):
         else:
             shape_string = csv(shape)
             d_string = diff_string(difficulty, desc)
-            print(f"{chord}: {shape_string}\t difficulty: {d_string}")
+            print(f"{chord}: {shape_string}\tdifficulty: {d_string}")
         if config.visualize:
             draw_shape(shape)
 
