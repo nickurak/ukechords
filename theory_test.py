@@ -1,5 +1,6 @@
-import pytest
+import subprocess
 
+import pytest
 from pychord import Chord
 
 from theory import sharpify, flatify
@@ -45,16 +46,15 @@ def test_no_force_flat_shape(uke_config):
     assert notes == set(['A#', 'F', 'D'])
 
 def test_no5_quality():
-    with pytest.raises(ValueError):
-        Chord('C9no5')
     add_no5_quality()
     Chord('C9no5')
 
 def test_7sus2_quality():
-    with pytest.raises(ValueError):
-        Chord('C7sus2')
     add_7sus2_quality()
     Chord('C7sus2')
+
+def test_clean_missing_qualities():
+    subprocess.run(['pytest', '-s', 'theory_test_pre_add_qualities.py'],  check=True)
 
 
 def test_basic_scan(uke_config):
