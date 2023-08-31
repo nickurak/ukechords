@@ -16,7 +16,6 @@ from uketestconfig import uke_config #pylint: disable=unused-import
 
 # pylint: disable=redefined-outer-name
 
-
 def test_sharpify():
     assert  sharpify('Bb') == 'A#'
     assert  sharpify('A#') == 'A#'
@@ -38,6 +37,7 @@ def test_force_flat_shape(uke_config):
     assert chords == ['Bb']
     assert notes == set(['Bb', 'F', 'D'])
 
+
 def test_no_force_flat_shape(uke_config):
     uke_config.tuning = ['G', 'C', 'E']
     pshape = [3, 2, 1]
@@ -48,13 +48,16 @@ def test_no_force_flat_shape(uke_config):
     assert chords == ['A#']
     assert notes == set(['A#', 'F', 'D'])
 
+
 def test_no5_quality():
     add_no5_quality()
     Chord('C9no5')
 
+
 def test_7sus2_quality():
     add_7sus2_quality()
     Chord('C7sus2')
+
 
 def get_test_code_for_missing_quality(base, quality):
     chord = f'{base}{quality}'
@@ -69,6 +72,7 @@ def test_missing_{quality}_quality():
         Chord('{chord}')
 """
 
+
 @contextlib.contextmanager
 def get_missing_quality_tmpfile(quality):
     prefix = f'test_missing_quality_{quality}_'
@@ -76,12 +80,14 @@ def get_missing_quality_tmpfile(quality):
     with tempfile.NamedTemporaryFile(mode='w', prefix=prefix, suffix='.py', dir=tdir) as tmp_test:
         yield tmp_test
 
+
 @pytest.mark.parametrize('base,quality', [('C', '9no5'), ('C', '7sus2')])
 def test_clean_missing_quality(base, quality):
     with get_missing_quality_tmpfile(quality) as tmp_test:
         tmp_test.write(get_test_code_for_missing_quality(base, quality))
         tmp_test.flush()
         subprocess.run(['pytest', '-s', tmp_test.name],  check=True)
+
 
 def test_basic_scan(uke_config):
     chord_shapes = ChordCollection()
@@ -91,6 +97,7 @@ def test_basic_scan(uke_config):
     with pytest.raises(IndexError):
         _ = chord_shapes['C9']
     assert 'C' in chord_shapes.keys()
+
 
 def test_scale():
     key1 = 'C'
