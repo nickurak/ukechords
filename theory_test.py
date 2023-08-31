@@ -82,7 +82,7 @@ def get_missing_quality_tmpfile(quality):
 
 
 def run_pytest(file, must_pass):
-    args = ['-s']
+    args = ['-s', '-v', '--tb=no', '--no-header']
     status = subprocess.run(['pytest', *args, file], check=False)
     if must_pass:
         assert status.returncode == 0
