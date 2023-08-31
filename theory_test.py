@@ -1,4 +1,7 @@
 import subprocess
+import tempfile
+import os
+import contextlib
 
 import pytest
 from pychord import Chord
@@ -53,9 +56,32 @@ def test_7sus2_quality():
     add_7sus2_quality()
     Chord('C7sus2')
 
-def test_clean_missing_qualities():
-    subprocess.run(['pytest', '-s', 'theory_test_pre_add_qualities.py'],  check=True)
+def get_test_code_for_missing_quality(base, quality):
+    chord = f'{base}{quality}'
+    return f"""\
+import pytest
 
+from pychord import Chord
+
+
+def test_missing_{quality}_quality():
+    with pytest.raises(ValueError):
+        Chord('{chord}')
+"""
+
+@contextlib.contextmanager
+def get_missing_quality_tmpfile(quality):
+    prefix = f'test_missing_quality_{quality}_'
+    tdir = os.getcwd()
+    with tempfile.NamedTemporaryFile(mode='w', prefix=prefix, suffix='.py', dir=tdir) as tmp_test:
+        yield tmp_test
+
+@pytest.mark.parametrize('base,quality', [('C', '9no5'), ('C', '7sus2')])
+def test_clean_missing_quality(base, quality):
+    with get_missing_quality_tmpfile(quality) as tmp_test:
+        tmp_test.write(get_test_code_for_missing_quality(base, quality))
+        tmp_test.flush()
+        subprocess.run(['pytest', '-s', tmp_test.name],  check=True)
 
 def test_basic_scan(uke_config):
     chord_shapes = ChordCollection()
