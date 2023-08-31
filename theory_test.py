@@ -81,12 +81,25 @@ def get_missing_quality_tmpfile(quality):
         yield tmp_test
 
 
-@pytest.mark.parametrize('base,quality', [('C', '9no5'), ('C', '7sus2')])
-def test_clean_missing_quality(base, quality):
+def run_pytest(file, must_pass):
+    args = ['-s']
+    status = subprocess.run(['pytest', *args, file], check=False)
+    if must_pass:
+        assert status.returncode == 0
+    else:
+        assert status.returncode != 0
+
+missing_quality_table = [('C', '9no5', True),
+                         ('C', '7sus2', True),
+                         ('C', '7', False)]
+
+
+@pytest.mark.parametrize('base,quality,missing', missing_quality_table)
+def test_clean_missing_quality(base, quality, missing):
     with get_missing_quality_tmpfile(quality) as tmp_test:
         tmp_test.write(get_test_code_for_missing_quality(base, quality))
         tmp_test.flush()
-        subprocess.run(['pytest', '-s', tmp_test.name],  check=True)
+        run_pytest(tmp_test.name, must_pass=missing)
 
 
 def test_basic_scan(uke_config):
