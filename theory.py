@@ -409,7 +409,6 @@ def get_chords_by_shape(config, pshape):
             shapes.append(cshape)
     for shape in shapes:
         notes = set(get_shape_notes(shape, tuning=config.tuning, force_flat=config.force_flat))
-        shape_str = csv(["x" if x == -1 else str(x) for x in shape])
         chords = get_chords_from_notes(notes, config.force_flat)
         if config.qualities:
             chords = [c for c in chords if Chord(c).quality.quality in config.qualities]
