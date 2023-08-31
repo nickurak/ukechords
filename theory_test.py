@@ -81,7 +81,7 @@ def get_missing_quality_tmpfile(quality):
         yield tmp_test
 
 
-def run_pytest(file, must_pass):
+def run_sub_pytest(file, must_pass):
     args = ['-s', '-v', '--tb=no', '--no-header']
     status = subprocess.run(['pytest', *args, file], check=False)
     if must_pass:
@@ -99,7 +99,7 @@ def test_clean_missing_quality(base, quality, missing):
     with get_missing_quality_tmpfile(quality) as tmp_test:
         tmp_test.write(get_test_code_for_missing_quality(base, quality))
         tmp_test.flush()
-        run_pytest(tmp_test.name, must_pass=missing)
+        run_sub_pytest(tmp_test.name, must_pass=missing)
 
 
 def test_basic_scan(uke_config):
