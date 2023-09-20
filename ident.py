@@ -11,7 +11,7 @@ def main(args):
     add_no5_quality()
     add_7sus2_quality()
     config = UkeConfig(get_args(parser=get_parser(), args=args))
-    config.run_command(config)
+    config.run_command()
     return 0
 
 

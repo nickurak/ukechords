@@ -101,9 +101,8 @@ class UkeConfig():
     def force_flat(self, value):
         self._force_flat = value
 
-    @property
     def run_command(self):
-        return self._command
+        return self._command(self)
 
     @property
     def key(self):
