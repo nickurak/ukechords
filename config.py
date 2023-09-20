@@ -102,7 +102,7 @@ class UkeConfig():
         self._force_flat = value
 
     @property
-    def command(self):
+    def run_command(self):
         return self._command
 
     @property
