@@ -49,3 +49,14 @@ def render_chord_list(config, data):
             print(f"{shape['chord_names']}: {shape_string}\tdifficulty: {d_string}")
         if config.visualize:
             draw_shape(shape['shape'])
+
+
+def render_chords_from_shape(config, data):
+    for shape in data['shapes']:
+        if config.show_notes:
+            print(f"Notes: {csv(shape['notes'], sep=', ')}")
+        if config.visualize:
+            draw_shape([-1 if pos == 'x' else int(pos) for pos in shape['shape']])
+        print(f'{csv(shape["shape"])}: {csv(shape["chords"])}')
+    if not config.slide:
+        print(f"Difficulty: {diff_string(*data['difficulty'])}")
