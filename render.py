@@ -60,3 +60,7 @@ def render_chords_from_shape(config, data):
         print(f'{csv(shape["shape"])}: {csv(shape["chords"])}')
     if not config.slide:
         print(f"Difficulty: {diff_string(*data['difficulty'])}")
+
+
+def render_chords_from_notes(_, data):
+    print(f"{csv(data['notes'])}: {csv(data['chords'])}")

@@ -395,7 +395,10 @@ def show_chords_by_shape(config, pshape):
     return output
 
 def show_chords_by_notes(_, notes):
-    print(f"{csv(notes)}: {csv(get_chords_from_notes(notes))}")
+    return {
+        'notes': list(notes),
+        'chords': get_chords_from_notes(notes)
+    }
 
 
 def show_key(_, key):
