@@ -1,4 +1,6 @@
 import argparse
+import json
+import sys
 
 from theory import get_tuning, rank_shape_by_difficulty, rank_shape_by_high_fret
 from theory import show_chord, show_all, show_chords_by_shape
@@ -14,6 +16,7 @@ class UkeConfig():
     def __init__(self, args):
         self._render_text = None
         self._base = -1 if args.mute else 0
+        self._json = args.json
         self._tuning = get_tuning(args)
         self._shape_ranker = rank_shape_by_high_fret if args.sort_by_position else rank_shape_by_difficulty
         self._max_difficulty = args.max_difficulty or 29
@@ -102,12 +105,20 @@ class UkeConfig():
     def force_flat(self):
         return self._force_flat
 
+    @property
+    def json(self):
+        return self._json
+
     @force_flat.setter
     def force_flat(self, value):
         self._force_flat = value
 
     def run_command(self):
         data = self._command(self)
+        if self.json:
+            json.dump(data, sys.stdout)
+            print()
+            return
         if self._render_text:
             return self._render_text(self, data)
 
@@ -144,6 +155,7 @@ def get_parser():
     parser.add_argument("--show-notes", action='store_true', help="Show the notes in chord")
     parser.add_argument("-f", "--force-flat", action='store_true', help="Show flat-variations of chord roots")
     parser.add_argument("-b", "--sort-by-position",  action='store_true', help="Sort to minimize high-position instead of difficulty")
+    parser.add_argument("-j", "--json", action='store_true', help="Output in json format if possible")
     return parser
 
 
