@@ -64,3 +64,12 @@ def render_chords_from_shape(config, data):
 
 def render_chords_from_notes(_, data):
     print(f"{csv(data['notes'])}: {csv(data['chords'])}")
+
+
+def render_key(_, data):
+    if data['other_keys']:
+        other_str = f" ({csv(data['other_keys'])})"
+    else:
+        other_str = ''
+    print(f"{data['key']}{other_str}:")
+    print(f"{csv(data['notes'])}")
