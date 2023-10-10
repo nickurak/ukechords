@@ -46,7 +46,7 @@ class UkeConfig():
             self._command = lambda x: show_chord(x, args.chord)
         if args.all_chords or args.key or args.allowed_chord or args.key:
             self._command = show_all
-        if args.chord:
+        if args.chord or args.all_chords or args.key or args.allowed_chord or args.key:
             self._render_text = render_chord_list
         self._key = args.key
         self._allowed_chord = args.allowed_chord
