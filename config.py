@@ -4,12 +4,15 @@ from theory import get_tuning, rank_shape_by_difficulty, rank_shape_by_high_fret
 from theory import show_chord, show_all, show_chords_by_shape
 from theory import show_chords_by_notes, show_key
 
+from render import render_chord_list
+
 from utils import error
 
 class UkeConfig():
     # pylint: disable=line-too-long
     # pylint: disable=too-many-instance-attributes
     def __init__(self, args):
+        self._render_text = None
         self._base = -1 if args.mute else 0
         self._tuning = get_tuning(args)
         self._shape_ranker = rank_shape_by_high_fret if args.sort_by_position else rank_shape_by_difficulty
@@ -40,6 +43,8 @@ class UkeConfig():
             self._command = lambda x: show_chord(x, args.chord)
         if args.all_chords or args.key or args.allowed_chord or args.key:
             self._command = show_all
+        if args.chord:
+            self._render_text = render_chord_list
         self._key = args.key
         self._allowed_chord = args.allowed_chord
         if args.shape:
@@ -102,7 +107,9 @@ class UkeConfig():
         self._force_flat = value
 
     def run_command(self):
-        return self._command(self)
+        data = self._command(self)
+        if self._render_text:
+            return self._render_text(self, data)
 
     @property
     def key(self):
