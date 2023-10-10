@@ -7,8 +7,6 @@ from pychord import Chord, QualityManager
 from utils import error, load_scanned_chords, save_scanned_chords
 from utils import csv
 
-from render import draw_shape
-
 class UnknownKeyException(Exception):
     pass
 
@@ -383,16 +381,18 @@ def get_chords_by_shape(config, pshape):
 
 def show_chords_by_shape(config, pshape):
     pshape = [-1 if pos == 'x' else int(pos) for pos in pshape.split(",")]
+    output = {}
+    output['shapes'] = []
     for shape, chords, notes in get_chords_by_shape(config, pshape):
-        if config.show_notes:
-            print(f"Notes: {csv(notes, sep=', ')}")
-        if config.visualize:
-            draw_shape([-1 if pos == 'x' else int(pos) for pos in shape.split(',')])
-        print(f'{csv(shape)}: {csv(chords)}')
+        output['shapes'].append({
+            'shape': shape,
+            'chords': chords,
+            'notes': list(notes)
+        })
 
     if not config.slide:
-        print(f"Difficulty: {diff_string(*get_shape_difficulty(pshape, config.tuning))}")
-
+        output['difficulty'] = get_shape_difficulty(pshape, config.tuning)
+    return output
 
 def show_chords_by_notes(_, notes):
     print(f"{csv(notes)}: {csv(get_chords_from_notes(notes))}")

@@ -6,7 +6,7 @@ from theory import get_tuning, rank_shape_by_difficulty, rank_shape_by_high_fret
 from theory import show_chord, show_all, show_chords_by_shape
 from theory import show_chords_by_notes, show_key
 
-from render import render_chord_list
+from render import render_chord_list, render_chords_from_shape
 
 from utils import error
 
@@ -52,6 +52,7 @@ class UkeConfig():
         self._allowed_chord = args.allowed_chord
         if args.shape:
             self._command = lambda x: show_chords_by_shape(x, args.shape)
+            self._render_text = render_chords_from_shape
         if args.notes:
             self._command = lambda x: show_chords_by_notes(x, set(args.notes.split(",")))
         if args.show_key:
