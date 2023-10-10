@@ -120,11 +120,10 @@ class UkeConfig():
     def run_command(self):
         data = self._command(self)
         if self.json:
-            json.dump(data, sys.stdout)
+            json.dump(data, sys.stdout, indent= 2 if sys.stdout.isatty() else None)
             print()
-            return
-        if self._render_text:
-            return self._render_text(self, data)
+        elif self._render_text:
+            self._render_text(self, data)
 
     @property
     def key(self):
