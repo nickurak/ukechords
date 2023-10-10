@@ -316,7 +316,6 @@ def get_other_names(shape, chord_name, tuning):
             yield chord
 
 def show_chord(config, chord):
-    chord_shapes = ChordCollection()
     try:
         p_chord = Chord(chord)
         if config.show_notes:
@@ -324,6 +323,7 @@ def show_chord(config, chord):
             print(f"Notes: {', '.join(notes)}")
     except ValueError as exc:
         error(2, f"Error looking up chord {chord}: {exc}")
+    chord_shapes = ChordCollection()
     scan_chords(config, chord_shapes)
     if chord not in chord_shapes:
         error(1, f"No shape for \"{chord}\" found")
