@@ -38,6 +38,11 @@ def diff_string(difficulty, desc):
 def render_chord_list(config, data):
     if config.show_notes:
         print(f"Notes: {', '.join(data['notes'])}")
+    name_width = 0
+    shape_width = 0
+    for shape in data['shapes']:
+        name_width = max(name_width, len(shape['chord_names']))
+        shape_width = max(shape_width, len(csv(['x' if x == -1 else x for x in shape['shape']])))
     for shape in data['shapes']:
         if config.latex:
             lchord = shape['chord'].replace('M', 'maj')
@@ -46,7 +51,7 @@ def render_chord_list(config, data):
         else:
             shape_string = csv(['x' if x == -1 else x for x in shape['shape']])
             d_string = diff_string(shape['difficulty'], shape['desc'])
-            print(f"{shape['chord_names']}: {shape_string}\tdifficulty: {d_string}")
+            print(f"{shape['chord_names']+':':{name_width+1}} {shape_string:{shape_width}} difficulty: {d_string}")
         if config.visualize:
             draw_shape(shape['shape'])
 

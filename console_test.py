@@ -8,8 +8,8 @@ def test_list_all(capsys):
     for line in lines:
         if line == '':
             continue
-        (chord_shape, diff_string) = line.split("\t")
-        (chord, shape_str) = chord_shape.split(': ')
+        (chord, shape_str, diff_string) = line.split(maxsplit=2)
+        chord = chord.rstrip(':')
         shape = shape_str.split(',')
         chords[chord] = {'shape': shape, 'difficulty': diff_string}
     assert chords['C']['shape'] == ['0', '0', '0']
