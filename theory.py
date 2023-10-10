@@ -402,13 +402,11 @@ def show_chords_by_notes(_, notes):
 
 
 def show_key(_, key):
+    output = {}
+    output['key'] = key
     try:
-        other_keys = get_dupe_scales(key)
-        if other_keys:
-            other_str = f" ({csv(other_keys)})"
-        else:
-            other_str = ""
-        print(f"{key}{other_str}:")
-        print(f"{csv(get_key_notes(key))}")
+        output['other_keys'] = list(get_dupe_scales(key))
+        output['notes'] = get_key_notes(key)
+        return output
     except UnknownKeyException as exc:
         error(11, exc)
