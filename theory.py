@@ -346,6 +346,8 @@ def show_all(config):
         pos = note_intervals[Chord(name).root] - sort_offset
         return pos % len(chromatic_scale), name
     ichords.sort(key=chord_sorter)
+    output = {}
+    output['shapes'] = []
     for chord in ichords:
         chord_shapes[chord].sort(key=config.shape_ranker)
         if config.force_flat:
@@ -358,16 +360,12 @@ def show_all(config):
         difficulty, desc = get_shape_difficulty(shape, tuning=config.tuning)
         if difficulty > config.max_difficulty:
             continue
-        if config.latex:
-            lchord = chord.replace('M', 'maj')
-            print(f"\\defineukulelechord{{{lchord}}}{{{csv(shape)}}}")
-        else:
-            shape_string = csv(shape)
-            d_string = diff_string(difficulty, desc)
-            print(f"{chord}: {shape_string}\tdifficulty: {d_string}")
-        if config.visualize:
-            draw_shape(shape)
-
+        output['shapes'].append({
+            'chord': chord,
+            'shape': shape, 'difficulty': difficulty, 'desc': desc,
+            'chord_names': chord
+        })
+    return output
 
 def get_chords_by_shape(config, pshape):
     shapes = [pshape]
