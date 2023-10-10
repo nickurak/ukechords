@@ -7,6 +7,8 @@ from pychord import Chord, QualityManager
 from utils import error, load_scanned_chords, save_scanned_chords
 from utils import csv
 
+from render import draw_shape
+
 class UnknownKeyException(Exception):
     pass
 
@@ -250,36 +252,6 @@ def diff_string(difficulty, desc):
     return f"{difficulty:.1f} ({desc})" if desc else f"{difficulty:.1f}"
 
 
-marks = {
-    3: ' ╷╵ ',
-    5: ' ╷╵ ',
-    7: ' ╷╵ ',
-    10: ' ╷╵ ',
-    12: '╷╵╷╵',
-}
-
-
-def draw_shape(shape):
-    max_pos = max([*shape, 3])+1
-    lines = ['─'] * max_pos
-    top = '╓' + '┬'.join(lines) + '─'
-    bottom = '╙' + '┴'.join(lines) + '─'
-    print(top)
-    for string, pos in enumerate(reversed(shape)):
-        chars = [' '] * max_pos
-        for mark in [3, 5, 7, 10, 12]:
-            if mark < max_pos + 1 and (string - (len(shape) - 4) // 2) < len(marks[mark]):
-                chars[mark-1] = marks[mark][string - (len(shape) - 4) // 2]
-        if pos >= 0:
-            print('║', end='')
-            if pos > 0:
-                chars[pos - 1] = '●'
-        else:
-            print('║⃠', end='')
-        print('│'.join(chars))
-    print(bottom)
-
-
 def rank_shape_by_difficulty(shape):
     return get_shape_difficulty(shape)[0]
 
@@ -316,38 +288,34 @@ def get_other_names(shape, chord_name, tuning):
             yield chord
 
 def show_chord(config, chord):
-    try:
-        p_chord = Chord(chord)
-        if config.show_notes:
+    output = {}
+    if config.show_notes:
+        try:
+            p_chord = Chord(chord)
             notes = p_chord.components()
-            print(f"Notes: {', '.join(notes)}")
-    except ValueError as exc:
-        error(2, f"Error looking up chord {chord}: {exc}")
+            output['notes'] = notes
+        except ValueError as exc:
+            error(2, f"Error looking up chord {chord}: {exc}")
     chord_shapes = ChordCollection()
     scan_chords(config, chord_shapes)
     if chord not in chord_shapes:
         error(1, f"No shape for \"{chord}\" found")
     shapes = chord_shapes[chord]
     shapes.sort(key=config.shape_ranker)
-    chord_names = None
+    other_names = None
+    output['shapes'] = []
     for shape in shapes[:config.num or len(shapes)]:
-        if not chord_names:
-            other_names = get_other_names(shape, chord, config.tuning)
-            chord_names = csv([chord] + sorted(other_names))
+        if not other_names:
+            other_names = list(get_other_names(shape, chord, config.tuning))
         difficulty, desc = get_shape_difficulty(shape, tuning=config.tuning)
         if difficulty > config.max_difficulty:
             continue
-        if config.latex:
-            lchord = chord.replace('M', 'maj')
-            shape_string = csv(shape)
-            print(f"\\defineukulelechord{{{lchord}}}{{{shape_string}}}")
-        else:
-            shape_string = csv(['x' if x == -1 else x for x in shape])
-            d_string = diff_string(difficulty, desc)
-            print(f"{chord_names}: {shape_string}\tdifficulty: {d_string}")
-        if config.visualize:
-            draw_shape(shape)
-
+        output['shapes'].append({
+            'chord': chord,
+            'shape': shape, 'difficulty': difficulty, 'desc': desc,
+            'chord_names': csv([chord] + sorted(other_names))
+        })
+    return output
 
 def chord_built_from_notes(chord, notes):
     for note in sharpify(Chord(chord).components()):
