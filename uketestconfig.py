@@ -1,5 +1,10 @@
 import pytest
 
+
+def shape_ranker(shape):
+    return sum(shape)
+
+
 class UkeTestConfig():
     # pylint: disable=too-few-public-methods,too-many-instance-attributes
     def __init__(self):
@@ -12,6 +17,8 @@ class UkeTestConfig():
         self.no_cache = True
         self.base = 0
         self.max_difficulty = 20
+        self.shape_ranker = shape_ranker
+        self.num = 10
 
 
 @pytest.fixture

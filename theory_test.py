@@ -4,6 +4,8 @@ from theory import sharpify, flatify
 from theory import get_chords_by_shape
 from theory import ChordCollection, scan_chords
 from theory import get_key_notes, get_dupe_scales
+from theory import show_chord
+
 
 from uketestconfig import uke_config #pylint: disable=unused-import
 
@@ -61,3 +63,14 @@ def test_scale():
     assert notes1 == notes2
     dupes = get_dupe_scales(key1)
     assert 'Aminor' in dupes
+
+
+def test_show_chord(uke_config):
+    uke_config.show_notes = True
+    output = show_chord(uke_config, 'C#')
+    assert {shape['chord'] for shape in output['shapes']}== { 'C#'}
+    assert len(output['shapes']) == 2
+    first_result  = output['shapes'][0]
+    assert first_result['chord'] == 'C#'
+    assert first_result['shape'] == [1, 1, 1]
+    assert output['notes'] == ['C#', 'F', 'G#']
