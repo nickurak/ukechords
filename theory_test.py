@@ -4,7 +4,7 @@ from theory import sharpify, flatify
 from theory import get_chords_by_shape
 from theory import ChordCollection, scan_chords
 from theory import get_key_notes, get_dupe_scales
-from theory import show_chord
+from theory import show_chord, show_chords_by_shape
 
 
 from uketestconfig import uke_config #pylint: disable=unused-import
@@ -74,3 +74,14 @@ def test_show_chord(uke_config):
     assert first_result['chord'] == 'C#'
     assert first_result['shape'] == [1, 1, 1]
     assert output['notes'] == ['C#', 'F', 'G#']
+
+
+@pytest.mark.xfail(strict=True)
+def test_show_chordless_shape(uke_config):
+    chordless_shape = 'x,x,x'
+    output = show_chords_by_shape(uke_config, chordless_shape)
+    shapes =  output['shapes']
+    assert len(shapes) == 1
+    only_shape = shapes[0]
+    assert only_shape['chords'] == []
+    assert only_shape['shape'] == [-1, -1, -1]
