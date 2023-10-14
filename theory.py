@@ -385,12 +385,17 @@ def show_chords_by_shape(config, pshape):
     pshape = [-1 if pos == 'x' else int(pos) for pos in pshape.split(",")]
     output = {}
     output['shapes'] = []
-    for shape, chords, notes in get_chords_by_shape(config, pshape):
+    def append_shape(shape, chords, notes):
         output['shapes'].append({
             'shape': shape,
             'chords': chords,
             'notes': list(notes)
         })
+    for shape, chords, notes in get_chords_by_shape(config, pshape):
+        append_shape(shape, chords, notes)
+    if not output['shapes']:
+        notes = set(get_shape_notes(pshape, tuning=config.tuning, force_flat=config.force_flat))
+        append_shape(pshape, [], notes)
 
     if not config.slide:
         output['difficulty'] = get_shape_difficulty(pshape, config.tuning)
