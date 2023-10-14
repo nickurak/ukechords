@@ -31,8 +31,8 @@ def draw_shape(shape):
     print(bottom)
 
 
-def diff_string(difficulty, desc):
-    return f"{difficulty:.1f} ({desc})" if desc else f"{difficulty:.1f}"
+def diff_string(difficulty, desc, diff_width=0):
+    return f"{difficulty:{diff_width}.1f} ({desc})" if desc else f"{difficulty:{diff_width}.1f}"
 
 
 def render_chord_list(config, data):
@@ -40,9 +40,11 @@ def render_chord_list(config, data):
         print(f"Notes: {', '.join(data['notes'])}")
     name_width = 0
     shape_width = 0
+    diff_width = 0
     for shape in data['shapes']:
         name_width = max(name_width, len(shape['chord_names']))
         shape_width = max(shape_width, len(csv(['x' if x == -1 else x for x in shape['shape']])))
+        diff_width = max(diff_width, len(f"{shape['difficulty']:.1}"))
     for shape in data['shapes']:
         if config.latex:
             lchord = shape['chord'].replace('M', 'maj')
@@ -50,9 +52,9 @@ def render_chord_list(config, data):
             print(f"\\defineukulelechord{{{lchord}}}{{{shape_string}}}")
         else:
             shape_string = csv(['x' if x == -1 else x for x in shape['shape']])
-            d_string = diff_string(shape['difficulty'], shape['desc'])
+            d_string = diff_string(shape['difficulty'], shape['desc'], diff_width=diff_width)
             # pylint: disable=line-too-long
-            print(f"{shape['chord_names']+':':{name_width+1}} {shape_string:{shape_width}} difficulty: {d_string}")
+            print(f"{shape['chord_names']+':':{name_width+1}} {shape_string:{shape_width}} difficulty:{d_string:}")
         if config.visualize:
             draw_shape(shape['shape'])
 
