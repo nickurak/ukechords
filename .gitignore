@@ -2,4 +2,4 @@
 /__pycache__
 \#*
 .coverage
-.git-check-commit-*
+/.git-check-commit
