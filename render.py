@@ -13,29 +13,16 @@ marks = {
 def get_shape_lines(shape):
     max_pos = max([*shape, 3])+1
     lines = ['─'] * max_pos
-    top = '╓' + '┬'.join(lines) + '─'
-    bottom = '╙' + '┴'.join(lines) + '─'
-    strings = []
-    for string  in range(0, len(shape)):
+    yield '╓' + '┬'.join(lines) + '─'
+    for string, pos in enumerate(reversed(shape)):
         chars = [' '] * max_pos
         for mark in [3, 5, 7, 10, 12]:
             if mark < max_pos + 1 and (string - (len(shape) - 4) // 2) < len(marks[mark]):
-                chars[mark-1] = list(reversed(marks[mark]))[string - (len(shape) - 4) // 2]
-        new_string = ['║']
-        for char in chars[:-1]:
-            new_string.extend([char, '│'])
-        new_string.append(chars[-1])
-        strings.append(new_string)
-
-    for string, pos in enumerate(shape):
+                chars[mark-1] = marks[mark][string - (len(shape) - 4) // 2]
         if pos > 0:
-            strings[string][2 * pos - 1] = '●'
-        elif pos < 0:
-            strings[string][0] = strings[string][0] + '⃠'
-    yield top
-    for string in reversed(strings):
-        yield ''.join(string)
-    yield bottom
+            chars[pos - 1] = '●'
+        yield '║' + ('⃠' if pos < 0 else '') + '│'.join(chars)
+    yield '╙' + '┴'.join(lines) + '─'
 
 def draw_shape(shape):
     for line in get_shape_lines(shape):
