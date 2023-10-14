@@ -10,26 +10,36 @@ marks = {
 }
 
 
-def draw_shape(shape):
+def get_shape_lines(shape):
     max_pos = max([*shape, 3])+1
     lines = ['─'] * max_pos
     top = '╓' + '┬'.join(lines) + '─'
     bottom = '╙' + '┴'.join(lines) + '─'
-    print(top)
-    for string, pos in enumerate(reversed(shape)):
+    strings = []
+    for string  in range(0, len(shape)):
         chars = [' '] * max_pos
         for mark in [3, 5, 7, 10, 12]:
             if mark < max_pos + 1 and (string - (len(shape) - 4) // 2) < len(marks[mark]):
-                chars[mark-1] = marks[mark][string - (len(shape) - 4) // 2]
-        if pos >= 0:
-            print('║', end='')
-            if pos > 0:
-                chars[pos - 1] = '●'
-        else:
-            print('║⃠', end='')
-        print('│'.join(chars))
-    print(bottom)
+                chars[mark-1] = list(reversed(marks[mark]))[string - (len(shape) - 4) // 2]
+        new_string = ['║']
+        for char in chars[:-1]:
+            new_string.extend([char, '│'])
+        new_string.append(chars[-1])
+        strings.append(new_string)
 
+    for string, pos in enumerate(shape):
+        if pos > 0:
+            strings[string][2 * pos - 1] = '●'
+        elif pos < 0:
+            strings[string][0] = strings[string][0] + '⃠'
+    yield top
+    for string in reversed(strings):
+        yield ''.join(string)
+    yield bottom
+
+def draw_shape(shape):
+    for line in get_shape_lines(shape):
+        print(line)
 
 def diff_string(difficulty, desc, diff_width=0):
     return f"{difficulty:{diff_width}.1f} ({desc})" if desc else f"{difficulty:{diff_width}.1f}"
