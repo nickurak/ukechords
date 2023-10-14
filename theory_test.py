@@ -76,7 +76,6 @@ def test_show_chord(uke_config):
     assert output['notes'] == ['C#', 'F', 'G#']
 
 
-@pytest.mark.xfail(strict=True)
 def test_show_chordless_shape(uke_config):
     chordless_shape = 'x,x,x'
     output = show_chords_by_shape(uke_config, chordless_shape)
