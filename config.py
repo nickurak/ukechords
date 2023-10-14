@@ -14,6 +14,7 @@ from utils import error
 class UkeConfig():
     # pylint: disable=line-too-long
     # pylint: disable=too-many-instance-attributes
+    # pylint: disable=too-many-branches
     def __init__(self, args):
         self._render_text = None
         self._base = -1 if args.mute else 0
