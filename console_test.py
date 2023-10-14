@@ -13,7 +13,7 @@ def test_list_all(capsys):
         shape = shape_str.split(',')
         chords[chord] = {'shape': shape, 'difficulty': diff_string}
     assert chords['C']['shape'] == ['0', '0', '0']
-    assert chords['C']['difficulty'] == 'difficulty: 0.0'
+    assert chords['C']['difficulty'].split() == ['difficulty:', '0.0']
 
 
 def test_get_by_shape(capsys):
