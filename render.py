@@ -51,6 +51,7 @@ def render_chord_list(config, data):
         else:
             shape_string = csv(['x' if x == -1 else x for x in shape['shape']])
             d_string = diff_string(shape['difficulty'], shape['desc'])
+            # pylint: disable=line-too-long
             print(f"{shape['chord_names']+':':{name_width+1}} {shape_string:{shape_width}} difficulty: {d_string}")
         if config.visualize:
             draw_shape(shape['shape'])

@@ -407,6 +407,6 @@ def show_key(_, key):
     try:
         output['other_keys'] = list(get_dupe_scales(key))
         output['notes'] = get_key_notes(key)
-        return output
     except UnknownKeyException as exc:
         error(11, exc)
+    return output
