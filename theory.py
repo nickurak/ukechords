@@ -37,6 +37,8 @@ def add_7sus2_quality():
 
 
 def get_chords(notes):
+    if not notes:
+        return
     for seq in itertools.permutations(notes):
         yield from [c.chord for c in find_chords_from_notes(seq) if not "/" in c.chord]
 
