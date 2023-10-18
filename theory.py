@@ -48,26 +48,24 @@ class CircularList(list):
         return super().__getitem__(index % len(self))
 
 
+def sharpify_chord(chord):
+    match = re.match('^([A-G][b#]?)(.*)$', chord)
+    (root, quality) = match.groups()
+    return f"{sharpify(root)}{quality}"
+
+
 class ChordCollection():
     def __init__(self):
         self.dictionary = {}
 
     def  __contains__(self, chord):
-        cchord = Chord(chord)
-        for _, (_, ichord) in self.dictionary.items():
-            if ichord == cchord:
-                return True
-        return False
+        return sharpify_chord(chord) in self.dictionary
 
     def __setitem__(self, chord, val):
-        self.dictionary[chord] = (val, Chord(chord))
+        self.dictionary[sharpify_chord(chord)] = val
 
     def __getitem__(self, chord):
-        cchord = Chord(chord)
-        for _, (shapelist, ichord) in self.dictionary.items():
-            if ichord == cchord:
-                return shapelist
-        raise KeyError
+        return self.dictionary[sharpify_chord(chord)]
 
     def keys(self):
         return self.dictionary.keys()
