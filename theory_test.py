@@ -49,7 +49,7 @@ def test_basic_scan(uke_config):
     scan_chords(uke_config, chord_shapes, max_fret=3)
     assert 'C' in chord_shapes
     assert chord_shapes['C'] is not None
-    with pytest.raises(IndexError):
+    with pytest.raises(KeyError):
         _ = chord_shapes['C9']
     assert 'C' in chord_shapes.keys()
 

@@ -67,7 +67,7 @@ class ChordCollection():
         for _, (shapelist, ichord) in self.dictionary.items():
             if ichord == cchord:
                 return shapelist
-        raise IndexError
+        raise KeyError
 
     def keys(self):
         return self.dictionary.keys()
