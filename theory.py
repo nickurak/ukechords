@@ -132,8 +132,12 @@ def get_shape_difficulty(shape, tuning=None):
 
 chromatic_scale = CircularList(['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'])
 flat_scale = CircularList(['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'])
+weird_sharp_scale = CircularList(['B#', 'C#', 'D', 'D#', 'E', 'E#', 'F#', 'G', 'G#', 'A', 'A#', 'B'])
+weird_flat_scale = CircularList(['C', 'Db', 'D', 'Eb', 'Fb', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'Cb'])
 note_intervals = {note: index for index, note in enumerate(chromatic_scale)}
 note_intervals |= {note: index for index, note in enumerate(flat_scale)}
+note_intervals |= {note: index for index, note in enumerate(weird_sharp_scale)}
+note_intervals |= {note: index for index, note in enumerate(weird_flat_scale)}
 
 
 def normalizer(arg, scale):
