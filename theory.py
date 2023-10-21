@@ -286,7 +286,7 @@ def get_tuning(args):
 
 def get_other_names(shape, chord_name, tuning):
     for chord in get_chords(set(get_shape_notes(shape, tuning))):
-        if  chord != chord_name:
+        if  sharpify_chord(chord) != sharpify_chord(chord_name):
             yield chord
 
 def show_chord(config, chord):
