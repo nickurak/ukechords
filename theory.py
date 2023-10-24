@@ -237,7 +237,8 @@ def scan_chords(config, chord_shapes, max_fret=12):
             notes_shapes_map[notes].append(shape)
             continue
         notes_shapes_map[notes] = [shape]
-        notes_chords_map[notes] = get_chords(notes)
+        if not notes in notes_chords_map:
+            notes_chords_map[notes] = get_chords(notes)
 
     for notes, chords in notes_chords_map.items():
         for chord in chords:
