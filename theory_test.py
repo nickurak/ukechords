@@ -4,7 +4,7 @@ from theory import sharpify, flatify
 from theory import get_chords_by_shape
 from theory import ChordCollection, scan_chords
 from theory import get_key_notes, get_dupe_scales
-from theory import show_chord, show_chords_by_shape
+from theory import show_chord, show_chords_by_shape, show_all
 
 
 from uketestconfig import uke_config #pylint: disable=unused-import
@@ -84,3 +84,16 @@ def test_show_chordless_shape(uke_config):
     only_shape = shapes[0]
     assert only_shape['chords'] == []
     assert only_shape['shape'] == [-1, -1, -1]
+
+
+def test_list_all(uke_config):
+    uke_config.qualities = ['', 'm', '7', 'dim', 'maj', 'm7']
+    uke_config.key = 'C'
+    uke_config.allowed_chord = False
+    output = show_all(uke_config)
+
+    c_shapes = [shape for shape in output['shapes'] if shape['chord'] == 'C']
+    assert len(c_shapes) == 1
+    c_shape = c_shapes[0]
+    assert c_shape['shape'] == [0, 0, 0]
+    assert c_shape['difficulty'] == 0.0
