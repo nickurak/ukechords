@@ -37,8 +37,8 @@ def test_load_save_cache(uke_config):
 def test_load_empty_cache(uke_config):
     shapes = FakeChordCollection()
     res = load_scanned_chords(uke_config, shapes, max_fret = 4)
-    assert res == False
-    assert shapes.dictionary == {}
+    assert res is False
+    assert not shapes.dictionary
 
 
 def test_cached_filename():
