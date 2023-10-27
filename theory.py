@@ -132,9 +132,10 @@ def get_shape_difficulty(shape, tuning=None):
 
 chromatic_scale = CircularList(['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'])
 flat_scale = CircularList(['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'])
-weirdos = {'C': 'B#', 'F': "E#", 'B': 'Cb', 'E': 'Fb'}
-weird_sharp_scale = CircularList([weirdos.get(n, n) for n in chromatic_scale])
-weird_flat_scale = CircularList([weirdos.get(n, n) for n in flat_scale])
+weird_sharps = {'C': 'B#', 'F': "E#"}
+weird_flats = {'B': 'Cb', 'E': 'Fb'}
+weird_sharp_scale = CircularList([weird_sharps.get(n, n) for n in chromatic_scale])
+weird_flat_scale = CircularList([weird_flats.get(n, n) for n in flat_scale])
 note_intervals = {note: index for index, note in enumerate(chromatic_scale)}
 note_intervals |= {note: index for index, note in enumerate(flat_scale)}
 note_intervals |= {note: index for index, note in enumerate(weird_sharp_scale)}

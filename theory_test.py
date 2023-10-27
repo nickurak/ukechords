@@ -99,7 +99,6 @@ def test_list_all(uke_config):
     assert c_shape['difficulty'] == 0.0
 
 
-@pytest.mark.xfail(strict=True)
 def test_weird_flat_sharps():
     assert weird_sharp_scale == ['B#', 'C#', 'D', 'D#', 'E', 'E#', 'F#', 'G', 'G#', 'A', 'A#', 'B']
     assert weird_flat_scale ==  ['C', 'Db', 'D', 'Eb', 'Fb', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'Cb']
