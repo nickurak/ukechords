@@ -34,6 +34,13 @@ def test_load_save_cache(uke_config):
     assert shapes.dictionary['hello'] == 'world'
 
 
+def test_load_empty_cache(uke_config):
+    shapes = FakeChordCollection()
+    res = load_scanned_chords(uke_config, shapes, max_fret = 4)
+    assert res == False
+    assert shapes.dictionary == {}
+
+
 def test_cached_filename():
     fn_str = cached_filename(-1, 4, ['A'], 50)
     assert fn_str.endswith("/cached_shapes/cache_-1_4_A_50.pcl")
