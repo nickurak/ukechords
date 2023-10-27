@@ -1,2 +1,2 @@
 [run]
-omit = *_test.py
+omit = *_test.py,conftest.py,uketestconfig.py
