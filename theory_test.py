@@ -5,7 +5,7 @@ from theory import get_chords_by_shape
 from theory import ChordCollection, scan_chords
 from theory import get_key_notes, get_dupe_scales
 from theory import show_chord, show_chords_by_shape, show_all
-
+from theory import weird_sharp_scale, weird_flat_scale
 
 from uketestconfig import uke_config #pylint: disable=unused-import
 
@@ -97,3 +97,9 @@ def test_list_all(uke_config):
     c_shape = c_shapes[0]
     assert c_shape['shape'] == [0, 0, 0]
     assert c_shape['difficulty'] == 0.0
+
+
+@pytest.mark.xfail(strict=True)
+def test_weird_flat_sharps():
+    assert weird_sharp_scale == ['B#', 'C#', 'D', 'D#', 'E', 'E#', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+    assert weird_flat_scale ==  ['C', 'Db', 'D', 'Eb', 'Fb', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'Cb']
