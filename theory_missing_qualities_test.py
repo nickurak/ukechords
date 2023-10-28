@@ -1,6 +1,5 @@
 import subprocess
 import tempfile
-import os
 import contextlib
 
 import pytest
@@ -23,8 +22,7 @@ def test_missing_{quality}_quality():
 @contextlib.contextmanager
 def get_missing_quality_tmpfile(quality):
     prefix = f'test_missing_quality_{quality}_'
-    tdir = os.getcwd()
-    with tempfile.NamedTemporaryFile(mode='w', prefix=prefix, suffix='.py', dir=tdir) as tmp_test:
+    with tempfile.NamedTemporaryFile(mode='w', prefix=prefix, suffix='.py') as tmp_test:
         yield tmp_test
 
 
