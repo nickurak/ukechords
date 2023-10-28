@@ -14,6 +14,7 @@ from theory import add_no5_quality, add_7sus2_quality
 
 # pylint: disable=redefined-outer-name
 
+
 def test_sharpify():
     assert sharpify('Bb') == 'A#'
     assert sharpify('A#') == 'A#'

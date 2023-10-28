@@ -37,6 +37,7 @@ missing_quality_table = [('C', '9no5', True),
                          ('C', '7sus2', True),
                          ('C', '7', False)]
 
+
 @pytest.mark.parametrize('base,quality,missing', missing_quality_table)
 def test_clean_missing_quality(base, quality, missing):
     with get_missing_quality_tmpfile(quality) as tmp_test:
