@@ -29,6 +29,7 @@ def get_missing_quality_tmpfile(quality):
 
 def run_sub_pytest(file):
     args = ['-s', '-v', '--tb=no', '--no-header']
+    print()
     subprocess.run(['pytest', *args, file], check=True)
 
 
