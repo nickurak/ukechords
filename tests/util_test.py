@@ -29,14 +29,14 @@ def test_load_save_cache(uke_config):
     shapes.dictionary = {'hello': 'world'}
     save_scanned_chords(uke_config, shapes, max_fret=4)
     shapes.dictionary = {}
-    res = load_scanned_chords(uke_config, shapes, max_fret = 4)
+    res = load_scanned_chords(uke_config, shapes, max_fret=4)
     assert res
     assert shapes.dictionary['hello'] == 'world'
 
 
 def test_load_empty_cache(uke_config):
     shapes = FakeChordCollection()
-    res = load_scanned_chords(uke_config, shapes, max_fret = 4)
+    res = load_scanned_chords(uke_config, shapes, max_fret=4)
     assert res is False
     assert not shapes.dictionary
 

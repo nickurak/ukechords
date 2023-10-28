@@ -19,7 +19,7 @@ def test_sharpify():
     assert sharpify('Bb') == 'A#'
     assert sharpify('A#') == 'A#'
     assert flatify('A#') == 'Bb'
-    assert flatify ('Bb') == 'Bb'
+    assert flatify('Bb') == 'Bb'
 
     assert all(x == y for x, y in zip(sharpify(['Bb', 'A#']), ['A#', 'A#']))
     assert all(x == y for x, y in zip(flatify(['Bb', 'A#']), ['Bb', 'Bb']))
@@ -63,7 +63,7 @@ def test_scale():
     key2 = 'Am'
 
     notes1 = set(get_key_notes(key1))
-    notes2 = set( get_key_notes(key2))
+    notes2 = set(get_key_notes(key2))
     assert notes1 == notes2
     dupes = get_dupe_scales(key1)
     assert 'Am' in dupes
@@ -72,7 +72,7 @@ def test_scale():
 def test_show_chord(uke_config):
     uke_config.show_notes = True
     output = show_chord(uke_config, 'C#')
-    assert {shape['chord'] for shape in output['shapes']}== { 'C#'}
+    assert {shape['chord'] for shape in output['shapes']} == {'C#'}
     assert len(output['shapes']) == 2
     first_result = output['shapes'][0]
     assert first_result['chord'] == 'C#'
