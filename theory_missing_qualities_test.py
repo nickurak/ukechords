@@ -30,11 +30,8 @@ def get_missing_quality_tmpfile(quality):
 
 def run_sub_pytest(file, must_pass):
     args = ['-s', '-v', '--tb=no', '--no-header']
-    status = subprocess.run(['pytest', *args, file], check=False)
-    if must_pass:
-        assert status.returncode == 0
-    else:
-        assert status.returncode != 0
+    subprocess.run(['pytest', *args, file], check=must_pass)
+
 
 missing_quality_table = [('C', '9no5', True),
                          ('C', '7sus2', True),
