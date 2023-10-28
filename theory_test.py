@@ -1,11 +1,14 @@
 import pytest
 
+from pychord import Chord
+
 from theory import sharpify, flatify
 from theory import get_chords_by_shape
 from theory import ChordCollection, scan_chords
 from theory import get_key_notes, get_dupe_scales
 from theory import show_chord, show_chords_by_shape, show_all
 from theory import weird_sharp_scale, weird_flat_scale
+from theory import add_no5_quality, add_7sus2_quality
 
 from uketestconfig import uke_config #pylint: disable=unused-import
 
@@ -102,3 +105,13 @@ def test_list_all(uke_config):
 def test_weird_flat_sharps():
     assert weird_sharp_scale == ['B#', 'C#', 'D', 'D#', 'E', 'E#', 'F#', 'G', 'G#', 'A', 'A#', 'B']
     assert weird_flat_scale ==  ['C', 'Db', 'D', 'Eb', 'Fb', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'Cb']
+
+
+def test_no5_quality():
+    add_no5_quality()
+    Chord('C9no5')
+
+
+def test_7sus2_quality():
+    add_7sus2_quality()
+    Chord('C7sus2')
