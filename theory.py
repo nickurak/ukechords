@@ -7,8 +7,10 @@ from pychord import Chord, QualityManager
 from utils import error, load_scanned_chords, save_scanned_chords
 from utils import csv
 
+
 class UnknownKeyException(Exception):
     pass
+
 
 def add_no5_quality():
     new_qs = []
@@ -283,10 +285,12 @@ def get_tuning(args):
         return ["G", "D", "E", "A"]
     return args.tuning.split(',')
 
+
 def get_other_names(shape, chord_name, tuning):
     for chord in get_chords(set(get_shape_notes(shape, tuning))):
         if sharpify_chord(chord) != sharpify_chord(chord_name):
             yield chord
+
 
 def show_chord(config, chord):
     output = {}
@@ -317,6 +321,7 @@ def show_chord(config, chord):
             'chord_names': csv([chord] + sorted(other_names))
         })
     return output
+
 
 def chord_built_from_notes(chord, notes):
     for note in sharpify(Chord(chord).components()):
@@ -368,6 +373,7 @@ def show_all(config):
         })
     return output
 
+
 def get_chords_by_shape(config, pshape):
     shapes = [pshape]
     if config.slide:
@@ -381,6 +387,7 @@ def get_chords_by_shape(config, pshape):
             chords = [c for c in chords if Chord(c).quality.quality in config.qualities]
         if chords:
             yield shape, chords, notes
+
 
 def show_chords_by_shape(config, pshape):
     pshape = [-1 if pos == 'x' else int(pos) for pos in pshape.split(",")]
@@ -401,6 +408,7 @@ def show_chords_by_shape(config, pshape):
     if not config.slide:
         output['difficulty'] = get_shape_difficulty(pshape, config.tuning)
     return output
+
 
 def show_chords_by_notes(_, notes):
     return {

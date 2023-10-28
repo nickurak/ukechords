@@ -11,6 +11,7 @@ from render import render_chords_from_notes, render_key
 
 from utils import error
 
+
 class UkeConfig():
     # pylint: disable=line-too-long
     # pylint: disable=too-many-instance-attributes

@@ -5,6 +5,7 @@ from render import render_chords_from_shape
 
 # pylint: disable=redefined-outer-name
 
+
 def test_get_shape_lines():
     lines = list(get_shape_lines([-1, 0, 1]))
     expected = """

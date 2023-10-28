@@ -24,9 +24,11 @@ def get_shape_lines(shape):
         yield '║' + ('⃠' if pos < 0 else '') + '│'.join(chars)
     yield '╙' + '┴'.join(lines) + '─'
 
+
 def draw_shape(shape):
     for line in get_shape_lines(shape):
         print(line)
+
 
 def diff_string(difficulty, desc, diff_width=0):
     return f"{difficulty:{diff_width}.1f} ({desc})" if desc else f"{difficulty:{diff_width}.1f}"
