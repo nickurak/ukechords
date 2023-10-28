@@ -253,10 +253,6 @@ def scan_chords(config, chord_shapes, max_fret=12):
     save_scanned_chords(config, max_fret=max_fret, chord_shapes=chord_shapes)
 
 
-def diff_string(difficulty, desc):
-    return f"{difficulty:.1f} ({desc})" if desc else f"{difficulty:.1f}"
-
-
 def rank_shape_by_difficulty(shape):
     return get_shape_difficulty(shape)[0]
 
