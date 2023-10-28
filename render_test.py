@@ -59,7 +59,6 @@ def test_render_chords_from_shape(capsys, uke_config):
     assert err == ""
     lines = out.strip("\n").split("\n")
     assert len(lines) == 2
-    print (f"{lines=}")
     expected_shapestr = ",".join(map(str, sl_data['shapes'][0]['shape']))
     expected_chordstr = ",".join(sl_data['shapes'][0]['chords'])
     assert lines[0] == f"{expected_shapestr}: {expected_chordstr}"
