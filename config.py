@@ -7,7 +7,7 @@ from theory import show_chord, show_all, show_chords_by_shape
 from theory import show_chords_by_notes, show_key
 
 from render import render_chord_list, render_chords_from_shape
-from render import render_chords_from_notes,  render_key
+from render import render_chords_from_notes, render_key
 
 from utils import error
 
@@ -158,7 +158,7 @@ def get_parser():
     parser.add_argument("--show-key", help="Show the notes in the specified <KEY>", metavar="KEY")
     parser.add_argument("--show-notes", action='store_true', help="Show the notes in chord")
     parser.add_argument("-f", "--force-flat", action='store_true', help="Show flat-variations of chord roots")
-    parser.add_argument("-b", "--sort-by-position",  action='store_true', help="Sort to minimize high-position instead of difficulty")
+    parser.add_argument("-b", "--sort-by-position", action='store_true', help="Sort to minimize high-position instead of difficulty")
     parser.add_argument("-j", "--json", action='store_true', help="Output in json format if possible")
     return parser
 

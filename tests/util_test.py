@@ -18,7 +18,7 @@ class FakeChordCollection(): # pylint: disable=too-few-public-methods
 @pytest.fixture(autouse=True)
 def abspath_mock(mocker):
     with tempfile.TemporaryDirectory() as tmpdirname:
-        mock_abspath  = mocker.patch('os.path.abspath')
+        mock_abspath = mocker.patch('os.path.abspath')
         mock_abspath.return_value = os.path.join(tmpdirname, 'null.py')
         os.mkdir(os.path.join(tmpdirname, 'cached_shapes'))
         yield

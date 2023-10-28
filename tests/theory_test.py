@@ -15,9 +15,9 @@ from theory import add_no5_quality, add_7sus2_quality
 # pylint: disable=redefined-outer-name
 
 def test_sharpify():
-    assert  sharpify('Bb') == 'A#'
-    assert  sharpify('A#') == 'A#'
-    assert  flatify('A#') == 'Bb'
+    assert sharpify('Bb') == 'A#'
+    assert sharpify('A#') == 'A#'
+    assert flatify('A#') == 'Bb'
     assert flatify ('Bb') == 'Bb'
 
     assert all(x == y for x, y in zip(sharpify(['Bb', 'A#']), ['A#', 'A#']))
@@ -73,7 +73,7 @@ def test_show_chord(uke_config):
     output = show_chord(uke_config, 'C#')
     assert {shape['chord'] for shape in output['shapes']}== { 'C#'}
     assert len(output['shapes']) == 2
-    first_result  = output['shapes'][0]
+    first_result = output['shapes'][0]
     assert first_result['chord'] == 'C#'
     assert first_result['shape'] == [1, 1, 1]
     assert output['notes'] == ['C#', 'F', 'G#']
@@ -82,7 +82,7 @@ def test_show_chord(uke_config):
 def test_show_chordless_shape(uke_config):
     chordless_shape = 'x,x,x'
     output = show_chords_by_shape(uke_config, chordless_shape)
-    shapes =  output['shapes']
+    shapes = output['shapes']
     assert len(shapes) == 1
     only_shape = shapes[0]
     assert only_shape['chords'] == []
@@ -104,7 +104,7 @@ def test_list_all(uke_config):
 
 def test_weird_flat_sharps():
     assert weird_sharp_scale == ['B#', 'C#', 'D', 'D#', 'E', 'E#', 'F#', 'G', 'G#', 'A', 'A#', 'B']
-    assert weird_flat_scale ==  ['C', 'Db', 'D', 'Eb', 'Fb', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'Cb']
+    assert weird_flat_scale == ['C', 'Db', 'D', 'Eb', 'Fb', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'Cb']
 
 
 def test_no5_quality():
