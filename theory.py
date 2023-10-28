@@ -58,7 +58,7 @@ class ChordCollection():
     def __init__(self):
         self.dictionary = {}
 
-    def  __contains__(self, chord):
+    def __contains__(self, chord):
         return sharpify_chord(chord) in self.dictionary
 
     def __setitem__(self, chord, val):
@@ -106,7 +106,7 @@ def get_shape_difficulty(shape, tuning=None):
         elif last_pos:
             difficulty += 1
         if pos < 0:
-            if  string in [0, len(shape) - 1]:
+            if string in [0, len(shape) - 1]:
                 difficulty += 5
             else:
                 difficulty += 7
@@ -117,7 +117,7 @@ def get_shape_difficulty(shape, tuning=None):
     if barrable > 1 and min(shape) > 0:
         barre_shape = [x-min(shape) for x in shape]
         min_barre_extra = min([0, *filter(lambda x: x > 0, barre_shape)])
-        barre_difficulty = get_shape_difficulty(barre_shape, tuning=tuning)[0]*2.2 + min(shape) * 3.0  + min_barre_extra * 4.0
+        barre_difficulty = get_shape_difficulty(barre_shape, tuning=tuning)[0]*2.2 + min(shape) * 3.0 + min_barre_extra * 4.0
         if tuning:
             chords = list(get_chords(set(get_shape_notes(barre_shape, tuning=tuning))))
             chords.sort(key=lambda c: (len(c), c))
@@ -125,7 +125,7 @@ def get_shape_difficulty(shape, tuning=None):
             barre_chord_string = f"{csv(barre_shape)}:{chord}"
             details = f"else {barre_difficulty:.1f}: barred {min(shape)} + {barre_chord_string}" if tuning else None
         if barre_difficulty < difficulty:
-            details =  f"barre {min(shape)} + {barre_chord_string}, else {difficulty:.1f}" if tuning else None
+            details = f"barre {min(shape)} + {barre_chord_string}, else {difficulty:.1f}" if tuning else None
             difficulty = barre_difficulty
     return difficulty, details
 
@@ -234,7 +234,7 @@ def scan_chords(config, chord_shapes, max_fret=12):
     notes_shapes_map = {}
     notes_chords_map = {}
     for shape in get_shapes(config, max_fret=max_fret):
-        notes = frozenset(get_shape_notes(shape,  tuning=config.tuning))
+        notes = frozenset(get_shape_notes(shape, tuning=config.tuning))
         if notes in notes_shapes_map:
             notes_shapes_map[notes].append(shape)
             continue
@@ -285,7 +285,7 @@ def get_tuning(args):
 
 def get_other_names(shape, chord_name, tuning):
     for chord in get_chords(set(get_shape_notes(shape, tuning))):
-        if  sharpify_chord(chord) != sharpify_chord(chord_name):
+        if sharpify_chord(chord) != sharpify_chord(chord_name):
             yield chord
 
 def show_chord(config, chord):
@@ -372,7 +372,7 @@ def get_chords_by_shape(config, pshape):
     shapes = [pshape]
     if config.slide:
         for offset in range(1, 12):
-            cshape = [(pos + offset) % 12 if pos > 0 else pos for pos in  pshape]
+            cshape = [(pos + offset) % 12 if pos > 0 else pos for pos in pshape]
             shapes.append(cshape)
     for shape in shapes:
         notes = set(get_shape_notes(shape, tuning=config.tuning, force_flat=config.force_flat))

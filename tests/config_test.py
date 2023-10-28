@@ -1,8 +1,8 @@
-from config import UkeConfig, get_parser,  get_args
+from config import UkeConfig, get_parser, get_args
 
 
 def test_no_args(mocker):
-    mock_error  = mocker.patch('config.error')
+    mock_error = mocker.patch('config.error')
 
     parser = get_parser()
     args = get_args(parser=parser, args=[])
