@@ -1,5 +1,5 @@
 /cached_shapes
-/__pycache__
+__pycache__
 \#*
 .coverage
 /.git-check-commit

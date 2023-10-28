@@ -1,7 +1,7 @@
+from uketestconfig import uke_config #pylint: disable=unused-import
+
 from render import get_shape_lines, render_chord_list
 from render import render_chords_from_shape
-
-from uketestconfig import uke_config #pylint: disable=unused-import
 
 # pylint: disable=redefined-outer-name
 

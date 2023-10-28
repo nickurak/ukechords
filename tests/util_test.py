@@ -3,10 +3,10 @@ import os
 
 import pytest
 
+from uketestconfig import uke_config #pylint: disable=unused-import
+
 from utils import cached_filename, save_scanned_chords, load_scanned_chords
 from utils import error
-
-from uketestconfig import uke_config #pylint: disable=unused-import
 
 
 class FakeChordCollection(): # pylint: disable=too-few-public-methods
