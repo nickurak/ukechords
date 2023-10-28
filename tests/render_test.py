@@ -23,7 +23,7 @@ def test_get_shape_lines():
 
 def test_render_chord_list(capsys, uke_config):
     uke_config.latex = False
-    sl_data = { 'shapes': [
+    sl_data = {'shapes': [
         {'shape': [1], 'difficulty': 15.0,
          'chord_names': 'something',
          'desc': 'desc1'
@@ -31,7 +31,7 @@ def test_render_chord_list(capsys, uke_config):
         {'shape': [2], 'difficulty': 2.0,
          'chord_names': 'something',
          'desc': 'desc2'
-         } ] }
+         }]}
     render_chord_list(uke_config, sl_data)
     out, err = capsys.readouterr()
     assert err == ""
@@ -49,12 +49,12 @@ def test_render_chord_list(capsys, uke_config):
 
 def test_render_chords_from_shape(capsys, uke_config):
     uke_config.latex = False
-    sl_data = { 'shapes': [
+    sl_data = {'shapes': [
         {'shape': [1],
          'chords': ['c1', 'c2'],
          'notes': ['n1', 'n2']
          }],
-                'difficulty': [15.0, "desc"]}
+               'difficulty': [15.0, "desc"]}
     render_chords_from_shape(uke_config, sl_data)
     out, err = capsys.readouterr()
     assert err == ""

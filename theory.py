@@ -32,7 +32,7 @@ def add_7sus2_quality():
             continue
         components = list(quality.components)
         components.append(10)
-        new_name=f"7{name}"
+        new_name = f"7{name}"
         new_qs.append((new_name, tuple(components)))
     for name, new in new_qs:
         QualityManager().set_quality(name, new)
@@ -103,7 +103,7 @@ def get_shape_difficulty(shape, tuning=None):
     for string, pos in enumerate(shape):
         if pos > 0:
             if last_pos:
-                difficulty += (pos - last_pos -1)**2 / 1.5
+                difficulty += (pos - last_pos - 1) ** 2 / 1.5
             last_pos = pos
         elif last_pos:
             difficulty += 1
@@ -174,18 +174,18 @@ def is_flat(note):
 
 
 def get_scales():
-    scales = [ (["", "maj", "major"], [0, 2, 4, 5, 7, 9, 11]),
-               (["m", "min", "minor"], [0, 2, 3, 5, 7, 8, 10]),
-               (["mblues", "minblues", "minorblues"], [0, 3, 5, 6, 7, 10]),
-               (["blues", "majblues", "majorblues"], [0, 2, 3, 4, 7, 9]),
-               (["pent", "p", "pentatonic", "majpentatonic"], [0, 2, 4, 7, 9]),
-               (["mpent", "mp", "minorpentatonic"], [0, 3, 5, 7, 10]),
-               (['phdom'], [0, 1, 4, 5, 7, 8, 10]),
-               (['phmod'], [0, 1, 3, 5, 7, 8, 10]),
-               (['gypsymajor'], [0, 1, 4, 5, 7, 8, 11]),
-               (['gypsyminor'], [0, 2, 3, 6, 7, 8, 11]),
-               (['chromatic'], range(0,12))
-               ]
+    scales = [(["", "maj", "major"], [0, 2, 4, 5, 7, 9, 11]),
+              (["m", "min", "minor"], [0, 2, 3, 5, 7, 8, 10]),
+              (["mblues", "minblues", "minorblues"], [0, 3, 5, 6, 7, 10]),
+              (["blues", "majblues", "majorblues"], [0, 2, 3, 4, 7, 9]),
+              (["pent", "p", "pentatonic", "majpentatonic"], [0, 2, 4, 7, 9]),
+              (["mpent", "mp", "minorpentatonic"], [0, 3, 5, 7, 10]),
+              (['phdom'], [0, 1, 4, 5, 7, 8, 10]),
+              (['phmod'], [0, 1, 3, 5, 7, 8, 10]),
+              (['gypsymajor'], [0, 1, 4, 5, 7, 8, 11]),
+              (['gypsyminor'], [0, 2, 3, 6, 7, 8, 11]),
+              (['chromatic'], range(0, 12))
+              ]
 
     mods = {}
     for names, intervals in scales:
