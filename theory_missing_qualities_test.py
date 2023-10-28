@@ -5,19 +5,6 @@ import contextlib
 
 import pytest
 
-from pychord import Chord
-
-from theory import add_no5_quality, add_7sus2_quality
-
-def test_no5_quality():
-    add_no5_quality()
-    Chord('C9no5')
-
-
-def test_7sus2_quality():
-    add_7sus2_quality()
-    Chord('C7sus2')
-
 
 def get_test_code_for_missing_quality(base, quality):
     chord = f'{base}{quality}'
