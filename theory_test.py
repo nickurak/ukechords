@@ -62,7 +62,7 @@ def test_scale():
     notes2 = set( get_key_notes(key2))
     assert notes1 == notes2
     dupes = get_dupe_scales(key1)
-    assert 'Aminor' in dupes
+    assert 'Am' in dupes
 
 
 def test_show_chord(uke_config):
