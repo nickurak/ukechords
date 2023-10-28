@@ -17,7 +17,7 @@ def add_no5_quality():
     # Hack -- get list of existing qualities
     for name, quality in QualityManager()._qualities.items(): # pylint: disable=protected-access
         no5name = name + 'no5'
-        if '/' in name or not 7 in quality.components:
+        if '/' in name or 7 not in quality.components:
             continue
         new = tuple(filter(lambda x: x != 7, quality.components))
         new_qs.append((no5name, new))
@@ -42,7 +42,7 @@ def get_chords(notes):
     if not notes:
         return
     for seq in itertools.permutations(notes):
-        yield from [c.chord for c in find_chords_from_notes(seq) if not "/" in c.chord]
+        yield from [c.chord for c in find_chords_from_notes(seq) if "/" not in c.chord]
 
 
 class CircularList(list):
@@ -241,13 +241,13 @@ def scan_chords(config, chord_shapes, max_fret=12):
             notes_shapes_map[notes].append(shape)
             continue
         notes_shapes_map[notes] = [shape]
-        if not notes in notes_chords_map:
+        if notes not in notes_chords_map:
             notes_chords_map[notes] = get_chords(notes)
 
     for notes, chords in notes_chords_map.items():
         for chord in chords:
             for shape in notes_shapes_map[notes]:
-                if not chord in chord_shapes:
+                if chord not in chord_shapes:
                     chord_shapes[chord] = list([shape])
                 else:
                     chord_shapes[chord].append(shape)
@@ -325,7 +325,7 @@ def show_chord(config, chord):
 
 def chord_built_from_notes(chord, notes):
     for note in sharpify(Chord(chord).components()):
-        if not note in sharpify(notes):
+        if note not in sharpify(notes):
             return False
     return True
 
