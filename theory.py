@@ -204,12 +204,12 @@ def get_dupe_scales(key):
 
     dupes = {}
     for inc in range(1, 12):
-        if inc in dupes:
-            continue
         for name, candidate_intervals in mods.items():
             transposed_intervals = [(x + inc) % 12 for x in candidate_intervals]
             if set(intervals) == set(transposed_intervals):
                 transposed_root = chromatic_scale[(note_intervals[root] + inc) % 12]
+                if inc in dupes:
+                    continue
                 dupes[inc] = f'{transposed_root}{name}'
 
     return {val for _, val in dupes.items()}
