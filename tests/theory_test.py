@@ -107,15 +107,16 @@ def test_weird_flat_sharps():
     assert weird_sharp_scale == ['B#', 'C#', 'D', 'D#', 'E', 'E#', 'F#', 'G', 'G#', 'A', 'A#', 'B']
     assert weird_flat_scale == ['C', 'Db', 'D', 'Eb', 'Fb', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'Cb']
 
-extra_chords = ['C9no5', 'C7sus2']
+extra_chords_and_loaders = [('C9no5', add_no5_quality), ('C7sus2', add_7sus2_quality)]
 builtin_chords = ['C7']
 
 def get_missing_chord_params():
-    for chord in extra_chords:
+    for chord, _ in extra_chords_and_loaders:
         yield chord
     for chord in builtin_chords:
         reason = f'{chord} is present, as expected'
         yield pytest.param(chord, marks=pytest.mark.xfail(strict=True, reason=reason))
+
 
 @pytest.mark.order(1)
 @pytest.mark.parametrize('chord', list(get_missing_chord_params()))
@@ -123,12 +124,8 @@ def test_clean_missing_quality(chord):
     with pytest.raises(ValueError):
         Chord(chord)
 
-@pytest.fixture
-def load_extra_qualities():
-    add_no5_quality()
-    add_7sus2_quality()
 
-
-@pytest.mark.parametrize('chord', extra_chords)
-def test_extra_quality(chord, load_extra_qualities):
+@pytest.mark.parametrize('chord,loader', extra_chords_and_loaders)
+def test_extra_quality(chord, loader):
+    loader()
     Chord(chord)
