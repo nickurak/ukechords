@@ -32,18 +32,17 @@ def run_sub_pytest(file):
     subprocess.run(['pytest', *args, file], check=True)
 
 
-missing_quality_table = [('C', '9no5', True),
-                         ('C', '7sus2', True),
-                         ('C', '7', False)]
+extra_quality_table = [('C', '9no5'),
+                       ('C', '7sus2')]
+builtin_quality_table = [('C', '7')]
 
 
 def missing_quality_pytest_mapper():
-    for root, quality, missing in missing_quality_table:
-        if missing:
-            yield [root, quality]
-        else:
-            reason = f'{root}{quality} is present, as expected'
-            yield pytest.param(root, quality, marks=pytest.mark.xfail(strict=True, reason=reason))
+    for root, quality in extra_quality_table:
+        yield [root, quality]
+    for root, quality in builtin_quality_table:
+        reason = f'{root}{quality} is present, as expected'
+        yield pytest.param(root, quality, marks=pytest.mark.xfail(strict=True, reason=reason))
 
 
 @pytest.mark.parametrize('base,quality', list(missing_quality_pytest_mapper()))
