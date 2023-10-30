@@ -5,15 +5,14 @@ import contextlib
 import pytest
 
 
-def get_test_code_for_missing_quality(base, quality, xfail):
+def get_test_code_for_missing_quality(base, quality):
     chord = f'{base}{quality}'
-    xfail_line = '@pytest.mark.xfail(strict=True)' if xfail else ''
     return f"""\
 import pytest
 
 from pychord import Chord
 
-{xfail_line}
+
 def test_missing_{quality}_quality():
     with pytest.raises(ValueError):
         Chord('{chord}')
@@ -38,9 +37,18 @@ missing_quality_table = [('C', '9no5', True),
                          ('C', '7', False)]
 
 
-@pytest.mark.parametrize('base,quality,missing', missing_quality_table)
-def test_clean_missing_quality(base, quality, missing):
+def missing_quality_pytest_mapper():
+    for root, quality, missing in missing_quality_table:
+        if missing:
+            yield [root, quality]
+        else:
+            reason = f'{root}{quality} is present, as expected'
+            yield pytest.param(root, quality, marks=pytest.mark.xfail(strict=True, reason=reason))
+
+
+@pytest.mark.parametrize('base,quality', list(missing_quality_pytest_mapper()))
+def test_clean_missing_quality(base, quality):
     with get_missing_quality_tmpfile(quality) as tmp_test:
-        tmp_test.write(get_test_code_for_missing_quality(base, quality, xfail=not missing))
+        tmp_test.write(get_test_code_for_missing_quality(base, quality))
         tmp_test.flush()
         run_sub_pytest(tmp_test.name)
