@@ -12,6 +12,14 @@ from render import render_chords_from_notes, render_key
 from utils import error
 
 
+def get_renderfunc_from_name(name):
+    for f in [render_chord_list, render_chords_from_shape,
+              render_chords_from_notes, render_key]:
+        if f.__name__ == name:
+            return f
+    return False
+
+
 class UkeConfig():
     # pylint: disable=line-too-long
     # pylint: disable=too-many-instance-attributes
@@ -23,8 +31,8 @@ class UkeConfig():
         self._tuning = get_tuning(args)
         self._shape_ranker = rank_shape_by_high_fret if args.sort_by_position else rank_shape_by_difficulty
         self._max_difficulty = args.max_difficulty or 29
-        if list(map(bool, [args.notes, args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord), args.show_key])).count(True) != 1:
-            error(5, "Provide exactly one of --all-chords, --chord, --shape, --notes, or --show-key", get_parser())
+        if list(map(bool, [args.render_cmd, args.notes, args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord), args.show_key])).count(True) != 1:
+            error(5, "Provide exactly one of --all-chords, --chord, --shape, --notes, --render-cmd, or --show-key", get_parser())
         if args.qualities and args.simple:
             error(7, "Provide only one of -p/--simple or -q/--qualities")
         self._qualities = False
@@ -62,6 +70,21 @@ class UkeConfig():
         if args.show_key:
             self._command = lambda x: show_key(x, args.show_key)
             self._render_text = render_key
+        if args.render_cmd:
+            self.set_renderfunc(args.render_cmd)
+
+
+    def set_renderfunc(self, command_name):
+        if render_func := get_renderfunc_from_name(command_name):
+            try:
+                data = json.load(sys.stdin)
+            except json.decoder.JSONDecodeError as je:
+                error(13, je)
+            self._command = lambda _: data
+            self._render_text = render_func
+        else:
+            error(12, f"No such rendering function \"{command_name}\"")
+
 
     @property
     def base(self):
@@ -161,6 +184,7 @@ def get_parser():
     parser.add_argument("-f", "--force-flat", action='store_true', help="Show flat-variations of chord roots")
     parser.add_argument("-b", "--sort-by-position", action='store_true', help="Sort to minimize high-position instead of difficulty")
     parser.add_argument("-j", "--json", action='store_true', help="Output in json format if possible")
+    parser.add_argument("-r", "--render-cmd", help="Read stdin into a rendering command")
     return parser
 
 
