@@ -317,7 +317,6 @@ def show_chord(config, chord):
         if difficulty > config.max_difficulty:
             continue
         output['shapes'].append({
-            'chord': chord,
             'shape': shape, 'difficulty': difficulty, 'desc': desc,
             'chord_names': csv([chord] + sorted(other_names))
         })
@@ -368,7 +367,6 @@ def show_all(config):
         if difficulty > config.max_difficulty:
             continue
         output['shapes'].append({
-            'chord': chord,
             'shape': shape, 'difficulty': difficulty, 'desc': desc,
             'chord_names': chord
         })
