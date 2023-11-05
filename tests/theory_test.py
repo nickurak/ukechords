@@ -72,10 +72,10 @@ def test_scale():
 def test_show_chord(uke_config):
     uke_config.show_notes = True
     output = show_chord(uke_config, 'C#')
-    assert {shape['chord'] for shape in output['shapes']} == {'C#'}
+    assert {shape['chord_names'] for shape in output['shapes']} == {'C#'}
     assert len(output['shapes']) == 2
     first_result = output['shapes'][0]
-    assert first_result['chord'] == 'C#'
+    assert first_result['chord_names'] == 'C#'
     assert first_result['shape'] == [1, 1, 1]
     assert output['notes'] == ['C#', 'F', 'G#']
 
@@ -96,7 +96,7 @@ def test_list_all(uke_config):
     uke_config.allowed_chord = False
     output = show_all(uke_config)
 
-    c_shapes = [shape for shape in output['shapes'] if shape['chord'] == 'C']
+    c_shapes = [shape for shape in output['shapes'] if shape['chord_names'] == 'C']
     assert len(c_shapes) == 1
     c_shape = c_shapes[0]
     assert c_shape['shape'] == [0, 0, 0]
