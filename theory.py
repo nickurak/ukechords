@@ -318,7 +318,7 @@ def show_chord(config, chord):
             continue
         output['shapes'].append({
             'shape': shape, 'difficulty': difficulty, 'desc': desc,
-            'chord_names': csv([chord] + sorted(other_names))
+            'chord_names': [chord] + sorted(other_names)
         })
     return output
 
@@ -368,7 +368,7 @@ def show_all(config):
             continue
         output['shapes'].append({
             'shape': shape, 'difficulty': difficulty, 'desc': desc,
-            'chord_names': chord
+            'chord_names': [chord]
         })
     return output
 
