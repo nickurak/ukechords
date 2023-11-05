@@ -25,11 +25,11 @@ def test_render_chord_list(capsys, uke_config):
     uke_config.latex = False
     sl_data = {'shapes': [
         {'shape': [1], 'difficulty': 15.0,
-         'chord_names': 'something',
+         'chord_names': ['something'],
          'desc': 'desc1'
          },
         {'shape': [2], 'difficulty': 2.0,
-         'chord_names': 'something',
+         'chord_names': ['something'],
          'desc': 'desc2'
          }]}
     render_chord_list(uke_config, sl_data)
@@ -39,7 +39,7 @@ def test_render_chord_list(capsys, uke_config):
     assert len(lines) == len(sl_data['shapes'])
     for shape, line in zip(sl_data['shapes'], lines):
         (chord, shape_diff_str, diff_desc) = line.split(":")
-        assert chord.strip() == shape['chord_names']
+        assert [chord.strip()] == shape['chord_names']
         (shape_str, _) = shape_diff_str.split()
         assert shape_str == ','.join(map(str, shape['shape']))
         (diff, desc) = diff_desc.strip().split(maxsplit=1)
