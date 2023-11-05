@@ -234,15 +234,16 @@ def scan_chords(config, chord_shapes, max_fret=12):
     if not config.no_cache and load_scanned_chords(config, chord_shapes, max_fret):
         return
     notes_shapes_map = {}
-    notes_chords_map = {}
     for shape in get_shapes(config, max_fret=max_fret):
         notes = frozenset(get_shape_notes(shape, tuning=config.tuning))
         if notes in notes_shapes_map:
             notes_shapes_map[notes].append(shape)
             continue
         notes_shapes_map[notes] = [shape]
-        if notes not in notes_chords_map:
-            notes_chords_map[notes] = get_chords(notes)
+
+    notes_chords_map = {}
+    for notes in notes_shapes_map:
+        notes_chords_map[notes] = get_chords(notes)
 
     for notes, chords in notes_chords_map.items():
         for chord in chords:
