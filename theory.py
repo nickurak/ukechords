@@ -278,7 +278,7 @@ def get_chords_from_notes(notes, force_flat=False):
 def get_tuning(args):
     if args.tuning in ("ukulele", "ukulele-c6"):
         return list("GCEA")
-    if args.tuning in ("ukulele-g6"):
+    if args.tuning in ("ukulele-g6", "baritone"):
         return list("DGBE")
     if args.tuning == "guitar":
         return list("EADGBE")
