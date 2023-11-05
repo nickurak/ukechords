@@ -177,7 +177,7 @@ def get_parser():
     parser.add_argument("-k", "--key", action='append', help="Limit chords to those playable in <KEY> (can be specified multiple times)")
     parser.add_argument("-o", "--allowed-chord", action='append', help="Limit to chords playable by the notes in <CHORD> (specify multiple times)", metavar="CHORD")
     parser.add_argument("-q", "--qualities", help="Limit chords to chords with the specified <QUALITIES>")
-    parser.add_argument("-p", "--simple", action='store_true', help="Limit to chords with major, minor, dim, and maj7/min7 qualities")
+    parser.add_argument("-p", "--simple", action='store_true', help="Limit to chords with major, minor, and dim qualities")
     parser.add_argument("--no-cache", action='store_true', help="Ignore any available cached chord/shape information")
     parser.add_argument("--show-key", help="Show the notes in the specified <KEY>", metavar="KEY")
     parser.add_argument("--show-notes", action='store_true', help="Show the notes in chord")
