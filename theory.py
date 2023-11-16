@@ -230,9 +230,7 @@ def get_key_notes(key):
     return [chromatic_scale[interval + note_intervals[root]] for interval in intervals]
 
 
-def scan_chords(config, chord_shapes, max_fret=12):
-    if not config.no_cache and load_scanned_chords(config, chord_shapes, max_fret):
-        return
+def get_notes_shape_map(config, max_fret):
     notes_shapes_map = {}
     for shape in get_shapes(config, max_fret=max_fret):
         notes = frozenset(get_shape_notes(shape, tuning=config.tuning))
@@ -240,11 +238,17 @@ def scan_chords(config, chord_shapes, max_fret=12):
             notes_shapes_map[notes].append(shape)
             continue
         notes_shapes_map[notes] = [shape]
+    return notes_shapes_map
 
+
+def get_notes_chords_map(notes_shapes_map):
     notes_chords_map = {}
     for notes in notes_shapes_map:
         notes_chords_map[notes] = get_chords(notes)
+    return notes_chords_map
 
+
+def populate_chord_shapes(chord_shapes, notes_shapes_map, notes_chords_map):
     for notes, chords in notes_chords_map.items():
         for chord in chords:
             for shape in notes_shapes_map[notes]:
@@ -252,6 +256,15 @@ def scan_chords(config, chord_shapes, max_fret=12):
                     chord_shapes[chord] = list([shape])
                 else:
                     chord_shapes[chord].append(shape)
+
+
+def scan_chords(config, chord_shapes, max_fret=12):
+    if not config.no_cache and load_scanned_chords(config, chord_shapes, max_fret):
+        return
+
+    notes_shapes_map = get_notes_shape_map(config, max_fret)
+    notes_chords_map = get_notes_chords_map(notes_shapes_map)
+    populate_chord_shapes(chord_shapes, notes_shapes_map, notes_chords_map)
 
     save_scanned_chords(config, max_fret=max_fret, chord_shapes=chord_shapes)
 
