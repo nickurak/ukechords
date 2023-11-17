@@ -73,7 +73,6 @@ def test_render_chords_from_shape(capsys, uke_config):
     assert lines[1] == f"Difficulty: {expected_difficulty} ({expected_desc})"
 
 
-@pytest.mark.xfail(strict=True)
 def test_render_chord_list_latex(capsys, uke_config):
     uke_config.latex = True
     sl_data = {'shapes': [
