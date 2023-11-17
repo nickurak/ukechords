@@ -136,7 +136,7 @@ def get_shape_difficulty(shape, tuning=None):
         barre_difficulty = get_shape_difficulty(barre_shape, tuning=tuning)[0]*2.2 + min(shape) * 3.0 + min_barre_extra * 4.0
         if tuning:
             chords = list(get_chords(set(get_shape_notes(barre_shape, tuning=tuning))))
-            chords.sort(key=lambda c: (len(c), c))
+            chords.sort(key=rank_chord_name)
             chord = chords[0] if len(chords) > 0 else '<nc>'
             barre_chord_string = f"{csv(barre_shape)}:{chord}"
             details = f"else {barre_difficulty:.1f}: barred {min(shape)} + {barre_chord_string}" if tuning else None
@@ -289,6 +289,12 @@ def rank_shape_by_difficulty(shape):
 def rank_shape_by_high_fret(shape):
     return sorted(shape, reverse=True)
 
+def rank_chord_name(name):
+    has_symbol = False
+    for char in ['+', '-', '(', ')']:
+        if char in name:
+            has_symbol = True
+        return ("no" in name, has_symbol, len(name), name)
 
 def get_chords_from_notes(notes, force_flat=False):
     chords = []
@@ -298,7 +304,7 @@ def get_chords_from_notes(notes, force_flat=False):
             chords.append(flat_chord)
         else:
             chords.append(chord)
-    return sorted(chords, key=lambda c: (len(c), c))
+    return sorted(chords, key=rank_chord_name)
 
 
 def get_tuning(args):
