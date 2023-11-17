@@ -251,11 +251,10 @@ def get_notes_chords_map(notes_shapes_map):
 def populate_chord_shapes(chord_shapes, notes_shapes_map, notes_chords_map):
     for notes, chords in notes_chords_map.items():
         for chord in chords:
+            if chord not in chord_shapes:
+                chord_shapes[chord] = []
             for shape in notes_shapes_map[notes]:
-                if chord not in chord_shapes:
-                    chord_shapes[chord] = list([shape])
-                else:
-                    chord_shapes[chord].append(shape)
+                chord_shapes[chord].append(shape)
 
 
 def scan_chords(config, chord_shapes, max_fret=12):
