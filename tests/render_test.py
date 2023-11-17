@@ -1,7 +1,12 @@
+import pytest  #pylint: disable=unused-import
+
 from uketestconfig import uke_config #pylint: disable=unused-import
 
 from render import get_shape_lines, render_chord_list
 from render import render_chords_from_shape
+
+from utils import csv
+
 
 # pylint: disable=redefined-outer-name
 
@@ -66,3 +71,27 @@ def test_render_chords_from_shape(capsys, uke_config):
     expected_difficulty = f"{sl_data['difficulty'][0]}"
     expected_desc = f"{sl_data['difficulty'][1]}"
     assert lines[1] == f"Difficulty: {expected_difficulty} ({expected_desc})"
+
+
+@pytest.mark.xfail(strict=True)
+def test_render_chord_list_latex(capsys, uke_config):
+    uke_config.latex = True
+    sl_data = {'shapes': [
+        {'shape': [1], 'difficulty': 15.0,
+         'chord_names': ['something'],
+         'desc': 'desc1'
+         },
+        {'shape': [2, 3], 'difficulty': 2.0,
+         'chord_names': ['something'],
+         'desc': 'desc2'
+         }]}
+    render_chord_list(uke_config, sl_data)
+    out, err = capsys.readouterr()
+    assert err == ""
+    lines = out.strip("\n").split("\n")
+    assert len(lines) == len(sl_data['shapes'])
+    for shape, line in zip(sl_data['shapes'], lines):
+        input_name = shape['chord_names'][0]
+        input_shape = csv(shape['shape'])
+        input_string = f"\\defineukulelechord{{{input_name}}}{{{input_shape}}}"
+        assert input_string == line
