@@ -28,7 +28,7 @@ def test_render_chord_list(capsys, uke_config):
          'chord_names': ['something'],
          'desc': 'desc1'
          },
-        {'shape': [2], 'difficulty': 2.0,
+        {'shape': [2, 3], 'difficulty': 2.0,
          'chord_names': ['something'],
          'desc': 'desc2'
          }]}
