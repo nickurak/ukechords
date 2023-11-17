@@ -46,7 +46,7 @@ def render_chord_list(config, data):
         diff_width = max(diff_width, len(f"{shape['difficulty']:.1}"))
     for shape in data['shapes']:
         if config.latex:
-            lchord = shape['chord'].replace('M', 'maj')
+            lchord = shape['chord_names'][0].replace('M', 'maj')
             shape_string = csv(shape['shape'])
             print(f"\\defineukulelechord{{{lchord}}}{{{shape_string}}}")
         else:
