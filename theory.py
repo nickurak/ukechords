@@ -1,7 +1,7 @@
 import itertools
 import re
 
-from pychord import find_chords_from_notes
+from pychord.analyzer import notes_to_positions
 from pychord import Chord, QualityManager
 
 from utils import error, load_scanned_chords, save_scanned_chords
@@ -38,14 +38,24 @@ def add_7sus2_quality():
         QualityManager().set_quality(name, new)
 
 
+def find_chord_from_notes(notes):
+    root = notes[0]
+    positions = notes_to_positions(notes, root)
+    quality = QualityManager().find_quality_from_components(positions)
+    if quality is None:
+        return None
+    return Chord(f"{root}{quality}")
+
+
 def get_chords(notes):
     if not notes:
         return []
     chords = []
     for seq in itertools.permutations(notes):
-        for chord in find_chords_from_notes(seq):
-            if "/" not in chord.chord:
-                chords.append(chord.chord)
+        chord = find_chord_from_notes(seq)
+        if chord is None:
+            continue
+        chords.append(chord.chord)
     return chords
 
 
