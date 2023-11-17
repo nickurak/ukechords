@@ -35,6 +35,8 @@ class UkeConfig():
             error(5, "Provide exactly one of --all-chords, --chord, --shape, --notes, --render-cmd, or --show-key", get_parser())
         if args.qualities and args.simple:
             error(7, "Provide only one of -p/--simple or -q/--qualities")
+        if args.latex and args.json:
+            error(14, "Provide only one of -j/--json or -l/--latex")
         self._qualities = False
         if args.simple:
             self._qualities = ['', 'm', '7', 'dim', 'maj', 'm7']
