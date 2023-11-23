@@ -30,8 +30,14 @@ def draw_shape(shape):
         print(line)
 
 
-def diff_string(difficulty, desc, diff_width=0):
-    return f"{difficulty:{diff_width}.1f} ({desc})" if desc else f"{difficulty:{diff_width}.1f}"
+def diff_string(difficulty, barre_data, diff_width=0):
+    # pylint: disable=line-too-long
+    if barre_data:
+        if barre_data['barred']:
+            return f"{difficulty:{diff_width}.1f} (barre {barre_data['fret']} + {csv(barre_data['shape'])}:{barre_data['chord']}, else {barre_data['unbarred_difficulty']:.1f})"
+        return f"{difficulty:{diff_width}.1f} (else {barre_data['barred_difficulty']:.1f}: barred {barre_data['fret']} + {csv(barre_data['shape'])}:{barre_data['chord']})"
+
+    return f"{difficulty:{diff_width}.1f}"
 
 
 def render_chord_list(config, data):
@@ -51,7 +57,7 @@ def render_chord_list(config, data):
             print(f"\\defineukulelechord{{{lchord}}}{{{shape_string}}}")
         else:
             shape_string = csv(['x' if x == -1 else x for x in shape['shape']])
-            d_string = diff_string(shape['difficulty'], shape['desc'], diff_width=diff_width)
+            d_string = diff_string(shape['difficulty'], shape['barre_data'], diff_width=diff_width)
             # pylint: disable=line-too-long
             print(f"{csv(shape['chord_names'])+':':{name_width+1}} {shape_string:{shape_width}} difficulty:{d_string:}")
         if config.visualize:
@@ -66,7 +72,7 @@ def render_chords_from_shape(config, data):
             draw_shape([-1 if pos == 'x' else int(pos) for pos in shape['shape']])
         print(f'{csv(shape["shape"])}: {csv(shape["chords"])}')
     if not config.slide:
-        print(f"Difficulty: {diff_string(*data['difficulty'])}")
+        print(f"Difficulty: {diff_string(data['difficulty'], data['barre_data'])}")
 
 
 def render_chords_from_notes(_, data):

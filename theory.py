@@ -5,7 +5,6 @@ from pychord.analyzer import notes_to_positions
 from pychord import Chord, QualityManager
 
 from utils import error, load_scanned_chords, save_scanned_chords
-from utils import csv
 
 
 class UnknownKeyException(Exception):
@@ -111,7 +110,7 @@ def get_shapes(config, max_fret=1):
 
 
 def get_shape_difficulty(shape, tuning=None):
-    # pylint: disable=line-too-long
+    # pylint: disable=line-too-long,too-many-branches
     difficulty = 0.0 + max(shape)/10.0
     last_pos = None
     for string, pos in enumerate(shape):
@@ -129,7 +128,7 @@ def get_shape_difficulty(shape, tuning=None):
         else:
             difficulty += pos
     barrable = len([1 for pos in shape if pos == min(shape)])
-    details = None
+    barre_data = None
     if barrable > 1 and min(shape) > 0:
         barre_shape = [x-min(shape) for x in shape]
         min_barre_extra = min([0, *filter(lambda x: x > 0, barre_shape)])
@@ -137,13 +136,17 @@ def get_shape_difficulty(shape, tuning=None):
         if tuning:
             chords = list(get_chords(set(get_shape_notes(barre_shape, tuning=tuning))))
             chords.sort(key=rank_chord_name)
-            chord = chords[0] if len(chords) > 0 else '<nc>'
-            barre_chord_string = f"{csv(barre_shape)}:{chord}"
-            details = f"else {barre_difficulty:.1f}: barred {min(shape)} + {barre_chord_string}" if tuning else None
+            chord = chords[0] if len(chords) > 0 else None
+            barre_data = { 'fret': min(shape), 'shape': barre_shape, 'chord': chord }
         if barre_difficulty < difficulty:
-            details = f"barre {min(shape)} + {barre_chord_string}, else {difficulty:.1f}" if tuning else None
+            if barre_data:
+                barre_data['unbarred_difficulty'] = difficulty
+                barre_data['barred'] = True
             difficulty = barre_difficulty
-    return difficulty, details
+        elif barre_data:
+            barre_data['barred_difficulty'] = barre_difficulty
+            barre_data['barred'] = False
+    return difficulty, barre_data
 
 
 chromatic_scale = CircularList(['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'])
@@ -345,11 +348,11 @@ def show_chord(config, chord):
     for shape in shapes[:config.num or len(shapes)]:
         if not other_names:
             other_names = list(get_other_names(shape, chord, config.tuning))
-        difficulty, desc = get_shape_difficulty(shape, tuning=config.tuning)
+        difficulty, barre_data = get_shape_difficulty(shape, tuning=config.tuning)
         if difficulty > config.max_difficulty:
             continue
         output['shapes'].append({
-            'shape': shape, 'difficulty': difficulty, 'desc': desc,
+            'shape': shape, 'difficulty': difficulty, 'barre_data': barre_data,
             'chord_names': [chord] + sorted(other_names)
         })
     return output
@@ -395,11 +398,11 @@ def show_all(config):
         if notes and not chord_built_from_notes(chord, notes):
             continue
         shape = chord_shapes[chord][0]
-        difficulty, desc = get_shape_difficulty(shape, tuning=config.tuning)
+        difficulty, barre_data = get_shape_difficulty(shape, tuning=config.tuning)
         if difficulty > config.max_difficulty:
             continue
         output['shapes'].append({
-            'shape': shape, 'difficulty': difficulty, 'desc': desc,
+            'shape': shape, 'difficulty': difficulty, 'barre_data': barre_data,
             'chord_names': [chord]
         })
     return output
@@ -437,7 +440,7 @@ def show_chords_by_shape(config, pshape):
         append_shape(pshape, [], notes)
 
     if not config.slide:
-        output['difficulty'] = get_shape_difficulty(pshape, config.tuning)
+        output['difficulty'], output['barre_data'] = get_shape_difficulty(pshape, config.tuning)
     return output
 
 

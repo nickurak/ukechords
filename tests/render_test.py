@@ -4,6 +4,7 @@ from uketestconfig import uke_config #pylint: disable=unused-import
 
 from render import get_shape_lines, render_chord_list
 from render import render_chords_from_shape
+from render import diff_string
 
 from utils import csv
 
@@ -31,11 +32,12 @@ def test_render_chord_list(capsys, uke_config):
     sl_data = {'shapes': [
         {'shape': [1], 'difficulty': 15.0,
          'chord_names': ['something'],
-         'desc': 'desc1'
+         'barre_data': {'barred': False, 'barred_difficulty':32.0,
+                        'fret':4, 'shape':[5,4], 'chord':'chord'}
          },
         {'shape': [2, 3], 'difficulty': 2.0,
          'chord_names': ['something'],
-         'desc': 'desc2'
+         'barre_data': None
          }]}
     render_chord_list(uke_config, sl_data)
     out, err = capsys.readouterr()
@@ -43,13 +45,15 @@ def test_render_chord_list(capsys, uke_config):
     lines = out.strip("\n").split("\n")
     assert len(lines) == len(sl_data['shapes'])
     for shape, line in zip(sl_data['shapes'], lines):
-        (chord, shape_diff_str, diff_desc) = line.split(":")
-        assert [chord.strip()] == shape['chord_names']
-        (shape_str, _) = shape_diff_str.split()
+        (chords_c, shape_str, _, diff_desc) = line.split(maxsplit=3)
+        assert chords_c.rstrip(":") == csv(shape['chord_names'])
         assert shape_str == ','.join(map(str, shape['shape']))
-        (diff, desc) = diff_desc.strip().split(maxsplit=1)
-        assert diff == str(shape['difficulty'])
-        assert desc == f"({shape['desc']})"
+        diff_parts = diff_desc.strip().split(maxsplit=1)
+        assert diff_parts[0] == str(shape['difficulty'])
+        if shape['barre_data'] is not None:
+            expected_diff_desc = diff_string(shape['difficulty'],
+                                             shape['barre_data']).split(maxsplit=1)[1]
+            assert diff_parts[1] == expected_diff_desc
 
 
 def test_render_chords_from_shape(capsys, uke_config):
@@ -59,7 +63,9 @@ def test_render_chords_from_shape(capsys, uke_config):
          'chords': ['c1', 'c2'],
          'notes': ['n1', 'n2']
          }],
-               'difficulty': [15.0, "desc"]}
+               'difficulty': 15.0,
+               'barre_data': {'barred': False, 'barred_difficulty':32.0,
+                              'fret':4, 'shape':[5,4], 'chord':'chord'}}
     render_chords_from_shape(uke_config, sl_data)
     out, err = capsys.readouterr()
     assert err == ""
@@ -68,9 +74,9 @@ def test_render_chords_from_shape(capsys, uke_config):
     expected_shapestr = ",".join(map(str, sl_data['shapes'][0]['shape']))
     expected_chordstr = ",".join(sl_data['shapes'][0]['chords'])
     assert lines[0] == f"{expected_shapestr}: {expected_chordstr}"
-    expected_difficulty = f"{sl_data['difficulty'][0]}"
-    expected_desc = f"{sl_data['difficulty'][1]}"
-    assert lines[1] == f"Difficulty: {expected_difficulty} ({expected_desc})"
+    expected_difficulty = sl_data['difficulty']
+    expected_diff_string = diff_string(expected_difficulty, sl_data['barre_data'])
+    assert lines[1] == f"Difficulty: {expected_diff_string}"
 
 
 def test_render_chord_list_latex(capsys, uke_config):
