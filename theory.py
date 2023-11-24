@@ -212,15 +212,8 @@ def get_scales():
     return mods
 
 
-def get_dupe_scales(key):
+def get_dupe_scales_from_intervals(root, intervals):
     mods = get_scales()
-
-    match = re.match(f'^([A-G][b#]?)({"|".join(mods.keys())})$', key)
-    if not match:
-        raise UnknownKeyException(f"Unknown key \"{key}\"")
-    (root, extra) = match.groups()
-    intervals = mods[extra]
-
     dupes = {}
     for inc in range(1, 12):
         for name, candidate_intervals in mods.items():
@@ -232,6 +225,18 @@ def get_dupe_scales(key):
                 dupes[inc] = f'{transposed_root}{name}'
 
     return {val for _, val in dupes.items()}
+
+
+def get_dupe_scales_from_key(key):
+    mods = get_scales()
+
+    match = re.match(f'^([A-G][b#]?)({"|".join(mods.keys())})$', key)
+    if not match:
+        raise UnknownKeyException(f"Unknown key \"{key}\"")
+    (root, extra) = match.groups()
+    intervals = mods[extra]
+
+    return get_dupe_scales_from_intervals(root, intervals)
 
 
 def get_key_notes(key):
@@ -455,7 +460,7 @@ def show_key(_, key):
     output = {}
     output['key'] = key
     try:
-        output['other_keys'] = list(get_dupe_scales(key))
+        output['other_keys'] = list(get_dupe_scales_from_key(key))
         output['notes'] = get_key_notes(key)
     except UnknownKeyException as exc:
         error(11, exc)
