@@ -227,6 +227,16 @@ def get_dupe_scales_from_intervals(root, intervals):
     return {val for _, val in dupes.items()}
 
 
+def get_dupe_scales_from_notes(notes):
+    root = notes[0]
+    intervals = [0]
+    root_interval = note_intervals[root]
+    for note in notes[1:]:
+        interval = (note_intervals[note] - root_interval) % 12
+        intervals.append(interval)
+    return get_dupe_scales_from_intervals(root, intervals)
+
+
 def get_dupe_scales_from_key(key):
     mods = get_scales()
 
@@ -458,10 +468,16 @@ def show_chords_by_notes(_, notes):
 
 def show_key(_, key):
     output = {}
-    output['key'] = key
-    try:
-        output['other_keys'] = list(get_dupe_scales_from_key(key))
-        output['notes'] = get_key_notes(key)
-    except UnknownKeyException as exc:
-        error(11, exc)
+    notes = key.split(',')
+    if len(notes) > 1:
+        output['notes'] = notes
+        output['other_keys'] = list(get_dupe_scales_from_notes(notes))
+    else:
+        output['key'] = key
+        try:
+            output['other_keys'] = list(get_dupe_scales_from_key(key))
+            output['notes'] = get_key_notes(key)
+        except UnknownKeyException as exc:
+            error(11, exc)
+    output['other_keys'].sort(key=rank_chord_name)
     return output
