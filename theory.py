@@ -215,7 +215,7 @@ def get_scales():
 def get_dupe_scales_from_intervals(root, intervals):
     mods = get_scales()
     dupes = {}
-    for inc in range(1, 12):
+    for inc in range(0, 12):
         for name, candidate_intervals in mods.items():
             transposed_intervals = [(x + inc) % 12 for x in candidate_intervals]
             if set(intervals) == set(transposed_intervals):
@@ -236,7 +236,7 @@ def get_dupe_scales_from_key(key):
     (root, extra) = match.groups()
     intervals = mods[extra]
 
-    return get_dupe_scales_from_intervals(root, intervals)
+    return get_dupe_scales_from_intervals(root, intervals) - {key}
 
 
 def get_key_notes(key):
