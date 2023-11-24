@@ -7,7 +7,7 @@ from uketestconfig import uke_config #pylint: disable=unused-import
 from theory import sharpify, flatify
 from theory import get_chords_by_shape
 from theory import ChordCollection, scan_chords
-from theory import get_key_notes, get_dupe_scales
+from theory import get_key_notes, get_dupe_scales_from_key
 from theory import show_chord, show_chords_by_shape, show_all
 from theory import weird_sharp_scale, weird_flat_scale
 from theory import add_no5_quality, add_7sus2_quality
@@ -65,7 +65,7 @@ def test_scale():
     notes1 = set(get_key_notes(key1))
     notes2 = set(get_key_notes(key2))
     assert notes1 == notes2
-    dupes = get_dupe_scales(key1)
+    dupes = get_dupe_scales_from_key(key1)
     assert 'Am' in dupes
 
 
