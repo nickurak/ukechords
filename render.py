@@ -86,6 +86,9 @@ def render_key(_, data):
         other_str = ''
     if 'key' in data:
         print(f"{data['key']}{other_str}:")
+        print(f"{csv(data['notes'])}")
     else:
-        print(f"{csv(data['other_keys'])}:")
-    print(f"{csv(data['notes'])}")
+        if not data['other_keys']:
+            print("No key found")
+            return
+        print(f"{csv(data['other_keys'])}")
