@@ -4,7 +4,7 @@ import re
 from pychord.analyzer import notes_to_positions
 from pychord import Chord, QualityManager
 
-from utils import error, load_scanned_chords, save_scanned_chords
+from .utils import error, load_scanned_chords, save_scanned_chords
 
 
 class UnknownKeyException(Exception):

@@ -1,4 +1,4 @@
-from utils import csv
+from .utils import csv
 
 
 marks = {

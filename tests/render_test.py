@@ -1,12 +1,12 @@
 import pytest  #pylint: disable=unused-import
 
-from uketestconfig import uke_config #pylint: disable=unused-import
+from ukechords.render import get_shape_lines, render_chord_list
+from ukechords.render import render_chords_from_shape
+from ukechords.render import diff_string
 
-from render import get_shape_lines, render_chord_list
-from render import render_chords_from_shape
-from render import diff_string
+from ukechords.utils import csv
 
-from utils import csv
+from .uketestconfig import uke_config #pylint: disable=unused-import
 
 
 # pylint: disable=redefined-outer-name

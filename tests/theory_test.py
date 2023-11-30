@@ -2,15 +2,15 @@ import pytest
 
 from pychord import Chord
 
-from uketestconfig import uke_config #pylint: disable=unused-import
+from ukechords.theory import sharpify, flatify
+from ukechords.theory import get_chords_by_shape
+from ukechords.theory import ChordCollection, scan_chords
+from ukechords.theory import get_key_notes, get_dupe_scales_from_key
+from ukechords.theory import show_chord, show_chords_by_shape, show_all
+from ukechords.theory import weird_sharp_scale, weird_flat_scale
+from ukechords.theory import add_no5_quality, add_7sus2_quality
 
-from theory import sharpify, flatify
-from theory import get_chords_by_shape
-from theory import ChordCollection, scan_chords
-from theory import get_key_notes, get_dupe_scales_from_key
-from theory import show_chord, show_chords_by_shape, show_all
-from theory import weird_sharp_scale, weird_flat_scale
-from theory import add_no5_quality, add_7sus2_quality
+from .uketestconfig import uke_config #pylint: disable=unused-import
 
 # pylint: disable=redefined-outer-name
 
