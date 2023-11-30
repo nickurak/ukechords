@@ -40,8 +40,10 @@ def test_load_empty_cache(uke_config):
     assert not shapes.dictionary
 
 
-def test_cached_filename():
-    fn_str = cached_filename(-1, 4, ['A'], 50)
+def test_cached_filename(uke_config):
+    uke_config.base = -1
+    uke_config.tuning = ['A']
+    fn_str = cached_filename(uke_config, 4, 50)
     assert fn_str.endswith("/cache_-1_4_A_50.pcl")
 
 
