@@ -1,6 +1,3 @@
-import tempfile
-import os
-
 import pytest
 
 from uketestconfig import uke_config #pylint: disable=unused-import
@@ -15,13 +12,6 @@ class FakeChordCollection(): # pylint: disable=too-few-public-methods
 
 
 # pylint: disable=redefined-outer-name
-@pytest.fixture(autouse=True)
-def basedir_cache_mock(mocker):
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        mock_basedir = mocker.patch('xdg.BaseDirectory.save_cache_path')
-        mock_basedir.return_value = os.path.join(tmpdirname, tmpdirname)
-        yield
-
 
 def test_load_save_cache(uke_config):
     shapes = FakeChordCollection()
