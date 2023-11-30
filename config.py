@@ -24,6 +24,7 @@ class UkeConfig():
     # pylint: disable=line-too-long
     # pylint: disable=too-many-instance-attributes
     # pylint: disable=too-many-branches
+    # pylint: disable=too-many-statements
     def __init__(self, args):
         self._render_text = None
         self._base = -1 if args.mute else 0
@@ -74,6 +75,7 @@ class UkeConfig():
             self._render_text = render_key
         if args.render_cmd:
             self.set_renderfunc(args.render_cmd)
+        self._cache_dir = args.cache_dir if args.cache_dir else None
 
 
     def set_renderfunc(self, command_name):
@@ -160,6 +162,10 @@ class UkeConfig():
     def allowed_chord(self):
         return self._allowed_chord
 
+    @property
+    def cache_dir(self):
+        return self._cache_dir
+
 
 def get_parser():
     # pylint: disable=line-too-long
@@ -187,6 +193,7 @@ def get_parser():
     parser.add_argument("-b", "--sort-by-position", action='store_true', help="Sort to minimize high-position instead of difficulty")
     parser.add_argument("-j", "--json", action='store_true', help="Output in json format if possible")
     parser.add_argument("-r", "--render-cmd", help="Read stdin into a rendering command")
+    parser.add_argument("--cache-dir", help="Specify directory to use for cached shapes", default=False)
     return parser
 
 

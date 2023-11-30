@@ -19,6 +19,7 @@ class UkeTestConfig():
         self.max_difficulty = 20
         self.shape_ranker = shape_ranker
         self.num = 10
+        self.cache_dir = None
 
 
 @pytest.fixture
