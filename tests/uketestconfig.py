@@ -1,3 +1,4 @@
+import tempfile
 import pytest
 
 
@@ -24,5 +25,7 @@ class UkeTestConfig():
 
 @pytest.fixture
 def uke_config():
-    config_obj = UkeTestConfig()
-    yield config_obj
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        config_obj = UkeTestConfig()
+        config_obj.cache_dir = tmpdirname
+        yield config_obj
