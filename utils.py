@@ -3,6 +3,7 @@ import os
 import pickle
 
 from math import ceil
+from xdg import BaseDirectory
 
 
 def error(return_code, message, parser=None):
@@ -15,7 +16,7 @@ def error(return_code, message, parser=None):
 def cached_filename(base, max_fret, tuning, max_difficulty):
     tn_string = ''.join(tuning)
     filename = f"cache_{base}_{max_fret}_{tn_string}_{max_difficulty}.pcl"
-    return os.path.join(os.path.dirname(os.path.abspath(__file__)), "cached_shapes", filename)
+    return os.path.join(BaseDirectory.save_cache_path('ukechords', 'cached_shapes'), filename)
 
 
 def load_scanned_chords(config, chord_shapes, max_fret):
