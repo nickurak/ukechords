@@ -2,14 +2,14 @@ import argparse
 import json
 import sys
 
-from theory import get_tuning, rank_shape_by_difficulty, rank_shape_by_high_fret
-from theory import show_chord, show_all, show_chords_by_shape
-from theory import show_chords_by_notes, show_key
+from .theory import get_tuning, rank_shape_by_difficulty, rank_shape_by_high_fret
+from .theory import show_chord, show_all, show_chords_by_shape
+from .theory import show_chords_by_notes, show_key
 
-from render import render_chord_list, render_chords_from_shape
-from render import render_chords_from_notes, render_key
+from .render import render_chord_list, render_chords_from_shape
+from .render import render_chords_from_notes, render_key
 
-from utils import error
+from .utils import error
 
 
 def get_renderfunc_from_name(name):
