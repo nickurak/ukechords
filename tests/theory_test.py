@@ -1,6 +1,6 @@
 import pytest
 
-from pychord import Chord
+from pychord import Chord, QualityManager
 
 from ukechords.theory import sharpify, flatify
 from ukechords.theory import get_chords_by_shape
@@ -118,9 +118,9 @@ def get_missing_chord_params():
         yield pytest.param(chord, marks=pytest.mark.xfail(strict=True, reason=reason))
 
 
-@pytest.mark.order(1)
 @pytest.mark.parametrize('chord', list(get_missing_chord_params()))
 def test_clean_missing_quality(chord):
+    QualityManager().load_default_qualities()
     with pytest.raises(ValueError):
         Chord(chord)
 
