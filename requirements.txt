@@ -1,2 +1,2 @@
-pychord==1.2.0
+pychord==1.2.1
 pyxdg==0.28
