@@ -36,8 +36,6 @@ class UkeConfig():
             error(5, "Provide exactly one of --all-chords, --chord, --shape, --notes, --render-cmd, or --show-key", get_parser())
         if args.qualities and args.simple:
             error(7, "Provide only one of -p/--simple or -q/--qualities")
-        if args.latex and args.json:
-            error(14, "Provide only one of -j/--json or -l/--latex")
         self._qualities = False
         if args.simple:
             self._qualities = ['', 'm', '7', 'dim', 'maj', 'm7']
@@ -49,11 +47,10 @@ class UkeConfig():
         self._num = args.num
         if args.single:
             self._num = 1
-        if not self._num and (args.latex or args.visualize):
+        if not self._num and args.visualize:
             self._num = 1
         self._show_notes = args.show_notes
         self._no_cache = args.no_cache
-        self._latex = args.latex
         self._visualize = args.visualize
         self._force_flat = args.force_flat
         if args.chord:
@@ -127,10 +124,6 @@ class UkeConfig():
         return self._no_cache
 
     @property
-    def latex(self):
-        return self._latex
-
-    @property
     def visualize(self):
         return self._visualize
 
@@ -176,7 +169,6 @@ def get_parser():
     parser.add_argument("--slide", action='store_true', help="Show what chord(s) this <SHAPE> could play when slid up or down")
     parser.add_argument("-t", "--tuning", default='ukulele-c6', help="comma-separated notes for string tuning")
     parser.add_argument("-1", "--single", action='store_true', help="Show only 1 shape for each chord")
-    parser.add_argument("-l", "--latex", action='store_true', help="Output chord info in LaTeX format")
     parser.add_argument("-v", "--visualize", action='store_true', help="Visualize shapes with Unicode drawings")
     parser.add_argument("-a", "--all-chords", action='store_true', help="Show all matching chords, not just one selected one")
     parser.add_argument("-m", "--mute", action='store_true', help="Include shapes that require muting strings")
