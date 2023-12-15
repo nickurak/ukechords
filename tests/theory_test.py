@@ -58,7 +58,6 @@ def test_basic_scan(uke_config):
     assert 'C' in chord_shapes.keys()
 
 
-@pytest.mark.xfail(strict=True)
 def test_basic_scan_maj(uke_config):
     uke_config.tuning = ['G', 'C', 'E', 'A']
     chord_shapes = ChordCollection()

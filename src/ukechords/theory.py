@@ -76,9 +76,11 @@ class CircularList(list):
 
 def normalize_chord(chord):
     '''For duplicate and match detection, convert to a canonical
-    sharp version'''
+    sharp version, including replacing "maj" with "M" per pychord
+    convention.'''
     match = re.match('^([A-G][b#]?)(.*)$', chord)
     (root, quality) = match.groups()
+    quality = quality.replace('maj', 'M')
     return f"{sharpify(root)}{quality}"
 
 
