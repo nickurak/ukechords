@@ -1,4 +1,5 @@
-from .utils import csv
+def csv(lst, sep=','):
+    return sep.join(map(str, lst))
 
 
 marks = {
