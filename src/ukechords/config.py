@@ -9,8 +9,6 @@ from .theory import show_chords_by_notes, show_key
 from .render import render_chord_list, render_chords_from_shape
 from .render import render_chords_from_notes, render_key
 
-from .utils import error
-
 
 def get_renderfunc_from_name(name):
     for f in [render_chord_list, render_chords_from_shape,
@@ -19,6 +17,15 @@ def get_renderfunc_from_name(name):
             return f
     return False
 
+
+def error(return_code, message, parser=None):
+    print(message, file=sys.stderr)
+    if parser:
+        parser.print_help(sys.stderr)
+    sys.exit(return_code)
+
+class InvalidCommandException(Exception):
+    pass
 
 class UkeConfig():
     # pylint: disable=line-too-long
@@ -33,9 +40,9 @@ class UkeConfig():
         self._shape_ranker = rank_shape_by_high_fret if args.sort_by_position else rank_shape_by_difficulty
         self._max_difficulty = args.max_difficulty or 29
         if list(map(bool, [args.render_cmd, args.notes, args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord), args.show_key])).count(True) != 1:
-            error(5, "Provide exactly one of --all-chords, --chord, --shape, --notes, --render-cmd, or --show-key", get_parser())
+            raise InvalidCommandException("Provide exactly one of --all-chords, --chord, --shape, --notes, --render-cmd, or --show-key")
         if args.qualities and args.simple:
-            error(7, "Provide only one of -p/--simple or -q/--qualities")
+            raise InvalidCommandException("Provide only one of -p/--simple or -q/--qualities")
         self._qualities = False
         if args.simple:
             self._qualities = ['', 'm', '7', 'dim', 'maj', 'm7']
@@ -43,7 +50,7 @@ class UkeConfig():
             self._qualities = args.qualities.split(',')
         self._slide = args.slide
         if args.slide and not args.shape:
-            error(8, "--slide requries a --shape")
+            raise InvalidCommandException("--slide requries a --shape")
         self._num = args.num
         if args.single:
             self._num = 1
@@ -71,20 +78,17 @@ class UkeConfig():
             self._command = lambda x: show_key(x, args.show_key)
             self._render_text = render_key
         if args.render_cmd:
-            self.set_renderfunc(args.render_cmd)
+            self.run_renderfunc(args.render_cmd)
         self._cache_dir = args.cache_dir if args.cache_dir else None
 
 
-    def set_renderfunc(self, command_name):
+    def run_renderfunc(self, command_name):
         if render_func := get_renderfunc_from_name(command_name):
-            try:
-                data = json.load(sys.stdin)
-            except json.decoder.JSONDecodeError as je:
-                error(13, je)
+            data = json.load(sys.stdin)
             self._command = lambda _: data
             self._render_text = render_func
         else:
-            error(12, f"No such rendering function \"{command_name}\"")
+            raise InvalidCommandException(f"No such rendering function \"{command_name}\"")
 
 
     @property

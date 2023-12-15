@@ -4,12 +4,17 @@ import re
 from pychord.analyzer import notes_to_positions
 from pychord import Chord, QualityManager
 
-from .utils import error, load_scanned_chords, save_scanned_chords
+from .utils import load_scanned_chords, save_scanned_chords
 
 
 class UnknownKeyException(Exception):
     pass
 
+class ChordNotFoundException(ValueError):
+    pass
+
+class ShapeNotFoundException(ValueError):
+    pass
 
 def add_no5_quality():
     new_qs = []
@@ -366,11 +371,11 @@ def show_chord(config, chord):
             notes = p_chord.components()
             output['notes'] = notes
         except ValueError as exc:
-            error(2, f"Error looking up chord {chord}: {exc}")
+            raise ChordNotFoundException(f"Error looking up chord {chord}") from exc
     chord_shapes = ChordCollection()
     scan_chords(config, chord_shapes)
     if chord not in chord_shapes:
-        error(1, f"No shape for \"{chord}\" found")
+        raise ShapeNotFoundException(f"No shape for \"{chord}\" found")
     shapes = chord_shapes[chord]
     shapes.sort(key=config.shape_ranker)
     other_names = None
@@ -400,10 +405,7 @@ def show_all(config):
     notes = []
     chord_shapes = ChordCollection()
     for key in config.key or []:
-        try:
-            notes.extend(get_key_notes(key))
-        except UnknownKeyException as exc:
-            error(10, exc)
+        notes.extend(get_key_notes(key))
     for chord in config.allowed_chord or []:
         notes.extend(Chord(chord).components())
     if notes and any(map(is_flat, notes)):
@@ -489,10 +491,7 @@ def show_key(_, key):
         output['other_keys'] = list(get_dupe_scales_from_notes(notes))
     else:
         output['key'] = key
-        try:
-            output['other_keys'] = list(get_dupe_scales_from_key(key))
-            output['notes'] = get_key_notes(key)
-        except UnknownKeyException as exc:
-            error(11, exc)
+        output['other_keys'] = list(get_dupe_scales_from_key(key))
+        output['notes'] = get_key_notes(key)
     output['other_keys'].sort(key=rank_chord_name)
     return output

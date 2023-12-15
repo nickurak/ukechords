@@ -1,16 +1,8 @@
-import sys
 import os
 import pickle
 
 from math import ceil
 from xdg import BaseDirectory
-
-
-def error(return_code, message, parser=None):
-    print(message, file=sys.stderr)
-    if parser:
-        parser.print_help(sys.stderr)
-    sys.exit(return_code)
 
 
 def cached_filename(config, max_fret, max_difficulty):
