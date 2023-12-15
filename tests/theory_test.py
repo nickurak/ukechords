@@ -107,7 +107,10 @@ def test_weird_flat_sharps():
     assert weird_sharp_scale == ['B#', 'C#', 'D', 'D#', 'E', 'E#', 'F#', 'G', 'G#', 'A', 'A#', 'B']
     assert weird_flat_scale == ['C', 'Db', 'D', 'Eb', 'Fb', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'Cb']
 
-extra_chords_and_loaders = [('C9no5', add_no5_quality), ('C7sus2', add_7sus2_quality)]
+extra_chords_and_loaders = [
+    ('C9no5', add_no5_quality),
+    ('C7sus2', add_7sus2_quality),
+]
 builtin_chords = ['C7']
 
 def get_missing_chord_params():
