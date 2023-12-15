@@ -74,7 +74,9 @@ class CircularList(list):
         return super().__getitem__(index % len(self))
 
 
-def sharpify_chord(chord):
+def normalize_chord(chord):
+    '''For duplicate and match detection, convert to a canonical
+    sharp version'''
     match = re.match('^([A-G][b#]?)(.*)$', chord)
     (root, quality) = match.groups()
     return f"{sharpify(root)}{quality}"
@@ -85,13 +87,13 @@ class ChordCollection():
         self.dictionary = {}
 
     def __contains__(self, chord):
-        return sharpify_chord(chord) in self.dictionary
+        return normalize_chord(chord) in self.dictionary
 
     def __setitem__(self, chord, val):
-        self.dictionary[sharpify_chord(chord)] = val
+        self.dictionary[normalize_chord(chord)] = val
 
     def __getitem__(self, chord):
-        return self.dictionary[sharpify_chord(chord)]
+        return self.dictionary[normalize_chord(chord)]
 
     def keys(self):
         return self.dictionary.keys()
@@ -350,7 +352,7 @@ def get_tuning(args):
 
 def get_other_names(shape, chord_name, tuning):
     for chord in get_chords(set(get_shape_notes(shape, tuning))):
-        if sharpify_chord(chord) != sharpify_chord(chord_name):
+        if normalize_chord(chord) != normalize_chord(chord_name):
             yield chord
 
 
