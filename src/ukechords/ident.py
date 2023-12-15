@@ -4,15 +4,25 @@ import sys
 
 
 from .theory import add_no5_quality, add_7sus2_quality, add_M13_quality
-from .config import UkeConfig, get_args, get_parser
+from .theory import UnknownKeyException, ChordNotFoundException, ShapeNotFoundException
+from .config import UkeConfig, get_args, get_parser, error, InvalidCommandException
 
 
 def main():
     add_no5_quality()
     add_7sus2_quality()
     add_M13_quality()
-    config = UkeConfig(get_args(parser=get_parser(), args=sys.argv[1:]))
-    config.run_command()
+    try:
+        config = UkeConfig(get_args(parser=get_parser(), args=sys.argv[1:]))
+        config.run_command()
+    except UnknownKeyException as exc:
+        error(10, exc)
+    except ChordNotFoundException as exc:
+        error(2, exc)
+    except ShapeNotFoundException as exc:
+        error(1, exc)
+    except InvalidCommandException as exc:
+        error(5, exc)
     return 0
 
 
