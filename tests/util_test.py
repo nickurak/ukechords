@@ -1,4 +1,4 @@
-from ukechords.utils import cached_filename, save_scanned_chords, load_scanned_chords
+from ukechords.cache import cached_filename, save_scanned_chords, load_scanned_chords
 
 from .uketestconfig import uke_config #pylint: disable=unused-import
 
