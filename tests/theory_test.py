@@ -58,6 +58,15 @@ def test_basic_scan(uke_config):
     assert 'C' in chord_shapes.keys()
 
 
+@pytest.mark.xfail(strict=True)
+def test_basic_scan_maj(uke_config):
+    uke_config.tuning = ['G', 'C', 'E', 'A']
+    chord_shapes = ChordCollection()
+    scan_chords(uke_config, chord_shapes, max_fret=3)
+    assert 'Cmaj7' in chord_shapes
+    assert chord_shapes['Cmaj7'] is not None
+
+
 def test_scale():
     key1 = 'C'
     key2 = 'Am'
