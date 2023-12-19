@@ -3,3 +3,4 @@ __pycache__
 \#*
 .coverage
 /.git-check-commit
+/dist
