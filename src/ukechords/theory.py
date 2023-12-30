@@ -353,7 +353,7 @@ def get_tuning(args):
     if args.tuning == "guitar":
         return list("EADGBE")
     if args.tuning == "mandolin":
-        return list("GDEA")
+        return list("GDAE")
     return args.tuning.split(',')
 
 
