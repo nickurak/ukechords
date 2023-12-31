@@ -8,7 +8,7 @@ from ukechords.theory import ChordCollection, scan_chords
 from ukechords.theory import get_key_notes, get_dupe_scales_from_key
 from ukechords.theory import show_chord, show_chords_by_shape, show_all
 from ukechords.theory import weird_sharp_scale, weird_flat_scale
-from ukechords.theory import add_no5_quality, add_7sus2_quality, add_M13_quality
+from ukechords.theory import add_no5_quality, add_7sus2_quality
 
 from .uketestconfig import uke_config #pylint: disable=unused-import
 
@@ -122,7 +122,6 @@ def test_weird_flat_sharps():
 extra_chords_and_loaders = [
     ('C9no5', add_no5_quality),
     ('C7sus2', add_7sus2_quality),
-    ('CM13', add_M13_quality),
 ]
 builtin_chords = ['C7']
 
