@@ -41,18 +41,6 @@ def add_7sus2_quality():
         QualityManager().set_quality(name, new)
 
 
-def add_M13_quality(): # pylint: disable=invalid-name
-    new_qs = []
-    for name, quality in QualityManager().get_qualities().items():
-        if "maj13" not in name:
-            continue
-        components = list(quality.components)
-        new_name = name.replace("maj", "M")
-        new_qs.append((new_name, tuple(components)))
-    for name, new in new_qs:
-        QualityManager().set_quality(name, new)
-
-
 def find_chord_from_notes(notes):
     root = notes[0]
     positions = notes_to_positions(notes, root)

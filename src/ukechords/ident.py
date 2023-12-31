@@ -3,7 +3,7 @@
 import sys
 
 
-from .theory import add_no5_quality, add_7sus2_quality, add_M13_quality
+from .theory import add_no5_quality, add_7sus2_quality
 from .theory import UnknownKeyException, ChordNotFoundException, ShapeNotFoundException
 from .config import UkeConfig, get_args, get_parser, error, InvalidCommandException
 
@@ -11,7 +11,6 @@ from .config import UkeConfig, get_args, get_parser, error, InvalidCommandExcept
 def main():
     add_no5_quality()
     add_7sus2_quality()
-    add_M13_quality()
     try:
         config = UkeConfig(get_args(parser=get_parser(), args=sys.argv[1:]))
         config.run_command()
