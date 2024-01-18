@@ -429,11 +429,16 @@ def show_all(config):
 
 
 def get_chords_by_shape(config, pshape):
-    shapes = [pshape]
+    shapes = []
     if config.slide:
-        for offset in range(1, 12):
-            cshape = [(pos + offset) % 12 if pos > 0 else pos for pos in pshape]
+        fretted_positions = [fret for fret in pshape if fret > 0]
+        min_fret = min(fretted_positions)
+        unslid_shape = [fret + 1 - min_fret if fret > 0 else 0 for fret in pshape]
+        for offset in range(0, 12):
+            cshape = [pos + offset if pos > 0 else pos for pos in unslid_shape]
             shapes.append(cshape)
+    else:
+        shapes.append(pshape)
     for shape in shapes:
         notes = set(get_shape_notes(shape, tuning=config.tuning, force_flat=config.force_flat))
         chords = get_chords_from_notes(notes, config.force_flat)
