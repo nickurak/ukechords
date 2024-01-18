@@ -115,6 +115,20 @@ def test_list_all(uke_config):
     assert c_shape['difficulty'] == 0.0
 
 
+@pytest.mark.xfail(strict=True)
+def test_slide(uke_config):
+    uke_config.tuning = ['C', 'G']
+    uke_config.slide = True
+    initial_shape = [1, 2]
+    slid_chords = list(get_chords_by_shape(uke_config, initial_shape))
+    slid_shapes = [c[0] for c in slid_chords]
+    for slid_shape in slid_shapes:
+        fretted_positions = [fret for fret in slid_shape if fret > 0]
+        min_fret = min(fretted_positions)
+        unslid_shape = [fret + 1 - min_fret if fret > 0 else 0 for fret in slid_shape]
+        assert unslid_shape == initial_shape
+
+
 def test_weird_flat_sharps():
     assert weird_sharp_scale == ['B#', 'C#', 'D', 'D#', 'E', 'E#', 'F#', 'G', 'G#', 'A', 'A#', 'B']
     assert weird_flat_scale == ['C', 'Db', 'D', 'Eb', 'Fb', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'Cb']
