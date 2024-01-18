@@ -115,7 +115,6 @@ def test_list_all(uke_config):
     assert c_shape['difficulty'] == 0.0
 
 
-@pytest.mark.xfail(strict=True)
 def test_slide(uke_config):
     uke_config.tuning = ['C', 'G']
     uke_config.slide = True
