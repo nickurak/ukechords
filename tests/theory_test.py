@@ -115,6 +115,22 @@ def test_list_all(uke_config):
     assert c_shape['difficulty'] == 0.0
 
 
+def test_barrable_barred(uke_config):
+    data = show_chords_by_shape(uke_config, '1,1,1')
+    barre_data = data['barre_data']
+    assert barre_data['barred']
+    assert barre_data['fret'] == 1
+    assert barre_data['shape'] == [0, 0, 0]
+
+
+def test_barrable_unbarred(uke_config):
+    data = show_chords_by_shape(uke_config, '1,1,3')
+    barre_data = data['barre_data']
+    assert not barre_data['barred']
+    assert barre_data['fret'] == 1
+    assert barre_data['shape'] == [0, 0, 2]
+
+
 def test_slide(uke_config):
     uke_config.tuning = ['C', 'G']
     uke_config.slide = True
