@@ -57,11 +57,12 @@ def render_chord_list(config, data):
         name_width = max(name_width, len(csv(shape['chord_names'])))
         shape_width = max(shape_width, len(csv(['x' if x == -1 else x for x in shape['shape']])))
         diff_width = max(diff_width, len(f"{shape['difficulty']:.1}"))
+    name_width += 1
     for shape in data['shapes']:
         shape_string = csv(['x' if x == -1 else x for x in shape['shape']])
         d_string = diff_string(shape['difficulty'], shape['barre_data'], diff_width=diff_width)
-        # pylint: disable=line-too-long
-        print(f"{csv(shape['chord_names'])+':':{name_width+1}} {shape_string:{shape_width}} difficulty:{d_string:}")
+        chord_names = csv(shape['chord_names']) + ":"
+        print(f"{chord_names:{name_width}} {shape_string:{shape_width}} difficulty:{d_string:}")
         if config.visualize:
             draw_shape(shape['shape'])
 
