@@ -118,7 +118,7 @@ def get_shapes(config, max_fret=1):
 
 
 def get_shape_difficulty(shape, tuning=None):
-    # pylint: disable=line-too-long,too-many-branches
+    # pylint: disable=too-many-branches
     difficulty = 0.0 + max(shape)/10.0
     last_pos = None
     for string, pos in enumerate(shape):
@@ -140,7 +140,8 @@ def get_shape_difficulty(shape, tuning=None):
     if barrable > 1 and min(shape) > 0:
         barre_shape = [x-min(shape) for x in shape]
         min_barre_extra = min([0, *filter(lambda x: x > 0, barre_shape)])
-        barre_difficulty = get_shape_difficulty(barre_shape, tuning=tuning)[0]*2.2 + min(shape) * 3.0 + min_barre_extra * 4.0
+        barre_difficulty = get_shape_difficulty(barre_shape, tuning=tuning)[0]*2.2
+        barre_difficulty += min(shape) * 3.0 + min_barre_extra * 4.0
         if tuning:
             chords = list(get_chords(set(get_shape_notes(barre_shape, tuning=tuning))))
             chords.sort(key=rank_chord_name)
