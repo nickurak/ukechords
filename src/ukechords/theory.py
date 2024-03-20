@@ -136,34 +136,38 @@ def barreless_shape_difficulty(shape):
             difficulty += pos
     return difficulty
 
+def get_tuned_barre_details(shape, tuning, barre_difficulty, unbarred_difficulty):
+    if not tuning:
+        return None
+    barre_shape = [x-min(shape) for x in shape]
+    chords = sorted(get_chords(set(get_shape_notes(barre_shape, tuning=tuning))))
+    chords.sort(key=rank_chord_name)
+    chord = chords[0] if len(chords) > 0 else None
+    barre_data = {
+        'fret': min(shape), 'barred': barre_difficulty < unbarred_difficulty,
+        'shape': barre_shape, 'chord': chord
+    }
+    if barre_data['barred']:
+        barre_data['unbarred_difficulty'] = unbarred_difficulty
+    else:
+        barre_data['barred_difficulty'] = barre_difficulty
+    return barre_data
+
 
 def barre_difficulty_details(shape, unbarred_difficulty, tuning):
     barre_difficulty = None
     barrable = len([1 for pos in shape if pos == min(shape)])
     if not (barrable > 1 and min(shape) > 0):
         return unbarred_difficulty, None
-    barre_data = None
-    barre_shape = [x-min(shape) for x in shape]
+
+    barre_shape = [x - min(shape) for x in shape]
     min_barre_extra = min([0, *filter(lambda x: x > 0, barre_shape)])
     barre_difficulty = get_shape_difficulty(barre_shape, tuning=tuning)[0]*2.2
     barre_difficulty += min(shape) * 3.0 + min_barre_extra * 4.0
+
     barred = barre_difficulty < unbarred_difficulty
-    if barred:
-        alternate_difficulty_field = 'unbarred_difficulty'
-        (default_difficulty, alternate_difficulty) = (barre_difficulty, unbarred_difficulty)
-    else:
-        alternate_difficulty_field = 'barred_difficulty'
-        (default_difficulty, alternate_difficulty) = (unbarred_difficulty, barre_difficulty)
-    if tuning:
-        chords = list(get_chords(set(get_shape_notes(barre_shape, tuning=tuning))))
-        chords.sort(key=rank_chord_name)
-        chord = chords[0] if len(chords) > 0 else None
-        barre_data = {
-            'fret': min(shape), 'barred': barred,
-            'shape': barre_shape, 'chord': chord,
-            alternate_difficulty_field: alternate_difficulty
-        }
-    return default_difficulty, barre_data
+    difficulty = barre_difficulty if barred else unbarred_difficulty
+    return difficulty, get_tuned_barre_details(shape, tuning, barre_difficulty, unbarred_difficulty)
 
 def get_shape_difficulty(shape, tuning=None):
     difficulty = barreless_shape_difficulty(shape)
