@@ -3,9 +3,9 @@
 import sys
 
 
-from .theory import add_no5_quality, add_7sus2_quality
-from .theory import UnknownKeyException, ChordNotFoundException, ShapeNotFoundException
-from .config import UkeConfig, get_args, get_parser, error, InvalidCommandException
+from ukechords.theory import add_no5_quality, add_7sus2_quality
+from ukechords.theory import UnknownKeyException, ChordNotFoundException, ShapeNotFoundException
+from ukechords.config import UkeConfig, get_args, get_parser, error, InvalidCommandException
 
 
 def main():
