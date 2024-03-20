@@ -119,21 +119,21 @@ def get_shapes(config, max_fret=1):
 
 def barreless_shape_difficulty(shape):
     difficulty = 0.0 + max(shape)/10.0
-    last_pos = None
-    for string, pos in enumerate(shape):
-        if pos > 0:
-            if last_pos:
-                difficulty += (pos - last_pos - 1) ** 2 / 1.5
-            last_pos = pos
-        elif last_pos:
+    last_fretted_position = None
+    for string, position in enumerate(shape):
+        if position > 0:
+            if last_fretted_position:
+                difficulty += (position - last_fretted_position - 1) ** 2 / 1.5
+            last_fretted_position = position
+        elif last_fretted_position:
             difficulty += 1
-        if pos < 0:
+        if position < 0:
             if string in [0, len(shape) - 1]:
                 difficulty += 5
             else:
                 difficulty += 7
         else:
-            difficulty += pos
+            difficulty += position
     return difficulty
 
 def get_tuned_barre_details(shape, tuning, barre_difficulty, unbarred_difficulty):
