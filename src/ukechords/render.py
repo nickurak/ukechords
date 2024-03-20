@@ -32,15 +32,19 @@ def draw_shape(shape):
 
 
 def diff_string(difficulty, barre_data, diff_width=0):
-    # pylint: disable=line-too-long
-    if barre_data:
-        if barre_data['barred']:
-            if all(fret == 0 for fret in barre_data['shape']):
-                return f"{difficulty:{diff_width}.1f} (barre {barre_data['fret']}, else {barre_data['unbarred_difficulty']:.1f})"
-            return f"{difficulty:{diff_width}.1f} (barre {barre_data['fret']} + {csv(barre_data['shape'])}:{barre_data['chord']}, else {barre_data['unbarred_difficulty']:.1f})"
-        return f"{difficulty:{diff_width}.1f} (else {barre_data['barred_difficulty']:.1f}: barred {barre_data['fret']} + {csv(barre_data['shape'])}:{barre_data['chord']})"
+    padded_diff = f"{difficulty:{diff_width}.1f}"
+    if not barre_data:
+        return padded_diff
 
-    return f"{difficulty:{diff_width}.1f}"
+    barre_string = f"barre {barre_data['fret']}"
+    if not all(fret == 0 for fret in barre_data['shape']):
+        barre_string = f"{barre_string} + {csv(barre_data['shape'])}:{barre_data['chord']}"
+
+    if not barre_data['barred']:
+        return f"{padded_diff} (else {barre_data['barred_difficulty']:.1f}: {barre_string})"
+
+    return f"{padded_diff} ({barre_string}, else {barre_data['unbarred_difficulty']:.1f})"
+
 
 
 def render_chord_list(config, data):
