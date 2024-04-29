@@ -45,7 +45,8 @@ class UkeConfig():
             self._tuning = get_tuning(args.tuning)
         if args.sort_by_position:
             self._shape_ranker = rank_shape_by_high_fret
-        self._max_difficulty = args.max_difficulty or 29
+        if args.max_difficulty:
+            self._max_difficulty = args.max_difficulty
         if list(map(bool, [args.render_cmd, args.notes, args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord), args.show_key])).count(True) != 1:
             raise InvalidCommandException("Provide exactly one of --all-chords, --chord, --shape, --notes, --render-cmd, or --show-key")
         if args.qualities and args.simple:
@@ -94,6 +95,7 @@ class UkeConfig():
         self._cache_dir = os.path.join(BaseDirectory.xdg_cache_home, 'ukechords', 'cached_shapes')
         self._tuning = get_tuning('ukulele-c6')
         self._base = 0
+        self._max_difficulty = 29
         self._shape_ranker = rank_shape_by_difficulty
 
 
