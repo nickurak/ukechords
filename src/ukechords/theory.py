@@ -351,16 +351,16 @@ def get_chords_from_notes(notes, force_flat=False):
     return sorted(chords, key=rank_chord_name)
 
 
-def get_tuning(args):
-    if args.tuning in ("ukulele", "ukulele-c6"):
+def get_tuning(tuning_spec):
+    if tuning_spec in ("ukulele", "ukulele-c6"):
         return list("GCEA")
-    if args.tuning in ("ukulele-g6", "baritone"):
+    if tuning_spec in ("ukulele-g6", "baritone"):
         return list("DGBE")
-    if args.tuning == "guitar":
+    if tuning_spec == "guitar":
         return list("EADGBE")
-    if args.tuning == "mandolin":
+    if tuning_spec == "mandolin":
         return list("GDAE")
-    return args.tuning.split(',')
+    return tuning_spec.split(',')
 
 
 def get_other_names(shape, chord_name, tuning):
