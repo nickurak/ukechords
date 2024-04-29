@@ -2,6 +2,8 @@ import argparse
 import json
 import sys
 
+from xdg import BaseDirectory
+
 from .theory import get_tuning, rank_shape_by_difficulty, rank_shape_by_high_fret
 from .theory import show_chord, show_all, show_chords_by_shape
 from .theory import show_chords_by_notes, show_key
@@ -82,10 +84,12 @@ class UkeConfig():
             self._render_text = render_key
         if args.render_cmd:
             self.run_renderfunc(args.render_cmd)
-        self._cache_dir = args.cache_dir if args.cache_dir else None
+        if args.cache_dir:
+            self._cache_dir = args.cache_dir
 
 
     def set_defaults(self):
+        self._cache_dir = BaseDirectory.save_cache_path('ukechords', 'cached_shapes')
         self._tuning = get_tuning('ukulele-c6')
         self._base = 0
 

@@ -2,17 +2,12 @@ import os
 import pickle
 
 from math import ceil
-from xdg import BaseDirectory
 
 
 def cached_filename(config, max_fret, max_difficulty):
     tn_string = ''.join(config.tuning)
     filename = f"cache_{config.base}_{max_fret}_{tn_string}_{max_difficulty}.pcl"
-    if config.cache_dir:
-        directory =  config.cache_dir
-    else:
-        directory = BaseDirectory.save_cache_path('ukechords', 'cached_shapes')
-    return os.path.join(directory, filename)
+    return os.path.join(config.cache_dir, filename)
 
 
 def load_scanned_chords(config, chord_shapes, max_fret):
