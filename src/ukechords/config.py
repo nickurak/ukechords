@@ -1,6 +1,7 @@
 import argparse
 import json
 import sys
+import configparser
 import os
 
 from xdg import BaseDirectory
@@ -92,11 +93,25 @@ class UkeConfig():
 
 
     def set_defaults(self):
-        self._cache_dir = os.path.join(BaseDirectory.xdg_cache_home, 'ukechords', 'cached_shapes')
-        self._tuning = get_tuning('ukulele-c6')
-        self._base = 0
-        self._max_difficulty = 29
+        config = configparser.ConfigParser()
+        config_path = BaseDirectory.load_first_config('ukechords.ini')
+        config['DEFAULTS'] = {
+            'tuning': 'ukulele-c6',
+            'cache_dir': os.path.join(BaseDirectory.xdg_cache_home, 'ukechords', 'cached_shapes'),
+            'mute': False,
+            'max_difficulty': 29.0,
+            'sort_by_position': False,
+        }
+        if config_path and os.path.exists(config_path):
+            config.read(config_path)
+        defaults = config['DEFAULTS']
+        self._cache_dir = defaults['cache_dir']
+        self._tuning = get_tuning(defaults['tuning'])
+        self._base = -1 if defaults['mute'].lower() in ("yes", "true", "t", "1") else 0
+        self._max_difficulty = float(defaults['max_difficulty'])
         self._shape_ranker = rank_shape_by_difficulty
+        if defaults['sort_by_position'].lower() in ("yes", "true", "t", "1"):
+            self._shape_ranker = rank_shape_by_high_fret
 
 
     def run_renderfunc(self, command_name):
