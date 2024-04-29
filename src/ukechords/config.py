@@ -33,8 +33,10 @@ class UkeConfig():
     # pylint: disable=too-many-branches
     # pylint: disable=too-many-statements
     def __init__(self, args):
+        self.set_defaults()
         self._render_text = None
-        self._base = -1 if args.mute else 0
+        if args.mute:
+            self._base = -1
         self._json = args.json
         self._tuning = get_tuning(args)
         self._shape_ranker = rank_shape_by_high_fret if args.sort_by_position else rank_shape_by_difficulty
@@ -80,6 +82,10 @@ class UkeConfig():
         if args.render_cmd:
             self.run_renderfunc(args.render_cmd)
         self._cache_dir = args.cache_dir if args.cache_dir else None
+
+
+    def set_defaults(self):
+        self._base = 0
 
 
     def run_renderfunc(self, command_name):
