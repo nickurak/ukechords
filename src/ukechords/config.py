@@ -38,7 +38,8 @@ class UkeConfig():
         if args.mute:
             self._base = -1
         self._json = args.json
-        self._tuning = get_tuning(args)
+        if args.tuning:
+            self._tuning = get_tuning(args.tuning)
         self._shape_ranker = rank_shape_by_high_fret if args.sort_by_position else rank_shape_by_difficulty
         self._max_difficulty = args.max_difficulty or 29
         if list(map(bool, [args.render_cmd, args.notes, args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord), args.show_key])).count(True) != 1:
@@ -85,6 +86,7 @@ class UkeConfig():
 
 
     def set_defaults(self):
+        self._tuning = get_tuning('ukulele-c6')
         self._base = 0
 
 
@@ -177,7 +179,7 @@ def get_parser():
     parser.add_argument("--notes", help="Show what chord(s) these <NOTES> play")
     parser.add_argument("-s", "--shape", help="Show what chord(s) this <SHAPE> plays")
     parser.add_argument("--slide", action='store_true', help="Show what chord(s) this <SHAPE> could play when slid up or down")
-    parser.add_argument("-t", "--tuning", default='ukulele-c6', help="comma-separated notes for string tuning")
+    parser.add_argument("-t", "--tuning", help="comma-separated notes for string tuning")
     parser.add_argument("-1", "--single", action='store_true', help="Show only 1 shape for each chord")
     parser.add_argument("-v", "--visualize", action='store_true', help="Visualize shapes with Unicode drawings")
     parser.add_argument("-a", "--all-chords", action='store_true', help="Show all matching chords, not just one selected one")
