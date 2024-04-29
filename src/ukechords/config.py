@@ -1,6 +1,7 @@
 import argparse
 import json
 import sys
+import os
 
 from xdg import BaseDirectory
 
@@ -89,7 +90,7 @@ class UkeConfig():
 
 
     def set_defaults(self):
-        self._cache_dir = BaseDirectory.save_cache_path('ukechords', 'cached_shapes')
+        self._cache_dir = os.path.join(BaseDirectory.xdg_cache_home, 'ukechords', 'cached_shapes')
         self._tuning = get_tuning('ukulele-c6')
         self._base = 0
 
