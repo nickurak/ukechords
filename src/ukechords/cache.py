@@ -2,6 +2,7 @@ import os
 import pickle
 
 from math import ceil
+from pathlib import Path
 
 
 def cached_filename(config, max_fret, max_difficulty):
@@ -22,5 +23,6 @@ def load_scanned_chords(config, chord_shapes, max_fret):
 
 def save_scanned_chords(config, chord_shapes, max_fret):
     filename = cached_filename(config, max_fret, config.max_difficulty)
+    Path(config.cache_dir).mkdir(parents=True, exist_ok=True)
     with open(filename, "wb") as cache:
         pickle.dump(chord_shapes.dictionary, cache)
