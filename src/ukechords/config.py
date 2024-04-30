@@ -3,6 +3,8 @@ import json
 import sys
 import configparser
 import os
+from dataclasses import dataclass
+from typing import Callable
 
 from xdg import BaseDirectory
 
@@ -31,65 +33,84 @@ def error(return_code, message, parser=None):
 class InvalidCommandException(Exception):
     pass
 
+@dataclass
 class UkeConfig():
     # pylint: disable=line-too-long
     # pylint: disable=too-many-instance-attributes
     # pylint: disable=too-many-branches
     # pylint: disable=too-many-statements
+
+    render_text: Callable = None
+    command: Callable = None
+    json: bool = False
+    qualities: list[str] = None
+    slide: bool = False
+    show_notes: bool = False
+    no_cache: bool = False
+    num: int = None
+    visualize: bool = False
+    key: str = None
+    allowed_chord: [str] = None
+    force_flat: bool = False
+    max_diffculty: float = None
+    cache_dir: str = None
+    tuning: str = None
+    base: int = None
+    shape_ranker: Callable = None
+
     def __init__(self, args):
         self.set_defaults()
-        self._render_text = None
+        if args.json:
+            self.json = True
         if args.mute:
-            self._base = -1
-        self._json = args.json
+            self.base = -1
         if args.tuning:
-            self._tuning = get_tuning(args.tuning)
+            self.tuning = get_tuning(args.tuning)
         if args.sort_by_position:
-            self._shape_ranker = rank_shape_by_high_fret
+            self.shape_ranker = rank_shape_by_high_fret
         if args.max_difficulty:
-            self._max_difficulty = args.max_difficulty
+            self.max_difficulty = args.max_difficulty
         if list(map(bool, [args.render_cmd, args.notes, args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord), args.show_key])).count(True) != 1:
             raise InvalidCommandException("Provide exactly one of --all-chords, --chord, --shape, --notes, --render-cmd, or --show-key")
         if args.qualities and args.simple:
             raise InvalidCommandException("Provide only one of -p/--simple or -q/--qualities")
-        self._qualities = False
         if args.simple:
-            self._qualities = ['', 'm', '7', 'dim', 'maj', 'm7']
+            self.qualities = ['', 'm', '7', 'dim', 'maj', 'm7']
         if args.qualities is not None:
-            self._qualities = args.qualities.split(',')
-        self._slide = args.slide
+            self.qualities = args.qualities.split(',')
+        self.slide = args.slide
         if args.slide and not args.shape:
             raise InvalidCommandException("--slide requries a --shape")
-        self._num = args.num
+        self.num = args.num
         if args.single:
-            self._num = 1
-        if not self._num and args.visualize:
-            self._num = 1
-        self._show_notes = args.show_notes
-        self._no_cache = args.no_cache
-        self._visualize = args.visualize
-        self._force_flat = args.force_flat
+            self.num = 1
+        if not self.num and args.visualize:
+            self.num = 1
+        self.show_notes = args.show_notes
+        self.no_cache = args.no_cache
+        self.visualize = args.visualize
+        self.force_flat = args.force_flat
         if args.chord:
-            self._command = lambda x: show_chord(x, args.chord)
+            self.command = lambda x: show_chord(x, args.chord)
         if args.all_chords or args.key or args.allowed_chord or args.key:
-            self._command = show_all
+            self.command = show_all
         if args.chord or args.all_chords or args.key or args.allowed_chord or args.key:
-            self._render_text = render_chord_list
-        self._key = args.key
-        self._allowed_chord = args.allowed_chord
+            self.render_text = render_chord_list
+        self.key = args.key
+        self.allowed_chord = args.allowed_chord
         if args.shape:
-            self._command = lambda x: show_chords_by_shape(x, args.shape)
-            self._render_text = render_chords_from_shape
+            self.command = lambda x: show_chords_by_shape(x, args.shape)
+            self.render_text = render_chords_from_shape
         if args.notes:
-            self._command = lambda x: show_chords_by_notes(x, set(args.notes.split(",")))
-            self._render_text = render_chords_from_notes
+            self.command = lambda x: show_chords_by_notes(x, set(args.notes.split(",")))
+            self.render_text = render_chords_from_notes
         if args.show_key:
-            self._command = lambda x: show_key(x, args.show_key)
-            self._render_text = render_key
+            self.command = lambda x: show_key(x, args.show_key)
+            self.render_text = render_key
         if args.render_cmd:
             self.run_renderfunc(args.render_cmd)
         if args.cache_dir:
-            self._cache_dir = args.cache_dir
+            self.cache_dir = args.cache_dir
 
 
     def set_defaults(self):
@@ -105,95 +126,30 @@ class UkeConfig():
         if config_path and os.path.exists(config_path):
             config.read(config_path)
         defaults = config['DEFAULTS']
-        self._cache_dir = defaults['cache_dir']
-        self._tuning = get_tuning(defaults['tuning'])
-        self._base = -1 if defaults['mute'].lower() in ("yes", "true", "t", "1") else 0
-        self._max_difficulty = float(defaults['max_difficulty'])
-        self._shape_ranker = rank_shape_by_difficulty
+        self.cache_dir = defaults['cache_dir']
+        self.tuning = get_tuning(defaults['tuning'])
+        self.base = -1 if defaults['mute'].lower() in ("yes", "true", "t", "1") else 0
+        self.max_difficulty = float(defaults['max_difficulty'])
+        self.shape_ranker = rank_shape_by_difficulty
         if defaults['sort_by_position'].lower() in ("yes", "true", "t", "1"):
-            self._shape_ranker = rank_shape_by_high_fret
+            self.shape_ranker = rank_shape_by_high_fret
 
 
     def run_renderfunc(self, command_name):
         if render_func := get_renderfunc_from_name(command_name):
             data = json.load(sys.stdin)
-            self._command = lambda _: data
+            self.command = lambda _: data
             self._render_text = render_func
         else:
             raise InvalidCommandException(f"No such rendering function \"{command_name}\"")
 
-
-    @property
-    def base(self):
-        return self._base
-
-    @property
-    def tuning(self):
-        return self._tuning
-
-    @property
-    def shape_ranker(self):
-        return self._shape_ranker
-
-    @property
-    def max_difficulty(self):
-        return self._max_difficulty
-
-    @property
-    def qualities(self):
-        return self._qualities
-
-    @property
-    def slide(self):
-        return self._slide
-
-    @property
-    def num(self):
-        return self._num
-
-    @property
-    def show_notes(self):
-        return self._show_notes
-
-    @property
-    def no_cache(self):
-        return self._no_cache
-
-    @property
-    def visualize(self):
-        return self._visualize
-
-    @property
-    def force_flat(self):
-        return self._force_flat
-
-    @property
-    def json(self):
-        return self._json
-
-    @force_flat.setter
-    def force_flat(self, value):
-        self._force_flat = value
-
     def run_command(self):
-        data = self._command(self)
+        data = self.command(self)
         if self.json:
             json.dump(data, sys.stdout, indent=2 if sys.stdout.isatty() else None)
             print()
-        elif self._render_text:
-            self._render_text(self, data)
-
-    @property
-    def key(self):
-        return self._key
-
-    @property
-    def allowed_chord(self):
-        return self._allowed_chord
-
-    @property
-    def cache_dir(self):
-        return self._cache_dir
+        elif self.render_text:
+            self.render_text(self, data)
 
 
 def get_parser():
