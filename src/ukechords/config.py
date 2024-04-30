@@ -58,8 +58,10 @@ class UkeConfig():
     base: int = None
     shape_ranker: Callable = None
 
-    def __init__(self, args):
+    def __init__(self, args=None):
         self.set_defaults()
+        if not args:
+            return
         if args.json:
             self.json = True
         if args.mute:
