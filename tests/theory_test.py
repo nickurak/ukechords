@@ -2,12 +2,12 @@ import pytest
 
 from pychord import Chord, QualityManager
 
-from ukechords.theory import sharpify, flatify
-from ukechords.theory import get_chords_by_shape
-from ukechords.theory import ChordCollection, scan_chords
+from ukechords.theory import _sharpify, _flatify
+from ukechords.theory import _get_chords_by_shape
+from ukechords.theory import _ChordCollection, scan_chords
 from ukechords.theory import get_key_notes, get_dupe_scales_from_key
 from ukechords.theory import show_chord, show_chords_by_shape, show_all
-from ukechords.theory import weird_sharp_scale, weird_flat_scale
+from ukechords.theory import _weird_sharp_scale, _weird_flat_scale
 from ukechords.theory import add_no5_quality, add_7sus2_quality
 
 from .uketestconfig import uke_config # pylint: disable=unused-import
@@ -16,20 +16,20 @@ from .uketestconfig import uke_config # pylint: disable=unused-import
 
 
 def test_sharpify():
-    assert sharpify('Bb') == 'A#'
-    assert sharpify('A#') == 'A#'
-    assert flatify('A#') == 'Bb'
-    assert flatify('Bb') == 'Bb'
+    assert _sharpify('Bb') == 'A#'
+    assert _sharpify('A#') == 'A#'
+    assert _flatify('A#') == 'Bb'
+    assert _flatify('Bb') == 'Bb'
 
-    assert all(x == y for x, y in zip(sharpify(['Bb', 'A#']), ['A#', 'A#']))
-    assert all(x == y for x, y in zip(flatify(['Bb', 'A#']), ['Bb', 'Bb']))
+    assert all(x == y for x, y in zip(_sharpify(['Bb', 'A#']), ['A#', 'A#']))
+    assert all(x == y for x, y in zip(_flatify(['Bb', 'A#']), ['Bb', 'Bb']))
 
 
 def test_force_flat_shape(uke_config):
     uke_config.tuning = ['G', 'C', 'E']
     uke_config.force_flat = True
     pshape = [3, 2, 1]
-    resp = list(get_chords_by_shape(uke_config, pshape))
+    resp = list(_get_chords_by_shape(uke_config, pshape))
     assert len(resp) == 1
     shape, chords, notes = resp[0]
     assert shape == [3, 2, 1]
@@ -40,7 +40,7 @@ def test_force_flat_shape(uke_config):
 def test_no_force_flat_shape(uke_config):
     uke_config.tuning = ['G', 'C', 'E']
     pshape = [3, 2, 1]
-    resp = list(get_chords_by_shape(uke_config, pshape))
+    resp = list(_get_chords_by_shape(uke_config, pshape))
     assert len(resp) == 1
     shape, chords, notes = resp[0]
     assert shape == [3, 2, 1]
@@ -49,7 +49,7 @@ def test_no_force_flat_shape(uke_config):
 
 
 def test_basic_scan(uke_config):
-    chord_shapes = ChordCollection()
+    chord_shapes = _ChordCollection()
     scan_chords(uke_config, chord_shapes, max_fret=3)
     assert 'C' in chord_shapes
     assert chord_shapes['C'] is not None
@@ -60,12 +60,12 @@ def test_basic_scan(uke_config):
 
 def test_basic_scan_maj(uke_config, mocker):
     uke_config.tuning = ['G', 'C', 'E', 'A']
-    chord_shapes = ChordCollection()
+    chord_shapes = _ChordCollection()
 
     def get_cmaj7_shape(*_, **__):
         return [[0, 0, 0, 2]]
 
-    mock_get_shapes = mocker.patch("ukechords.theory.get_shapes", wraps=get_cmaj7_shape)
+    mock_get_shapes = mocker.patch("ukechords.theory._get_shapes", wraps=get_cmaj7_shape)
     scan_chords(uke_config, chord_shapes, max_fret=3)
     mock_get_shapes.assert_called_once()
     assert 'Cmaj7' in chord_shapes
@@ -137,7 +137,7 @@ def test_slide(uke_config):
     uke_config.tuning = ['C', 'G']
     uke_config.slide = True
     initial_shape = [1, 2]
-    slid_chords = list(get_chords_by_shape(uke_config, initial_shape))
+    slid_chords = list(_get_chords_by_shape(uke_config, initial_shape))
     slid_shapes = [c[0] for c in slid_chords]
     for slid_shape in slid_shapes:
         fretted_positions = [fret for fret in slid_shape if fret > 0]
@@ -147,8 +147,8 @@ def test_slide(uke_config):
 
 
 def test_weird_flat_sharps():
-    assert weird_sharp_scale == ['B#', 'C#', 'D', 'D#', 'E', 'E#', 'F#', 'G', 'G#', 'A', 'A#', 'B']
-    assert weird_flat_scale == ['C', 'Db', 'D', 'Eb', 'Fb', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'Cb']
+    assert _weird_sharp_scale == ['B#', 'C#', 'D', 'D#', 'E', 'E#', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+    assert _weird_flat_scale == ['C', 'Db', 'D', 'Eb', 'Fb', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'Cb']
 
 
 extra_chords_and_loaders = [
