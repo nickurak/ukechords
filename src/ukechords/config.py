@@ -4,7 +4,7 @@ import sys
 import configparser
 import os
 from dataclasses import dataclass
-from typing import Callable
+from typing import Callable, Optional, List
 
 from xdg import BaseDirectory
 
@@ -42,23 +42,23 @@ class UkeConfig():
     # pylint: disable=too-many-branches
     # pylint: disable=too-many-statements
 
-    render_text: Callable = None
-    command: Callable = None
+    render_text: Optional[Callable] = None
+    command: Optional[Callable] = None
     json: bool = False
-    qualities: list[str] = None
+    qualities: Optional[list[str]] = None
     slide: bool = False
     show_notes: bool = False
     no_cache: bool = False
-    num: int = None
+    num: Optional[int] = None
     visualize: bool = False
-    key: str = None
-    allowed_chord: [str] = None
+    key: Optional[str] = None
+    allowed_chord: Optional[List[str]] = None
     force_flat: bool = False
-    max_diffculty: float = None
-    cache_dir: str = None
-    tuning: str = None
-    base: int = None
-    shape_ranker: Callable = None
+    max_diffculty: Optional[float] = None
+    cache_dir: Optional[str] = None
+    tuning: Optional[str] = None
+    base: Optional[int] = None
+    shape_ranker: Optional[Callable] = None
 
     def __init__(self, args=None):
         self.set_defaults()
