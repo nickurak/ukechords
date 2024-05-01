@@ -1,3 +1,7 @@
+import json
+import sys
+
+
 def _csv(lst, sep=','):
     return sep.join(map(str, lst))
 
@@ -92,3 +96,7 @@ def render_key(_, data):
             print("No key found")
             return
         print(f"{_csv(data['other_keys'])}")
+
+
+def render_json(_, data):
+    json.dump(data, sys.stdout, indent=2 if sys.stdout.isatty() else None)
