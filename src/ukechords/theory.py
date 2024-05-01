@@ -44,7 +44,15 @@ def add_7sus2_quality():
         QualityManager().set_quality(name, new)
 
 
-def find_chord_from_notes(notes):
+def _find_pychord_from_notes(notes):
+    '''Faster version of pychord's find_chord_from_notes
+
+    This is a faster version of pychord's find_chord_from_notes, which
+    explicitly doesn't handle slash chords, to improve our chord
+    lookup performance. Note that, unlike our get_chords
+    functionality, this code requires that the notes/note-intervals be
+    in-order
+    '''
     root = notes[0]
     positions = notes_to_positions(notes, root)
     quality = QualityManager().find_quality_from_components(positions)
@@ -58,7 +66,7 @@ def get_chords(notes):
         return []
     chords = []
     for seq in itertools.permutations(notes):
-        chord = find_chord_from_notes(seq)
+        chord = _find_pychord_from_notes(seq)
         if chord is None:
             continue
         chords.append(chord.chord)
