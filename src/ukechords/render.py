@@ -2,16 +2,14 @@ def csv(lst, sep=','):
     return sep.join(map(str, lst))
 
 
-marks = {
-    3: ' ╷╵ ',
-    5: ' ╷╵ ',
-    7: ' ╷╵ ',
-    10: ' ╷╵ ',
-    12: '╷╵╷╵',
-}
-
-
 def get_shape_lines(shape):
+    marks = {
+        3: ' ╷╵ ',
+        5: ' ╷╵ ',
+        7: ' ╷╵ ',
+        10: ' ╷╵ ',
+        12: '╷╵╷╵',
+    }
     max_pos = max([*shape, 3])+1
     lines = ['─'] * max_pos
     yield '╓' + '┬'.join(lines) + '─'
