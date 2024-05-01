@@ -24,10 +24,8 @@ def get_renderfunc_from_name(name):
     return False
 
 
-def error(return_code, message, parser=None):
+def error(return_code, message):
     print(message, file=sys.stderr)
-    if parser:
-        parser.print_help(sys.stderr)
     sys.exit(return_code)
 
 
