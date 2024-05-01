@@ -5,7 +5,12 @@ import sys
 
 from ukechords.theory import add_no5_quality, add_7sus2_quality
 from ukechords.theory import UnknownKeyException, ChordNotFoundException, ShapeNotFoundException
-from ukechords.config import UkeConfig, get_args, get_parser, error, InvalidCommandException
+from ukechords.config import UkeConfig, get_args, get_parser, InvalidCommandException
+
+
+def error(return_code, message):
+    print(message, file=sys.stderr)
+    sys.exit(return_code)
 
 
 def main():

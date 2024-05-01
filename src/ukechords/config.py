@@ -24,11 +24,6 @@ def get_renderfunc_from_name(name):
     return False
 
 
-def error(return_code, message):
-    print(message, file=sys.stderr)
-    sys.exit(return_code)
-
-
 class InvalidCommandException(Exception):
     pass
 
