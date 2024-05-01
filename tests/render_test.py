@@ -1,10 +1,10 @@
 import pytest  # pylint: disable=unused-import
 
-from ukechords.render import get_shape_lines, render_chord_list
+from ukechords.render import _get_shape_lines, render_chord_list
 from ukechords.render import render_chords_from_shape
-from ukechords.render import diff_string
+from ukechords.render import _diff_string
 
-from ukechords.render import csv
+from ukechords.render import _csv
 
 from .uketestconfig import uke_config # pylint: disable=unused-import
 
@@ -13,7 +13,7 @@ from .uketestconfig import uke_config # pylint: disable=unused-import
 
 
 def test_get_shape_lines():
-    lines = list(get_shape_lines([-1, 0, 1]))
+    lines = list(_get_shape_lines([-1, 0, 1]))
     expected = """
 ╓─┬─┬─┬──
 ║●│ │╷│ 
@@ -45,13 +45,13 @@ def test_render_chord_list(capsys, uke_config):
     assert len(lines) == len(sl_data['shapes'])
     for shape, line in zip(sl_data['shapes'], lines):
         (chords_c, shape_str, _, diff_desc) = line.split(maxsplit=3)
-        assert chords_c.rstrip(":") == csv(shape['chord_names'])
+        assert chords_c.rstrip(":") == _csv(shape['chord_names'])
         assert shape_str == ','.join(map(str, shape['shape']))
         diff_parts = diff_desc.strip().split(maxsplit=1)
         assert diff_parts[0] == str(shape['difficulty'])
         if shape['barre_data'] is not None:
-            expected_diff_desc = diff_string(shape['difficulty'],
-                                             shape['barre_data']).split(maxsplit=1)[1]
+            expected_diff_desc = _diff_string(shape['difficulty'],
+                                              shape['barre_data']).split(maxsplit=1)[1]
             assert diff_parts[1] == expected_diff_desc
 
 
@@ -73,5 +73,5 @@ def test_render_chords_from_shape(capsys, uke_config):
     expected_chordstr = ",".join(sl_data['shapes'][0]['chords'])
     assert lines[0] == f"{expected_shapestr}: {expected_chordstr}"
     expected_difficulty = sl_data['difficulty']
-    expected_diff_string = diff_string(expected_difficulty, sl_data['barre_data'])
+    expected_diff_string = _diff_string(expected_difficulty, sl_data['barre_data'])
     assert lines[1] == f"Difficulty: {expected_diff_string}"
