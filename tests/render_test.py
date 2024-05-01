@@ -20,7 +20,7 @@ def test_get_shape_lines():
 ║ │ │╵│ 
 ║⃠ │ │ │ 
 ╙─┴─┴─┴──
-"""
+""" # noqa
     expected_lines = expected.split('\n')
     expected_lines = expected_lines[1:-1]
     assert len(lines) == len(expected_lines)
