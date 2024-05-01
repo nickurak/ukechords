@@ -30,8 +30,10 @@ def error(return_code, message, parser=None):
         parser.print_help(sys.stderr)
     sys.exit(return_code)
 
+
 class InvalidCommandException(Exception):
     pass
+
 
 @dataclass
 class UkeConfig():
@@ -114,7 +116,6 @@ class UkeConfig():
         if args.cache_dir:
             self.cache_dir = args.cache_dir
 
-
     def set_defaults(self):
         config = configparser.ConfigParser()
         config_path = BaseDirectory.load_first_config('ukechords.ini')
@@ -135,7 +136,6 @@ class UkeConfig():
         self.shape_ranker = rank_shape_by_difficulty
         if defaults['sort_by_position'].lower() in ("yes", "true", "t", "1"):
             self.shape_ranker = rank_shape_by_high_fret
-
 
     def run_renderfunc(self, command_name):
         if render_func := get_renderfunc_from_name(command_name):

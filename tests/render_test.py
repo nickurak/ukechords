@@ -1,4 +1,4 @@
-import pytest  #pylint: disable=unused-import
+import pytest  # pylint: disable=unused-import
 
 from ukechords.render import get_shape_lines, render_chord_list
 from ukechords.render import render_chords_from_shape
@@ -6,7 +6,7 @@ from ukechords.render import diff_string
 
 from ukechords.render import csv
 
-from .uketestconfig import uke_config #pylint: disable=unused-import
+from .uketestconfig import uke_config # pylint: disable=unused-import
 
 
 # pylint: disable=redefined-outer-name
@@ -31,8 +31,8 @@ def test_render_chord_list(capsys, uke_config):
     sl_data = {'shapes': [
         {'shape': [1], 'difficulty': 15.0,
          'chord_names': ['something'],
-         'barre_data': {'barred': False, 'barred_difficulty':32.0,
-                        'fret':4, 'shape':[5,4], 'chord':'chord'}
+         'barre_data': {'barred': False, 'barred_difficulty': 32.0,
+                        'fret': 4, 'shape': [5, 4], 'chord': 'chord'}
          },
         {'shape': [2, 3], 'difficulty': 2.0,
          'chord_names': ['something'],
@@ -62,8 +62,8 @@ def test_render_chords_from_shape(capsys, uke_config):
          'notes': ['n1', 'n2']
          }],
                'difficulty': 15.0,
-               'barre_data': {'barred': False, 'barred_difficulty':32.0,
-                              'fret':4, 'shape':[5,4], 'chord':'chord'}}
+               'barre_data': {'barred': False, 'barred_difficulty': 32.0,
+                              'fret': 4, 'shape': [5, 4], 'chord': 'chord'}}
     render_chords_from_shape(uke_config, sl_data)
     out, err = capsys.readouterr()
     assert err == ""

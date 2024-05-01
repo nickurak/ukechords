@@ -46,7 +46,6 @@ def diff_string(difficulty, barre_data, diff_width=0):
     return f"{padded_diff} ({barre_string}, else {barre_data['unbarred_difficulty']:.1f})"
 
 
-
 def render_chord_list(config, data):
     if config.show_notes:
         print(f"Notes: {', '.join(data['notes'])}")
