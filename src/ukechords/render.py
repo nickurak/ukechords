@@ -1,8 +1,8 @@
-def csv(lst, sep=','):
+def _csv(lst, sep=','):
     return sep.join(map(str, lst))
 
 
-def get_shape_lines(shape):
+def _get_shape_lines(shape):
     marks = {
         3: ' ╷╵ ',
         5: ' ╷╵ ',
@@ -24,19 +24,19 @@ def get_shape_lines(shape):
     yield '╙' + '┴'.join(lines) + '─'
 
 
-def draw_shape(shape):
-    for line in get_shape_lines(shape):
+def _draw_shape(shape):
+    for line in _get_shape_lines(shape):
         print(line)
 
 
-def diff_string(difficulty, barre_data, diff_width=0):
+def _diff_string(difficulty, barre_data, diff_width=0):
     padded_diff = f"{difficulty:{diff_width}.1f}"
     if not barre_data:
         return padded_diff
 
     barre_string = f"barre {barre_data['fret']}"
     if not all(fret == 0 for fret in barre_data['shape']):
-        barre_string = f"{barre_string} + {csv(barre_data['shape'])}:{barre_data['chord']}"
+        barre_string = f"{barre_string} + {_csv(barre_data['shape'])}:{barre_data['chord']}"
 
     if not barre_data['barred']:
         return f"{padded_diff} (else {barre_data['barred_difficulty']:.1f}: {barre_string})"
@@ -51,44 +51,44 @@ def render_chord_list(config, data):
     shape_width = 0
     diff_width = 0
     for shape in data['shapes']:
-        name_width = max(name_width, len(csv(shape['chord_names'])))
-        shape_width = max(shape_width, len(csv(['x' if x == -1 else x for x in shape['shape']])))
+        name_width = max(name_width, len(_csv(shape['chord_names'])))
+        shape_width = max(shape_width, len(_csv(['x' if x == -1 else x for x in shape['shape']])))
         diff_width = max(diff_width, len(f"{shape['difficulty']:.1}"))
     name_width += 1
     for shape in data['shapes']:
-        shape_string = csv(['x' if x == -1 else x for x in shape['shape']])
-        d_string = diff_string(shape['difficulty'], shape['barre_data'], diff_width=diff_width)
-        chord_names = csv(shape['chord_names']) + ":"
+        shape_string = _csv(['x' if x == -1 else x for x in shape['shape']])
+        d_string = _diff_string(shape['difficulty'], shape['barre_data'], diff_width=diff_width)
+        chord_names = _csv(shape['chord_names']) + ":"
         print(f"{chord_names:{name_width}} {shape_string:{shape_width}} difficulty:{d_string:}")
         if config.visualize:
-            draw_shape(shape['shape'])
+            _draw_shape(shape['shape'])
 
 
 def render_chords_from_shape(config, data):
     for shape in data['shapes']:
         if config.show_notes:
-            print(f"Notes: {csv(shape['notes'], sep=', ')}")
+            print(f"Notes: {_csv(shape['notes'], sep=', ')}")
         if config.visualize:
-            draw_shape([-1 if pos == 'x' else int(pos) for pos in shape['shape']])
-        print(f'{csv(shape["shape"])}: {csv(shape["chords"])}')
+            _draw_shape([-1 if pos == 'x' else int(pos) for pos in shape['shape']])
+        print(f'{_csv(shape["shape"])}: {_csv(shape["chords"])}')
     if not config.slide:
-        print(f"Difficulty: {diff_string(data['difficulty'], data['barre_data'])}")
+        print(f"Difficulty: {_diff_string(data['difficulty'], data['barre_data'])}")
 
 
 def render_chords_from_notes(_, data):
-    print(f"{csv(data['notes'])}: {csv(data['chords'])}")
+    print(f"{_csv(data['notes'])}: {_csv(data['chords'])}")
 
 
 def render_key(_, data):
     if data['other_keys']:
-        other_str = f" ({csv(data['other_keys'])})"
+        other_str = f" ({_csv(data['other_keys'])})"
     else:
         other_str = ''
     if 'key' in data:
         print(f"{data['key']}{other_str}:")
-        print(f"{csv(data['notes'])}")
+        print(f"{_csv(data['notes'])}")
     else:
         if not data['other_keys']:
             print("No key found")
             return
-        print(f"{csv(data['other_keys'])}")
+        print(f"{_csv(data['other_keys'])}")
