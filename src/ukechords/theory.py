@@ -61,7 +61,7 @@ def _find_pychord_from_notes(notes):
     return Chord(f"{root}{quality}")
 
 
-def get_chords(notes):
+def get_chords_from_notes(notes, force_flat=False):
     if not notes:
         return []
     chords = []
@@ -69,8 +69,12 @@ def get_chords(notes):
         chord = _find_pychord_from_notes(seq)
         if chord is None:
             continue
-        chords.append(chord.chord)
-    return chords
+        if force_flat:
+            flat_chord = flatify(chord.chord)
+            chords.append(flat_chord)
+        else:
+            chords.append(chord.chord)
+    return sorted(chords, key=rank_chord_name)
 
 
 class CircularList(list):
@@ -152,7 +156,7 @@ def get_tuned_barre_details(shape, tuning, barre_difficulty, unbarred_difficulty
     if not tuning:
         return None
     barre_shape = [x-min(shape) for x in shape]
-    chords = sorted(get_chords(set(get_shape_notes(barre_shape, tuning=tuning))))
+    chords = sorted(get_chords_from_notes(set(get_shape_notes(barre_shape, tuning=tuning))))
     chords.sort(key=rank_chord_name)
     chord = chords[0] if len(chords) > 0 else None
     barre_data = {
@@ -315,7 +319,7 @@ def get_notes_shape_map(config, max_fret):
 def get_notes_chords_map(notes_shapes_map):
     notes_chords_map = {}
     for notes in notes_shapes_map:
-        notes_chords_map[notes] = get_chords(notes)
+        notes_chords_map[notes] = get_chords_from_notes(notes)
     return notes_chords_map
 
 
@@ -355,17 +359,6 @@ def rank_chord_name(name):
         return ("no" in name, has_symbol, len(name), name)
 
 
-def get_chords_from_notes(notes, force_flat=False):
-    chords = []
-    for chord in get_chords(notes):
-        if force_flat:
-            flat_chord = flatify(Chord(chord).root) + Chord(chord).quality.quality
-            chords.append(flat_chord)
-        else:
-            chords.append(chord)
-    return sorted(chords, key=rank_chord_name)
-
-
 def get_tuning(tuning_spec):
     if tuning_spec in ("ukulele", "ukulele-c6"):
         return list("GCEA")
@@ -379,7 +372,7 @@ def get_tuning(tuning_spec):
 
 
 def get_other_names(shape, chord_name, tuning):
-    for chord in get_chords(set(get_shape_notes(shape, tuning))):
+    for chord in get_chords_from_notes(set(get_shape_notes(shape, tuning))):
         if normalize_chord(chord) != normalize_chord(chord_name):
             yield chord
 
