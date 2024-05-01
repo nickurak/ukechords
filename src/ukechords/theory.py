@@ -10,11 +10,14 @@ from .cache import load_scanned_chords, save_scanned_chords
 class UnknownKeyException(Exception):
     pass
 
+
 class ChordNotFoundException(ValueError):
     pass
 
+
 class ShapeNotFoundException(ValueError):
     pass
+
 
 def add_no5_quality():
     new_qs = []
@@ -136,6 +139,7 @@ def barreless_shape_difficulty(shape):
             difficulty += position
     return difficulty
 
+
 def get_tuned_barre_details(shape, tuning, barre_difficulty, unbarred_difficulty):
     if not tuning:
         return None
@@ -168,6 +172,7 @@ def barre_difficulty_details(shape, unbarred_difficulty, tuning):
     barred = barre_difficulty < unbarred_difficulty
     difficulty = barre_difficulty if barred else unbarred_difficulty
     return difficulty, get_tuned_barre_details(shape, tuning, barre_difficulty, unbarred_difficulty)
+
 
 def get_shape_difficulty(shape, tuning=None):
     difficulty = barreless_shape_difficulty(shape)
@@ -333,12 +338,14 @@ def rank_shape_by_difficulty(shape):
 def rank_shape_by_high_fret(shape):
     return sorted(shape, reverse=True)
 
+
 def rank_chord_name(name):
     has_symbol = False
     for char in ['+', '-', '(', ')']:
         if char in name:
             has_symbol = True
         return ("no" in name, has_symbol, len(name), name)
+
 
 def get_chords_from_notes(notes, force_flat=False):
     chords = []
@@ -421,9 +428,11 @@ def show_all(config):
     sort_offset = 0
     if config.key:
         sort_offset = note_intervals[get_key_notes(config.key[0])[0]]
+
     def chord_sorter(name):
         pos = note_intervals[Chord(name).root] - sort_offset
         return pos % len(chromatic_scale), name
+
     ichords.sort(key=chord_sorter)
     output = {}
     output['shapes'] = []
@@ -470,12 +479,14 @@ def show_chords_by_shape(config, pshape):
     pshape = [-1 if pos == 'x' else int(pos) for pos in pshape.split(",")]
     output = {}
     output['shapes'] = []
+
     def append_shape(shape, chords, notes):
         output['shapes'].append({
             'shape': shape,
             'chords': chords,
             'notes': list(notes)
         })
+
     for shape, chords, notes in get_chords_by_shape(config, pshape):
         append_shape(shape, chords, notes)
     if not output['shapes']:

@@ -10,7 +10,7 @@ from ukechords.theory import show_chord, show_chords_by_shape, show_all
 from ukechords.theory import weird_sharp_scale, weird_flat_scale
 from ukechords.theory import add_no5_quality, add_7sus2_quality
 
-from .uketestconfig import uke_config #pylint: disable=unused-import
+from .uketestconfig import uke_config # pylint: disable=unused-import
 
 # pylint: disable=redefined-outer-name
 
@@ -61,8 +61,10 @@ def test_basic_scan(uke_config):
 def test_basic_scan_maj(uke_config, mocker):
     uke_config.tuning = ['G', 'C', 'E', 'A']
     chord_shapes = ChordCollection()
+
     def get_cmaj7_shape(*_, **__):
         return [[0, 0, 0, 2]]
+
     mock_get_shapes = mocker.patch("ukechords.theory.get_shapes", wraps=get_cmaj7_shape)
     scan_chords(uke_config, chord_shapes, max_fret=3)
     mock_get_shapes.assert_called_once()
@@ -148,11 +150,13 @@ def test_weird_flat_sharps():
     assert weird_sharp_scale == ['B#', 'C#', 'D', 'D#', 'E', 'E#', 'F#', 'G', 'G#', 'A', 'A#', 'B']
     assert weird_flat_scale == ['C', 'Db', 'D', 'Eb', 'Fb', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'Cb']
 
+
 extra_chords_and_loaders = [
     ('C9no5', add_no5_quality),
     ('C7sus2', add_7sus2_quality),
 ]
 builtin_chords = ['C7']
+
 
 def get_missing_chord_params():
     for chord, _ in extra_chords_and_loaders:
