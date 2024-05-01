@@ -14,6 +14,7 @@ from .theory import show_chords_by_notes, show_key
 
 from .render import render_chord_list, render_chords_from_shape
 from .render import render_chords_from_notes, render_key
+from .render import render_json
 
 
 def _get_renderfunc_from_name(name):
@@ -21,7 +22,7 @@ def _get_renderfunc_from_name(name):
               render_chords_from_notes, render_key]:
         if f.__name__ == name:
             return f
-    return False
+    raise InvalidCommandException(f"No such rendering function \"{name}\"")
 
 
 class InvalidCommandException(Exception):
@@ -35,8 +36,8 @@ class UkeConfig():
     # pylint: disable=too-many-branches
     # pylint: disable=too-many-statements
 
-    render_text: Optional[Callable] = None
-    command: Optional[Callable] = None
+    render_text: Callable = render_json
+    command: Callable = lambda _, __: json.load(sys.stdin)
     json: bool = False
     qualities: Optional[list[str]] = None
     slide: bool = False
@@ -105,9 +106,11 @@ class UkeConfig():
             self.command = lambda x: show_key(x, args.show_key)
             self.render_text = render_key
         if args.render_cmd:
-            self._run_renderfunc(args.render_cmd)
+            self.render_text = _get_renderfunc_from_name(args.render_cmd)
         if args.cache_dir:
             self.cache_dir = args.cache_dir
+        if args.json:
+            self.render_text = render_json
 
     def _set_defaults(self):
         config = configparser.ConfigParser()
@@ -130,21 +133,8 @@ class UkeConfig():
         if defaults['sort_by_position'].lower() in ("yes", "true", "t", "1"):
             self.shape_ranker = rank_shape_by_high_fret
 
-    def _run_renderfunc(self, command_name):
-        if render_func := _get_renderfunc_from_name(command_name):
-            data = json.load(sys.stdin)
-            self.command = lambda _: data
-            self._render_text = render_func
-        else:
-            raise InvalidCommandException(f"No such rendering function \"{command_name}\"")
-
     def run_command(self):
-        data = self.command(self)
-        if self.json:
-            json.dump(data, sys.stdout, indent=2 if sys.stdout.isatty() else None)
-            print()
-        elif self.render_text:
-            self.render_text(self, data)
+        self.render_text(self, self.command(self))
 
 
 def get_parser():
