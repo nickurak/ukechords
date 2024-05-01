@@ -19,9 +19,8 @@ class FakeParser(): # pylint: disable=too-few-public-methods
 
 
 def test_error(capsys):
-    parser = FakeParser()
     with pytest.raises(SystemExit) as excinfo:
-        error(5, "error!", parser)
+        error(5, "error!")
     assert excinfo.value.code == 5
     out, err = capsys.readouterr()
     assert out == ''
