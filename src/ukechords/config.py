@@ -18,11 +18,14 @@ from .render import render_json
 
 
 def _get_renderfunc_from_name(name):
-    for f in [render_chord_list, render_chords_from_shape,
-              render_chords_from_notes, render_key]:
-        if f.__name__ == name:
-            return f
-    raise InvalidCommandException(f"No such rendering function \"{name}\"")
+    render_funcs = [render_chord_list, render_chords_from_shape,
+                    render_chords_from_notes, render_key]
+    render_func_map = {f.__name__: f for f in render_funcs}
+    if name in render_func_map:
+        return render_func_map[name]
+
+    msg = f"No such rendering function \"{name}\". Options: {", ".join(render_func_map)}"
+    raise InvalidCommandException(msg)
 
 
 class InvalidCommandException(Exception):
