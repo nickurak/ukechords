@@ -5,7 +5,7 @@ from pychord import Chord, QualityManager
 from ukechords.theory import _sharpify, _flatify
 from ukechords.theory import _get_chords_by_shape
 from ukechords.theory import _ChordCollection, scan_chords
-from ukechords.theory import get_key_notes, get_dupe_scales_from_key
+from ukechords.theory import _get_key_notes, _get_dupe_scales_from_key
 from ukechords.theory import show_chord, show_chords_by_shape, show_all
 from ukechords.theory import _weird_sharp_scale, _weird_flat_scale
 from ukechords.theory import add_no5_quality, add_7sus2_quality
@@ -76,10 +76,10 @@ def test_scale():
     key1 = 'C'
     key2 = 'Am'
 
-    notes1 = set(get_key_notes(key1))
-    notes2 = set(get_key_notes(key2))
+    notes1 = set(_get_key_notes(key1))
+    notes2 = set(_get_key_notes(key2))
     assert notes1 == notes2
-    dupes = get_dupe_scales_from_key(key1)
+    dupes = _get_dupe_scales_from_key(key1)
     assert 'Am' in dupes
 
 
