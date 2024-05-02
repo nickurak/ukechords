@@ -8,5 +8,5 @@ def test_error(capsys):
         error(5, "error!")
     assert excinfo.value.code == 5
     out, err = capsys.readouterr()
-    assert out == ''
-    assert err == 'error!\n'
+    assert out == ""
+    assert err == "error!\n"
