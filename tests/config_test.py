@@ -10,7 +10,7 @@ def test_no_args():
         UkeConfig(args)
 
 
-class FakeParser(): # pylint: disable=too-few-public-methods
+class FakeParser:  # pylint: disable=too-few-public-methods
     def __init__(self):
         self.help_shown_fds = []
 

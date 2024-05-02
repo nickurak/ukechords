@@ -6,11 +6,11 @@ def shape_ranker(shape):
     return sum(shape)
 
 
-class UkeTestConfig():
+class UkeTestConfig:
     # pylint: disable=too-few-public-methods,too-many-instance-attributes
     def __init__(self):
         self.slide = False
-        self.tuning = ['C', 'E', 'G']
+        self.tuning = ["C", "E", "G"]
         self.show_notes = False
         self.visualize = False
         self.force_flat = False

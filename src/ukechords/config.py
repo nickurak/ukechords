@@ -18,13 +18,17 @@ from .render import render_json
 
 
 def _get_renderfunc_from_name(name):
-    render_funcs = [render_chord_list, render_chords_from_shape,
-                    render_chords_from_notes, render_key]
+    render_funcs = [
+        render_chord_list,
+        render_chords_from_shape,
+        render_chords_from_notes,
+        render_key,
+    ]
     render_func_map = {f.__name__: f for f in render_funcs}
     if name in render_func_map:
         return render_func_map[name]
 
-    msg = f"No such rendering function \"{name}\". Options: {", ".join(render_func_map)}"
+    msg = f'No such rendering function "{name}". Options: {", ".join(render_func_map)}'
     raise InvalidCommandException(msg)
 
 
@@ -52,7 +56,7 @@ class InvalidCommandException(Exception):
 
 
 @dataclass
-class UkeConfig():
+class UkeConfig:
     # pylint: disable=line-too-long
     # pylint: disable=too-many-instance-attributes
     # pylint: disable=too-many-branches
@@ -94,9 +98,9 @@ class UkeConfig():
         if args.qualities and args.simple:
             raise InvalidCommandException("Provide only one of -p/--simple or -q/--qualities")
         if args.simple:
-            self.qualities = ['', 'm', '7', 'dim', 'maj', 'm7']
+            self.qualities = ["", "m", "7", "dim", "maj", "m7"]
         if args.qualities is not None:
-            self.qualities = args.qualities.split(',')
+            self.qualities = args.qualities.split(",")
         self.slide = args.slide
         if args.slide and not args.shape:
             raise InvalidCommandException("--slide requries a --shape")
@@ -135,23 +139,23 @@ class UkeConfig():
 
     def _set_defaults(self):
         config = configparser.ConfigParser()
-        config_path = BaseDirectory.load_first_config('ukechords.ini')
-        config['DEFAULTS'] = {
-            'tuning': 'ukulele-c6',
-            'cache_dir': os.path.join(BaseDirectory.xdg_cache_home, 'ukechords', 'cached_shapes'),
-            'mute': False,
-            'max_difficulty': 29.0,
-            'sort_by_position': False,
+        config_path = BaseDirectory.load_first_config("ukechords.ini")
+        config["DEFAULTS"] = {
+            "tuning": "ukulele-c6",
+            "cache_dir": os.path.join(BaseDirectory.xdg_cache_home, "ukechords", "cached_shapes"),
+            "mute": False,
+            "max_difficulty": 29.0,
+            "sort_by_position": False,
         }
         if config_path and os.path.exists(config_path):
             config.read(config_path)
-        defaults = config['DEFAULTS']
-        self.cache_dir = defaults['cache_dir']
-        self.tuning = get_tuning(defaults['tuning'])
-        self.base = -1 if defaults['mute'].lower() in ("yes", "true", "t", "1") else 0
-        self.max_difficulty = float(defaults['max_difficulty'])
+        defaults = config["DEFAULTS"]
+        self.cache_dir = defaults["cache_dir"]
+        self.tuning = get_tuning(defaults["tuning"])
+        self.base = -1 if defaults["mute"].lower() in ("yes", "true", "t", "1") else 0
+        self.max_difficulty = float(defaults["max_difficulty"])
         self.shape_ranker = rank_shape_by_difficulty
-        if defaults['sort_by_position'].lower() in ("yes", "true", "t", "1"):
+        if defaults["sort_by_position"].lower() in ("yes", "true", "t", "1"):
             self.shape_ranker = rank_shape_by_high_fret
 
     def run_command(self):
@@ -164,24 +168,76 @@ def get_parser():
     parser.add_argument("-c", "--chord", help="Show how to play <CHORD>")
     parser.add_argument("--notes", help="Show what chord(s) these <NOTES> play")
     parser.add_argument("-s", "--shape", help="Show what chord(s) this <SHAPE> plays")
-    parser.add_argument("--slide", action='store_true', help="Show what chord(s) this <SHAPE> could play when slid up or down")
+    parser.add_argument(
+        "--slide",
+        action="store_true",
+        help="Show what chord(s) this <SHAPE> could play when slid up or down",
+    )
     parser.add_argument("-t", "--tuning", help="comma-separated notes for string tuning")
-    parser.add_argument("-1", "--single", action='store_true', help="Show only 1 shape for each chord")
-    parser.add_argument("-v", "--visualize", action='store_true', help="Visualize shapes with Unicode drawings")
-    parser.add_argument("-a", "--all-chords", action='store_true', help="Show all matching chords, not just one selected one")
-    parser.add_argument("-m", "--mute", action='store_true', help="Include shapes that require muting strings")
+    parser.add_argument(
+        "-1", "--single", action="store_true", help="Show only 1 shape for each chord"
+    )
+    parser.add_argument(
+        "-v", "--visualize", action="store_true", help="Visualize shapes with Unicode drawings"
+    )
+    parser.add_argument(
+        "-a",
+        "--all-chords",
+        action="store_true",
+        help="Show all matching chords, not just one selected one",
+    )
+    parser.add_argument(
+        "-m", "--mute", action="store_true", help="Include shapes that require muting strings"
+    )
     parser.add_argument("-n", "--num", type=int, help="Show <NUM> shapes for the given chord")
-    parser.add_argument("-d", "--max-difficulty", type=float, help="Limit shape-scanning to the given <MAX_DIFFICULTY>", metavar="DIFFICULTY")
-    parser.add_argument("-k", "--key", action='append', help="Limit chords to those playable in <KEY> (can be specified multiple times)")
-    parser.add_argument("-o", "--allowed-chord", action='append', help="Limit to chords playable by the notes in <CHORD> (specify multiple times)", metavar="CHORD")
-    parser.add_argument("-q", "--qualities", help="Limit chords to chords with the specified <QUALITIES>")
-    parser.add_argument("-p", "--simple", action='store_true', help="Limit to chords with major, minor, and dim qualities")
-    parser.add_argument("--no-cache", action='store_true', help="Ignore any available cached chord/shape information")
+    parser.add_argument(
+        "-d",
+        "--max-difficulty",
+        type=float,
+        help="Limit shape-scanning to the given <MAX_DIFFICULTY>",
+        metavar="DIFFICULTY",
+    )
+    parser.add_argument(
+        "-k",
+        "--key",
+        action="append",
+        help="Limit chords to those playable in <KEY> (can be specified multiple times)",
+    )
+    parser.add_argument(
+        "-o",
+        "--allowed-chord",
+        action="append",
+        help="Limit to chords playable by the notes in <CHORD> (specify multiple times)",
+        metavar="CHORD",
+    )
+    parser.add_argument(
+        "-q", "--qualities", help="Limit chords to chords with the specified <QUALITIES>"
+    )
+    parser.add_argument(
+        "-p",
+        "--simple",
+        action="store_true",
+        help="Limit to chords with major, minor, and dim qualities",
+    )
+    parser.add_argument(
+        "--no-cache",
+        action="store_true",
+        help="Ignore any available cached chord/shape information",
+    )
     parser.add_argument("--show-key", help="Show the notes in the specified <KEY>", metavar="KEY")
-    parser.add_argument("--show-notes", action='store_true', help="Show the notes in chord")
-    parser.add_argument("-f", "--force-flat", action='store_true', help="Show flat-variations of chord roots")
-    parser.add_argument("-b", "--sort-by-position", action='store_true', help="Sort to minimize high-position instead of difficulty")
-    parser.add_argument("-j", "--json", action='store_true', help="Output in json format if possible")
+    parser.add_argument("--show-notes", action="store_true", help="Show the notes in chord")
+    parser.add_argument(
+        "-f", "--force-flat", action="store_true", help="Show flat-variations of chord roots"
+    )
+    parser.add_argument(
+        "-b",
+        "--sort-by-position",
+        action="store_true",
+        help="Sort to minimize high-position instead of difficulty",
+    )
+    parser.add_argument(
+        "-j", "--json", action="store_true", help="Output in json format if possible"
+    )
     parser.add_argument("-r", "--render-cmd", help="Read stdin into a rendering command")
     parser.add_argument("--cache-dir", help="Specify directory to use for cached shapes")
     return parser
