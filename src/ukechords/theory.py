@@ -74,7 +74,7 @@ def _get_chords_from_notes(notes, force_flat=False):
             chords.append(flat_chord)
         else:
             chords.append(chord.chord)
-    return sorted(chords, key=rank_chord_name)
+    return sorted(chords, key=_rank_chord_name)
 
 
 class _CircularList(list):
@@ -156,8 +156,8 @@ def _get_tuned_barre_details(shape, tuning, barre_difficulty, unbarred_difficult
     if not tuning:
         return None
     barre_shape = [x-min(shape) for x in shape]
-    chords = sorted(_get_chords_from_notes(set(get_shape_notes(barre_shape, tuning=tuning))))
-    chords.sort(key=rank_chord_name)
+    chords = sorted(_get_chords_from_notes(set(_get_shape_notes(barre_shape, tuning=tuning))))
+    chords.sort(key=_rank_chord_name)
     chord = chords[0] if len(chords) > 0 else None
     barre_data = {
         'fret': min(shape), 'barred': barre_difficulty < unbarred_difficulty,
@@ -219,7 +219,7 @@ def _flatify(arg):
     return _normalizer(arg, _flat_scale)
 
 
-def get_shape_notes(shape, tuning, force_flat=False):
+def _get_shape_notes(shape, tuning, force_flat=False):
     if force_flat:
         scale = _flat_scale
     else:
@@ -230,11 +230,11 @@ def get_shape_notes(shape, tuning, force_flat=False):
         yield scale[_note_intervals[tuning[string]] + position]
 
 
-def is_flat(note):
+def _is_flat(note):
     return note[-1] == "b"
 
 
-def get_scales():
+def _get_scales():
     scales = [(["", "maj", "major"], [0, 2, 4, 5, 7, 9, 11]),
               (["m", "min", "minor"], [0, 2, 3, 5, 7, 8, 10]),
               (["mblues", "minblues", "minorblues"], [0, 3, 5, 6, 7, 10]),
@@ -256,8 +256,8 @@ def get_scales():
     return mods
 
 
-def get_dupe_scales_from_intervals(root, intervals):
-    mods = get_scales()
+def _get_dupe_scales_from_intervals(root, intervals):
+    mods = _get_scales()
     dupes = {}
     for inc in range(0, 12):
         for name, candidate_intervals in mods.items():
@@ -271,45 +271,45 @@ def get_dupe_scales_from_intervals(root, intervals):
     return {val for _, val in dupes.items()}
 
 
-def get_dupe_scales_from_notes(notes):
+def _get_dupe_scales_from_notes(notes):
     root = notes[0]
     intervals = [0]
     root_interval = _note_intervals[root]
     for note in notes[1:]:
         interval = (_note_intervals[note] - root_interval) % 12
         intervals.append(interval)
-    return get_dupe_scales_from_intervals(root, intervals)
+    return _get_dupe_scales_from_intervals(root, intervals)
 
 
-def get_dupe_scales_from_key(key):
-    mods = get_scales()
-
-    match = re.match(f'^([A-G][b#]?)({"|".join(mods.keys())})$', key)
-    if not match:
-        raise UnknownKeyException(f"Unknown key \"{key}\"")
-    (root, extra) = match.groups()
-    intervals = mods[extra]
-
-    return get_dupe_scales_from_intervals(root, intervals) - {key}
-
-
-def get_key_notes(key):
-    mods = get_scales()
+def _get_dupe_scales_from_key(key):
+    mods = _get_scales()
 
     match = re.match(f'^([A-G][b#]?)({"|".join(mods.keys())})$', key)
     if not match:
         raise UnknownKeyException(f"Unknown key \"{key}\"")
     (root, extra) = match.groups()
     intervals = mods[extra]
-    if is_flat(root):
+
+    return _get_dupe_scales_from_intervals(root, intervals) - {key}
+
+
+def _get_key_notes(key):
+    mods = _get_scales()
+
+    match = re.match(f'^([A-G][b#]?)({"|".join(mods.keys())})$', key)
+    if not match:
+        raise UnknownKeyException(f"Unknown key \"{key}\"")
+    (root, extra) = match.groups()
+    intervals = mods[extra]
+    if _is_flat(root):
         return [_flat_scale[interval + _note_intervals[root]] for interval in intervals]
     return [_chromatic_scale[interval + _note_intervals[root]] for interval in intervals]
 
 
-def get_notes_shape_map(config, max_fret):
+def _get_notes_shape_map(config, max_fret):
     notes_shapes_map = {}
     for shape in _get_shapes(config, max_fret=max_fret):
-        notes = frozenset(get_shape_notes(shape, tuning=config.tuning))
+        notes = frozenset(_get_shape_notes(shape, tuning=config.tuning))
         if notes in notes_shapes_map:
             notes_shapes_map[notes].append(shape)
             continue
@@ -317,14 +317,14 @@ def get_notes_shape_map(config, max_fret):
     return notes_shapes_map
 
 
-def get_notes_chords_map(notes_shapes_map):
+def _get_notes_chords_map(notes_shapes_map):
     notes_chords_map = {}
     for notes in notes_shapes_map:
         notes_chords_map[notes] = _get_chords_from_notes(notes)
     return notes_chords_map
 
 
-def populate_chord_shapes(chord_shapes, notes_shapes_map, notes_chords_map):
+def _populate_chord_shapes(chord_shapes, notes_shapes_map, notes_chords_map):
     for notes, chords in notes_chords_map.items():
         for chord in chords:
             if chord not in chord_shapes:
@@ -337,9 +337,9 @@ def scan_chords(config, chord_shapes, max_fret=12):
     if not config.no_cache and load_scanned_chords(config, chord_shapes, max_fret):
         return
 
-    notes_shapes_map = get_notes_shape_map(config, max_fret)
-    notes_chords_map = get_notes_chords_map(notes_shapes_map)
-    populate_chord_shapes(chord_shapes, notes_shapes_map, notes_chords_map)
+    notes_shapes_map = _get_notes_shape_map(config, max_fret)
+    notes_chords_map = _get_notes_chords_map(notes_shapes_map)
+    _populate_chord_shapes(chord_shapes, notes_shapes_map, notes_chords_map)
 
     save_scanned_chords(config, max_fret=max_fret, chord_shapes=chord_shapes)
 
@@ -352,7 +352,7 @@ def rank_shape_by_high_fret(shape):
     return sorted(shape, reverse=True)
 
 
-def rank_chord_name(name):
+def _rank_chord_name(name):
     has_symbol = False
     for char in ['+', '-', '(', ')']:
         if char in name:
@@ -372,8 +372,8 @@ def get_tuning(tuning_spec):
     return tuning_spec.split(',')
 
 
-def get_other_names(shape, chord_name, tuning):
-    for chord in _get_chords_from_notes(set(get_shape_notes(shape, tuning))):
+def _get_other_names(shape, chord_name, tuning):
+    for chord in _get_chords_from_notes(set(_get_shape_notes(shape, tuning))):
         if _normalize_chord(chord) != _normalize_chord(chord_name):
             yield chord
 
@@ -397,7 +397,7 @@ def show_chord(config, chord):
     output['shapes'] = []
     for shape in shapes[:config.num or len(shapes)]:
         if not other_names:
-            other_names = list(get_other_names(shape, chord, config.tuning))
+            other_names = list(_get_other_names(shape, chord, config.tuning))
         difficulty, barre_data = _get_shape_difficulty(shape, tuning=config.tuning)
         if difficulty > config.max_difficulty:
             continue
@@ -408,7 +408,7 @@ def show_chord(config, chord):
     return output
 
 
-def chord_built_from_notes(chord, notes):
+def _chord_built_from_notes(chord, notes):
     for note in _sharpify(Chord(chord).components()):
         if note not in _sharpify(notes):
             return False
@@ -420,16 +420,16 @@ def show_all(config):
     notes = []
     chord_shapes = _ChordCollection()
     for key in config.key or []:
-        notes.extend(get_key_notes(key))
+        notes.extend(_get_key_notes(key))
     for chord in config.allowed_chord or []:
         notes.extend(Chord(chord).components())
-    if notes and any(map(is_flat, notes)):
+    if notes and any(map(_is_flat, notes)):
         config.force_flat = True
     scan_chords(config, chord_shapes)
     ichords = list(chord_shapes.keys())
     sort_offset = 0
     if config.key:
-        sort_offset = _note_intervals[get_key_notes(config.key[0])[0]]
+        sort_offset = _note_intervals[_get_key_notes(config.key[0])[0]]
 
     def chord_sorter(name):
         pos = _note_intervals[Chord(name).root] - sort_offset
@@ -444,7 +444,7 @@ def show_all(config):
             chord = _flatify(Chord(chord).root) + Chord(chord).quality.quality
         if config.qualities and Chord(chord).quality.quality not in config.qualities:
             continue
-        if notes and not chord_built_from_notes(chord, notes):
+        if notes and not _chord_built_from_notes(chord, notes):
             continue
         shape = chord_shapes[chord][0]
         difficulty, barre_data = _get_shape_difficulty(shape, tuning=config.tuning)
@@ -469,7 +469,7 @@ def _get_chords_by_shape(config, pshape):
     else:
         shapes.append(pshape)
     for shape in shapes:
-        notes = set(get_shape_notes(shape, tuning=config.tuning, force_flat=config.force_flat))
+        notes = set(_get_shape_notes(shape, tuning=config.tuning, force_flat=config.force_flat))
         chords = _get_chords_from_notes(notes, config.force_flat)
         if config.qualities:
             chords = [c for c in chords if Chord(c).quality.quality in config.qualities]
@@ -492,7 +492,7 @@ def show_chords_by_shape(config, pshape):
     for shape, chords, notes in _get_chords_by_shape(config, pshape):
         append_shape(shape, chords, notes)
     if not output['shapes']:
-        notes = set(get_shape_notes(pshape, tuning=config.tuning, force_flat=config.force_flat))
+        notes = set(_get_shape_notes(pshape, tuning=config.tuning, force_flat=config.force_flat))
         append_shape(pshape, [], notes)
 
     if not config.slide:
@@ -512,10 +512,10 @@ def show_key(_, key):
     notes = key.split(',')
     if len(notes) > 1:
         output['notes'] = notes
-        output['other_keys'] = list(get_dupe_scales_from_notes(notes))
+        output['other_keys'] = list(_get_dupe_scales_from_notes(notes))
     else:
         output['key'] = key
-        output['other_keys'] = list(get_dupe_scales_from_key(key))
-        output['notes'] = get_key_notes(key)
-    output['other_keys'].sort(key=rank_chord_name)
+        output['other_keys'] = list(_get_dupe_scales_from_key(key))
+        output['notes'] = _get_key_notes(key)
+    output['other_keys'].sort(key=_rank_chord_name)
     return output
