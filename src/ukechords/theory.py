@@ -22,8 +22,8 @@ class ShapeNotFoundException(ValueError):
 def add_no5_quality():
     new_qs = []
     for name, quality in QualityManager().get_qualities().items():
-        no5name = name + 'no5'
-        if '/' in name or 7 not in quality.components:
+        no5name = name + "no5"
+        if "/" in name or 7 not in quality.components:
             continue
         new = tuple(filter(lambda x: x != 7, quality.components))
         new_qs.append((no5name, new))
@@ -34,7 +34,7 @@ def add_no5_quality():
 def add_7sus2_quality():
     new_qs = []
     for name, quality in QualityManager().get_qualities().items():
-        if name != 'sus2':
+        if name != "sus2":
             continue
         components = list(quality.components)
         components.append(10)
@@ -45,14 +45,14 @@ def add_7sus2_quality():
 
 
 def _find_pychord_from_notes(notes):
-    '''Faster version of pychord's find_chord_from_notes
+    """Faster version of pychord's find_chord_from_notes
 
     This is a faster version of pychord's find_chord_from_notes, which
     explicitly doesn't handle slash chords, to improve our chord
     lookup performance. Note that, unlike our get_chords
     functionality, this code requires that the notes/note-intervals be
     in-order
-    '''
+    """
     root = notes[0]
     positions = notes_to_positions(notes, root)
     quality = QualityManager().find_quality_from_components(positions)
@@ -83,16 +83,16 @@ class _CircularList(list):
 
 
 def _normalize_chord(chord):
-    '''For duplicate and match detection, convert to a canonical
+    """For duplicate and match detection, convert to a canonical
     sharp version, including replacing "maj" with "M" per pychord
-    convention.'''
-    match = re.match('^([A-G][b#]?)(.*)$', chord)
+    convention."""
+    match = re.match("^([A-G][b#]?)(.*)$", chord)
     (root, quality) = match.groups()
-    quality = quality.replace('maj', 'M')
+    quality = quality.replace("maj", "M")
     return f"{_sharpify(root)}{quality}"
 
 
-class _ChordCollection():
+class _ChordCollection:
     def __init__(self):
         self.dictionary = {}
 
@@ -133,7 +133,7 @@ def _get_shapes(config, max_fret=1):
 
 
 def _barreless_shape_difficulty(shape):
-    difficulty = 0.0 + max(shape)/10.0
+    difficulty = 0.0 + max(shape) / 10.0
     last_fretted_position = None
     for string, position in enumerate(shape):
         if position > 0:
@@ -155,18 +155,20 @@ def _barreless_shape_difficulty(shape):
 def _get_tuned_barre_details(shape, tuning, barre_difficulty, unbarred_difficulty):
     if not tuning:
         return None
-    barre_shape = [x-min(shape) for x in shape]
+    barre_shape = [x - min(shape) for x in shape]
     chords = sorted(_get_chords_from_notes(set(_get_shape_notes(barre_shape, tuning=tuning))))
     chords.sort(key=_rank_chord_name)
     chord = chords[0] if len(chords) > 0 else None
     barre_data = {
-        'fret': min(shape), 'barred': barre_difficulty < unbarred_difficulty,
-        'shape': barre_shape, 'chord': chord
+        "fret": min(shape),
+        "barred": barre_difficulty < unbarred_difficulty,
+        "shape": barre_shape,
+        "chord": chord,
     }
-    if barre_data['barred']:
-        barre_data['unbarred_difficulty'] = unbarred_difficulty
+    if barre_data["barred"]:
+        barre_data["unbarred_difficulty"] = unbarred_difficulty
     else:
-        barre_data['barred_difficulty'] = barre_difficulty
+        barre_data["barred_difficulty"] = barre_difficulty
     return barre_data
 
 
@@ -178,7 +180,7 @@ def _barre_difficulty_details(shape, unbarred_difficulty, tuning):
 
     barre_shape = [x - min(shape) for x in shape]
     min_barre_extra = min([0, *filter(lambda x: x > 0, barre_shape)])
-    barre_difficulty = _get_shape_difficulty(barre_shape, tuning=tuning)[0]*2.2
+    barre_difficulty = _get_shape_difficulty(barre_shape, tuning=tuning)[0] * 2.2
     barre_difficulty += min(shape) * 3.0 + min_barre_extra * 4.0
 
     barred = barre_difficulty < unbarred_difficulty
@@ -193,10 +195,10 @@ def _get_shape_difficulty(shape, tuning=None):
     return difficulty, barre_data
 
 
-_chromatic_scale = _CircularList(['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'])
-_flat_scale = _CircularList(['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'])
-_weird_sharps = {'C': 'B#', 'F': "E#"}
-_weird_flats = {'B': 'Cb', 'E': 'Fb'}
+_chromatic_scale = _CircularList(["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"])
+_flat_scale = _CircularList(["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"])
+_weird_sharps = {"C": "B#", "F": "E#"}
+_weird_flats = {"B": "Cb", "E": "Fb"}
 _weird_sharp_scale = _CircularList([_weird_sharps.get(n, n) for n in _chromatic_scale])
 _weird_flat_scale = _CircularList([_weird_flats.get(n, n) for n in _flat_scale])
 _note_intervals = {note: index for index, note in enumerate(_chromatic_scale)}
@@ -235,18 +237,19 @@ def _is_flat(note):
 
 
 def _get_scales():
-    scales = [(["", "maj", "major"], [0, 2, 4, 5, 7, 9, 11]),
-              (["m", "min", "minor"], [0, 2, 3, 5, 7, 8, 10]),
-              (["mblues", "minblues", "minorblues"], [0, 3, 5, 6, 7, 10]),
-              (["blues", "majblues", "majorblues"], [0, 2, 3, 4, 7, 9]),
-              (["pent", "p", "pentatonic", "majpentatonic"], [0, 2, 4, 7, 9]),
-              (["mpent", "mp", "minorpentatonic"], [0, 3, 5, 7, 10]),
-              (['phdom'], [0, 1, 4, 5, 7, 8, 10]),
-              (['phmod'], [0, 1, 3, 5, 7, 8, 10]),
-              (['gypsymajor'], [0, 1, 4, 5, 7, 8, 11]),
-              (['gypsyminor'], [0, 2, 3, 6, 7, 8, 11]),
-              (['chromatic'], range(0, 12))
-              ]
+    scales = [
+        (["", "maj", "major"], [0, 2, 4, 5, 7, 9, 11]),
+        (["m", "min", "minor"], [0, 2, 3, 5, 7, 8, 10]),
+        (["mblues", "minblues", "minorblues"], [0, 3, 5, 6, 7, 10]),
+        (["blues", "majblues", "majorblues"], [0, 2, 3, 4, 7, 9]),
+        (["pent", "p", "pentatonic", "majpentatonic"], [0, 2, 4, 7, 9]),
+        (["mpent", "mp", "minorpentatonic"], [0, 3, 5, 7, 10]),
+        (["phdom"], [0, 1, 4, 5, 7, 8, 10]),
+        (["phmod"], [0, 1, 3, 5, 7, 8, 10]),
+        (["gypsymajor"], [0, 1, 4, 5, 7, 8, 11]),
+        (["gypsyminor"], [0, 2, 3, 6, 7, 8, 11]),
+        (["chromatic"], range(0, 12)),
+    ]
 
     mods = {}
     for names, intervals in scales:
@@ -266,7 +269,7 @@ def _get_dupe_scales_from_intervals(root, intervals):
                 transposed_root = _chromatic_scale[(_note_intervals[root] + inc) % 12]
                 if inc in dupes:
                     continue
-                dupes[inc] = f'{transposed_root}{name}'
+                dupes[inc] = f"{transposed_root}{name}"
 
     return {val for _, val in dupes.items()}
 
@@ -286,7 +289,7 @@ def _get_dupe_scales_from_key(key):
 
     match = re.match(f'^([A-G][b#]?)({"|".join(mods.keys())})$', key)
     if not match:
-        raise UnknownKeyException(f"Unknown key \"{key}\"")
+        raise UnknownKeyException(f'Unknown key "{key}"')
     (root, extra) = match.groups()
     intervals = mods[extra]
 
@@ -298,7 +301,7 @@ def _get_key_notes(key):
 
     match = re.match(f'^([A-G][b#]?)({"|".join(mods.keys())})$', key)
     if not match:
-        raise UnknownKeyException(f"Unknown key \"{key}\"")
+        raise UnknownKeyException(f'Unknown key "{key}"')
     (root, extra) = match.groups()
     intervals = mods[extra]
     if _is_flat(root):
@@ -354,7 +357,7 @@ def rank_shape_by_high_fret(shape):
 
 def _rank_chord_name(name):
     has_symbol = False
-    for char in ['+', '-', '(', ')']:
+    for char in ["+", "-", "(", ")"]:
         if char in name:
             has_symbol = True
         return ("no" in name, has_symbol, len(name), name)
@@ -369,7 +372,7 @@ def get_tuning(tuning_spec):
         return list("EADGBE")
     if tuning_spec == "mandolin":
         return list("GDAE")
-    return tuning_spec.split(',')
+    return tuning_spec.split(",")
 
 
 def _get_other_names(shape, chord_name, tuning):
@@ -384,27 +387,31 @@ def show_chord(config, chord):
         try:
             p_chord = Chord(chord)
             notes = p_chord.components()
-            output['notes'] = notes
+            output["notes"] = notes
         except ValueError as exc:
             raise ChordNotFoundException(f"Error looking up chord {chord}") from exc
     chord_shapes = _ChordCollection()
     scan_chords(config, chord_shapes)
     if chord not in chord_shapes:
-        raise ShapeNotFoundException(f"No shape for \"{chord}\" found")
+        raise ShapeNotFoundException(f'No shape for "{chord}" found')
     shapes = chord_shapes[chord]
     shapes.sort(key=config.shape_ranker)
     other_names = None
-    output['shapes'] = []
-    for shape in shapes[:config.num or len(shapes)]:
+    output["shapes"] = []
+    for shape in shapes[: config.num or len(shapes)]:
         if not other_names:
             other_names = list(_get_other_names(shape, chord, config.tuning))
         difficulty, barre_data = _get_shape_difficulty(shape, tuning=config.tuning)
         if difficulty > config.max_difficulty:
             continue
-        output['shapes'].append({
-            'shape': shape, 'difficulty': difficulty, 'barre_data': barre_data,
-            'chord_names': [chord] + sorted(other_names)
-        })
+        output["shapes"].append(
+            {
+                "shape": shape,
+                "difficulty": difficulty,
+                "barre_data": barre_data,
+                "chord_names": [chord] + sorted(other_names),
+            }
+        )
     return output
 
 
@@ -436,7 +443,7 @@ def show_all(config):
 
     ichords.sort(key=chord_sorter)
     output = {}
-    output['shapes'] = []
+    output["shapes"] = []
     for chord in ichords:
         chord_shapes[chord].sort(key=config.shape_ranker)
         if config.force_flat:
@@ -449,10 +456,14 @@ def show_all(config):
         difficulty, barre_data = _get_shape_difficulty(shape, tuning=config.tuning)
         if difficulty > config.max_difficulty:
             continue
-        output['shapes'].append({
-            'shape': shape, 'difficulty': difficulty, 'barre_data': barre_data,
-            'chord_names': [chord]
-        })
+        output["shapes"].append(
+            {
+                "shape": shape,
+                "difficulty": difficulty,
+                "barre_data": barre_data,
+                "chord_names": [chord],
+            }
+        )
     return output
 
 
@@ -477,44 +488,37 @@ def _get_chords_by_shape(config, pshape):
 
 
 def show_chords_by_shape(config, pshape):
-    pshape = [-1 if pos == 'x' else int(pos) for pos in pshape.split(",")]
+    pshape = [-1 if pos == "x" else int(pos) for pos in pshape.split(",")]
     output = {}
-    output['shapes'] = []
+    output["shapes"] = []
 
     def append_shape(shape, chords, notes):
-        output['shapes'].append({
-            'shape': shape,
-            'chords': chords,
-            'notes': list(notes)
-        })
+        output["shapes"].append({"shape": shape, "chords": chords, "notes": list(notes)})
 
     for shape, chords, notes in _get_chords_by_shape(config, pshape):
         append_shape(shape, chords, notes)
-    if not output['shapes']:
+    if not output["shapes"]:
         notes = set(_get_shape_notes(pshape, tuning=config.tuning, force_flat=config.force_flat))
         append_shape(pshape, [], notes)
 
     if not config.slide:
-        output['difficulty'], output['barre_data'] = _get_shape_difficulty(pshape, config.tuning)
+        output["difficulty"], output["barre_data"] = _get_shape_difficulty(pshape, config.tuning)
     return output
 
 
 def show_chords_by_notes(_, notes):
-    return {
-        'notes': list(notes),
-        'chords': _get_chords_from_notes(notes)
-    }
+    return {"notes": list(notes), "chords": _get_chords_from_notes(notes)}
 
 
 def show_key(_, key):
     output = {}
-    notes = key.split(',')
+    notes = key.split(",")
     if len(notes) > 1:
-        output['notes'] = notes
-        output['other_keys'] = list(_get_dupe_scales_from_notes(notes))
+        output["notes"] = notes
+        output["other_keys"] = list(_get_dupe_scales_from_notes(notes))
     else:
-        output['key'] = key
-        output['other_keys'] = list(_get_dupe_scales_from_key(key))
-        output['notes'] = _get_key_notes(key)
-    output['other_keys'].sort(key=_rank_chord_name)
+        output["key"] = key
+        output["other_keys"] = list(_get_dupe_scales_from_key(key))
+        output["notes"] = _get_key_notes(key)
+    output["other_keys"].sort(key=_rank_chord_name)
     return output
