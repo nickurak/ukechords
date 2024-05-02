@@ -28,6 +28,25 @@ def _get_renderfunc_from_name(name):
     raise InvalidCommandException(msg)
 
 
+def _reject_conflicting_commands(args):
+    def exactly_one(iterable):
+        i = iter(iterable)
+        return any(i) and not any(i)
+
+    mutually_exclusive_groups = [
+        args.render_cmd,
+        args.notes,
+        args.chord,
+        args.shape,
+        (args.all_chords or args.key or args.allowed_chord),
+        args.show_key,
+    ]
+    if not exactly_one(mutually_exclusive_groups):
+        msg = "Provide exactly one of "
+        msg += "--all-chords, --chord, --shape, --notes, --render-cmd, or --show-key"
+        raise InvalidCommandException(msg)
+
+
 class InvalidCommandException(Exception):
     pass
 
@@ -71,8 +90,7 @@ class UkeConfig():
             self.shape_ranker = rank_shape_by_high_fret
         if args.max_difficulty:
             self.max_difficulty = args.max_difficulty
-        if list(map(bool, [args.render_cmd, args.notes, args.chord, args.shape, (args.all_chords or args.key or args.allowed_chord), args.show_key])).count(True) != 1:
-            raise InvalidCommandException("Provide exactly one of --all-chords, --chord, --shape, --notes, --render-cmd, or --show-key")
+        _reject_conflicting_commands(args)
         if args.qualities and args.simple:
             raise InvalidCommandException("Provide only one of -p/--simple or -q/--qualities")
         if args.simple:
