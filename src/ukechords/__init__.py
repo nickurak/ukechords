@@ -1,2 +1,3 @@
-'''ukechords -- logic for playing and identifying chords on stringed instruments'''
+"""ukechords -- logic for playing and identifying chords on stringed instruments"""
+
 __version__ = "0.0.2"
