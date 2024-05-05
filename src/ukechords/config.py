@@ -167,81 +167,41 @@ class UkeConfig:
 def get_parser():
     # pylint: disable=line-too-long
     parser = argparse.ArgumentParser()
-    parser.add_argument("-c", "--chord", help="Show how to play <CHORD>")
-    parser.add_argument("--notes", help="Show what chord(s) these <NOTES> play")
-    parser.add_argument("-s", "--shape", help="Show what chord(s) this <SHAPE> plays")
-    parser.add_argument(
-        "--slide",
-        action="store_true",
-        help="Show what chord(s) this <SHAPE> could play when slid up or down",
-    )
-    parser.add_argument("-t", "--tuning", help="comma-separated notes for string tuning")
-    parser.add_argument(
-        "-1", "--single", action="store_true", help="Show only 1 shape for each chord"
-    )
-    parser.add_argument(
-        "-v", "--visualize", action="store_true", help="Visualize shapes with Unicode drawings"
-    )
-    parser.add_argument(
-        "-a",
-        "--all-chords",
-        action="store_true",
-        help="Show all matching chords, not just one selected one",
-    )
-    parser.add_argument(
-        "-m", "--mute", action="store_true", help="Include shapes that require muting strings"
-    )
-    parser.add_argument("-n", "--num", type=int, help="Show <NUM> shapes for the given chord")
-    parser.add_argument(
-        "-d",
-        "--max-difficulty",
-        type=float,
-        help="Limit shape-scanning to the given <MAX_DIFFICULTY>",
-        metavar="DIFFICULTY",
-    )
-    parser.add_argument(
-        "-k",
-        "--key",
-        action="append",
-        help="Limit chords to those playable in <KEY> (can be specified multiple times)",
-    )
-    parser.add_argument(
-        "-o",
-        "--allowed-chords",
-        action="append",
-        help="Limit to chords playable by the notes in <CHORD> (specify multiple times)",
-        metavar="CHORD",
-    )
-    parser.add_argument(
-        "-q", "--qualities", help="Limit chords to chords with the specified <QUALITIES>"
-    )
-    parser.add_argument(
-        "-p",
-        "--simple",
-        action="store_true",
-        help="Limit to chords with major, minor, and dim qualities",
-    )
-    parser.add_argument(
-        "--no-cache",
-        action="store_true",
-        help="Ignore any available cached chord/shape information",
-    )
-    parser.add_argument("--show-key", help="Show the notes in the specified <KEY>", metavar="KEY")
-    parser.add_argument("--show-notes", action="store_true", help="Show the notes in chord")
-    parser.add_argument(
-        "-f", "--force-flat", action="store_true", help="Show flat-variations of chord roots"
-    )
-    parser.add_argument(
-        "-b",
-        "--sort-by-position",
-        action="store_true",
-        help="Sort to minimize high-position instead of difficulty",
-    )
-    parser.add_argument(
-        "-j", "--json", action="store_true", help="Output in json format if possible"
-    )
-    parser.add_argument("-r", "--render-cmd", help="Read stdin into a rendering command")
-    parser.add_argument("--cache-dir", help="Specify directory to use for cached shapes")
+
+    def pa(*args, **kwargs):
+        parser.add_argument(*args, **kwargs)
+
+    pa("-c", "--chord", help="Show how to play <CHORD>")
+    pa("--notes", help="Show what chord(s) these <NOTES> play")
+    pa("-s", "--shape", help="Show what chord(s) this <SHAPE> plays")
+    slide_help = "Show what chord(s) this <SHAPE> could play when slid up or down"
+    pa("--slide", action="store_true", help=slide_help)
+    pa("-t", "--tuning", help="comma-separated notes for string tuning")
+    pa("-1", "--single", action="store_true", help="Show only 1 shape for each chord")
+    pa("-v", "--visualize", action="store_true", help="Visualize shapes with Unicode drawings")
+    all_help = "Show all matching chords, not just one selected one"
+    pa("-a", "--all-chords", action="store_true", help=all_help)
+    pa("-m", "--mute", action="store_true", help="Include shapes that require muting strings")
+    pa("-n", "--num", type=int, help="Show <NUM> shapes for the given chord")
+    key_help = "Limit chords to those playable in <KEY> (can be specified multiple times)"
+    pa("-k", "--key", action="append", help=key_help)
+    pa("-q", "--qualities", help="Limit chords to chords with the specified <QUALITIES>")
+    simple_help = "Limit to chords with major, minor, and dim qualities"
+    pa("-p", "--simple", action="store_true", help=simple_help)
+    nocache_help = "Ignore any available cached chord/shape information"
+    pa("--no-cache", action="store_true", help=nocache_help)
+    pa("--show-key", help="Show the notes in the specified <KEY>", metavar="KEY")
+    pa("--show-notes", action="store_true", help="Show the notes in chord")
+    pa("-f", "--force-flat", action="store_true", help="Show flat-variations of chord roots")
+    sort_by_pos_help = "Sort to minimize high-position instead of difficulty"
+    pa("-b", "--sort-by-position", action="store_true", help=sort_by_pos_help)
+    pa("-j", "--json", action="store_true", help="Output in json format if possible")
+    pa("-r", "--render-cmd", help="Read stdin into a rendering command")
+    pa("--cache-dir", help="Specify directory to use for cached shapes")
+    difficulty_help = "Limit shape-scanning to the given <MAX_DIFFICULTY> or less"
+    pa("-d", "--max-difficulty", type=float, help=difficulty_help)
+    ac_help = "Limit to chords playable by the notes in <ALLOWED_CHORD> (specify multiple times)"
+    pa("-o", "--allowed-chords", action="append", help=ac_help)
     return parser
 
 
