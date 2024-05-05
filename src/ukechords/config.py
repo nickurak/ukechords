@@ -76,7 +76,7 @@ class UkeConfig:
     key: Optional[str] = None
     allowed_chords: Optional[List[str]] = None
     force_flat: bool = False
-    max_diffculty: Optional[float] = None
+    max_difficulty: Optional[float] = None
     cache_dir: Optional[str] = None
     tuning: Optional[str] = None
     base: Optional[int] = None
