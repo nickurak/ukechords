@@ -42,7 +42,7 @@ def _reject_conflicting_commands(args):
         args.notes,
         args.chord,
         args.shape,
-        (args.all_chords or args.key or args.allowed_chord),
+        (args.all_chords or args.key or args.allowed_chords),
         args.show_key,
     ]
     if not exactly_one(mutually_exclusive_groups):
@@ -72,7 +72,7 @@ class UkeConfig:
     num: Optional[int] = None
     visualize: bool = False
     key: Optional[str] = None
-    allowed_chord: Optional[List[str]] = None
+    allowed_chords: Optional[List[str]] = None
     force_flat: bool = False
     max_diffculty: Optional[float] = None
     cache_dir: Optional[str] = None
@@ -115,12 +115,12 @@ class UkeConfig:
         self.force_flat = args.force_flat
         if args.chord:
             self.command = lambda x: show_chord(x, args.chord)
-        if args.all_chords or args.key or args.allowed_chord or args.key:
+        if args.all_chords or args.key or args.allowed_chords or args.key:
             self.command = show_all
-        if args.chord or args.all_chords or args.key or args.allowed_chord or args.key:
+        if args.chord or args.all_chords or args.key or args.allowed_chords or args.key:
             self.render_text = render_chord_list
         self.key = args.key
-        self.allowed_chord = args.allowed_chord
+        self.allowed_chords = args.allowed_chords
         if args.shape:
             self.command = lambda x: show_chords_by_shape(x, args.shape)
             self.render_text = render_chords_from_shape
@@ -205,7 +205,7 @@ def get_parser():
     )
     parser.add_argument(
         "-o",
-        "--allowed-chord",
+        "--allowed-chords",
         action="append",
         help="Limit to chords playable by the notes in <CHORD> (specify multiple times)",
         metavar="CHORD",

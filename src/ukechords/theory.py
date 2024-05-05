@@ -427,7 +427,7 @@ def show_all(config):
     chord_shapes = _ChordCollection()
     for key in config.key or []:
         notes.extend(_get_key_notes(key))
-    for chord in config.allowed_chord or []:
+    for chord in config.allowed_chords or []:
         notes.extend(Chord(chord).components())
     if notes and any(map(_is_flat, notes)):
         config.force_flat = True
