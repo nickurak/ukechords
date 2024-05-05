@@ -1,3 +1,5 @@
+# pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
+
 import pytest  # pylint: disable=unused-import
 
 from ukechords.render import _get_shape_lines, render_chord_list
