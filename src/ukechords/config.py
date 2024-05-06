@@ -60,9 +60,6 @@ class InvalidCommandException(Exception):
 @dataclass
 class UkeConfig:
     # pylint: disable=too-many-instance-attributes
-    # pylint: disable=too-many-branches
-    # pylint: disable=too-many-statements
-
     render_text: Callable = render_json
     command: Callable = lambda _, __: json.load(sys.stdin)
     json: bool = False
@@ -82,6 +79,8 @@ class UkeConfig:
     shape_ranker: Optional[Callable] = None
 
     def __init__(self, args=None):
+        # pylint: disable=too-many-branches
+        # pylint: disable=too-many-statements
         self._set_defaults()
         if not args:
             return
