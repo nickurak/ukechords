@@ -59,7 +59,6 @@ class InvalidCommandException(Exception):
 
 @dataclass
 class UkeConfig:
-    # pylint: disable=line-too-long
     # pylint: disable=too-many-instance-attributes
     # pylint: disable=too-many-branches
     # pylint: disable=too-many-statements
@@ -165,7 +164,6 @@ class UkeConfig:
 
 
 def get_parser():
-    # pylint: disable=line-too-long
     parser = argparse.ArgumentParser()
 
     def pa(*args, **kwargs):
