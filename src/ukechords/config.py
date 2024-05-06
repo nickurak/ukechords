@@ -84,6 +84,11 @@ class UkeConfig:
         self._set_defaults()
         if not args:
             return
+        if not isinstance(args, argparse.Namespace):
+            if isinstance(args, list):
+                args = get_parser().parse_args(args)
+            else:
+                raise TypeError(f"Unable to handle {type(args)} as UkeConfig args")
         if args.json:
             self.json = True
         if args.mute:

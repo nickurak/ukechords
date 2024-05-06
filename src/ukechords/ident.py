@@ -7,7 +7,7 @@ import sys
 
 from ukechords.theory import add_no5_quality, add_7sus2_quality
 from ukechords.theory import UnknownKeyException, ChordNotFoundException, ShapeNotFoundException
-from ukechords.config import UkeConfig, get_args, get_parser, InvalidCommandException
+from ukechords.config import UkeConfig, InvalidCommandException
 
 
 def error(return_code, message):
@@ -19,7 +19,7 @@ def main():
     add_no5_quality()
     add_7sus2_quality()
     try:
-        config = UkeConfig(get_args(parser=get_parser(), args=sys.argv[1:]))
+        config = UkeConfig(sys.argv[1:])
         config.run_command()
     except UnknownKeyException as exc:
         error(10, exc)
