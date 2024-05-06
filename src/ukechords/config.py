@@ -1,4 +1,4 @@
-# pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
+"""Logic related to configuring ukechords"""
 
 import argparse
 import json
@@ -54,11 +54,13 @@ def _reject_conflicting_commands(args):
 
 
 class InvalidCommandException(Exception):
-    pass
+    "Raised in case of an invalid command line invocation"
 
 
 @dataclass
 class UkeConfig:
+    """Configuration settings for an invocation of ukechords functionality"""
+
     # pylint: disable=too-many-instance-attributes
     render_text: Callable = render_json
     command: Callable = lambda _, __: json.load(sys.stdin)
@@ -164,10 +166,12 @@ class UkeConfig:
             self.shape_ranker = rank_shape_by_high_fret
 
     def run_command(self):
+        "Invoke the configured command with the configured configuration, and render the output"
         self.render_text(self, self.command(self))
 
 
 def get_parser():
+    "Construct and return an argparse parser for use with ukechords on the command line"
     parser = argparse.ArgumentParser()
 
     def pa(*args, **kwargs):
