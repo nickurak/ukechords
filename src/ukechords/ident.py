@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
-# pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
+"""Simple command-line client to invoke ukechords functionality"""
+
+# pylint: disable=missing-function-docstring
 
 import sys
 
