@@ -1,4 +1,4 @@
-# pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
+"""Tools to load and save cached ukechords data"""
 
 import os
 import pickle
@@ -14,6 +14,7 @@ def _cached_filename(config, max_fret, max_difficulty):
 
 
 def load_scanned_chords(config, chord_shapes, max_fret):
+    """Load cached chords/shapes from disk"""
     for imax_difficulty in range(ceil(config.max_difficulty), 100):
         filename = _cached_filename(config, max_fret, imax_difficulty)
         if os.path.exists(filename):
@@ -24,6 +25,7 @@ def load_scanned_chords(config, chord_shapes, max_fret):
 
 
 def save_scanned_chords(config, chord_shapes, max_fret):
+    """Save chord/shapes to cache on disk"""
     filename = _cached_filename(config, max_fret, config.max_difficulty)
     Path(config.cache_dir).mkdir(parents=True, exist_ok=True)
     with open(filename, "wb") as cache:
