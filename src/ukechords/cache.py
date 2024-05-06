@@ -7,7 +7,7 @@ from math import ceil
 from pathlib import Path
 
 
-def cached_filename(config, max_fret, max_difficulty):
+def _cached_filename(config, max_fret, max_difficulty):
     tn_string = "".join(config.tuning)
     filename = f"cache_{config.base}_{max_fret}_{tn_string}_{max_difficulty}.pcl"
     return os.path.join(config.cache_dir, filename)
@@ -15,7 +15,7 @@ def cached_filename(config, max_fret, max_difficulty):
 
 def load_scanned_chords(config, chord_shapes, max_fret):
     for imax_difficulty in range(ceil(config.max_difficulty), 100):
-        filename = cached_filename(config, max_fret, imax_difficulty)
+        filename = _cached_filename(config, max_fret, imax_difficulty)
         if os.path.exists(filename):
             with open(filename, "rb") as cache:
                 chord_shapes.dictionary |= pickle.load(cache)
@@ -24,7 +24,7 @@ def load_scanned_chords(config, chord_shapes, max_fret):
 
 
 def save_scanned_chords(config, chord_shapes, max_fret):
-    filename = cached_filename(config, max_fret, config.max_difficulty)
+    filename = _cached_filename(config, max_fret, config.max_difficulty)
     Path(config.cache_dir).mkdir(parents=True, exist_ok=True)
     with open(filename, "wb") as cache:
         pickle.dump(chord_shapes.dictionary, cache)
