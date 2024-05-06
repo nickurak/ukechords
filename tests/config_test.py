@@ -2,12 +2,12 @@
 
 import pytest
 
-from ukechords.config import UkeConfig, get_parser, get_args, InvalidCommandException
+from ukechords.config import UkeConfig, get_parser, InvalidCommandException
 
 
 def test_no_args():
     parser = get_parser()
-    args = get_args(parser=parser, args=[])
+    args = parser.parse_args([])
     with pytest.raises(InvalidCommandException):
         UkeConfig(args)
 

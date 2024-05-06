@@ -205,7 +205,3 @@ def get_parser():
     ac_help = "Limit to chords playable by the notes in <ALLOWED_CHORD> (specify multiple times)"
     pa("-o", "--allowed-chords", action="append", help=ac_help)
     return parser
-
-
-def get_args(parser, args):
-    return parser.parse_args(args)
