@@ -1,4 +1,4 @@
-# pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
+"""Rendering logic, chiefly for CLI usage of ukechords"""
 
 import json
 import sys
@@ -51,6 +51,10 @@ def _diff_string(difficulty, barre_data, diff_width=0):
 
 
 def render_chord_list(config, data):
+    """Render a list of 1 or more ways to play chords, as requested by
+    chord name, including shapes, and optionally the notes and a
+    unicode visualization of how to play it
+    """
     if config.show_notes:
         print(f"Notes: {', '.join(data['notes'])}")
     name_width = 0
@@ -71,6 +75,7 @@ def render_chord_list(config, data):
 
 
 def render_chords_from_shape(config, data):
+    """Render named chords, as identified by shapes played on frets"""
     for shape in data["shapes"]:
         if config.show_notes:
             print(f"Notes: {_csv(shape['notes'], sep=', ')}")
@@ -82,10 +87,12 @@ def render_chords_from_shape(config, data):
 
 
 def render_chords_from_notes(_, data):
+    """Render named chords, as identified by notes"""
     print(f"{_csv(data['notes'])}: {_csv(data['chords'])}")
 
 
 def render_key(_, data):
+    """Render information about a musical key"""
     if data["other_keys"]:
         other_str = f" ({_csv(data['other_keys'])})"
     else:
@@ -101,4 +108,5 @@ def render_key(_, data):
 
 
 def render_json(_, data):
+    """Render arbitrary input data as json"""
     json.dump(data, sys.stdout, indent=2 if sys.stdout.isatty() else None)
