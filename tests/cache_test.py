@@ -10,9 +10,6 @@ class FakeChordCollection:  # pylint: disable=too-few-public-methods
         self.dictionary = {}
 
 
-# pylint: disable=redefined-outer-name
-
-
 def test_load_save_cache(uke_config):
     shapes = FakeChordCollection()
     shapes.dictionary = {"hello": "world"}

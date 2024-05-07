@@ -11,9 +11,6 @@ from ukechords.render import _csv
 from .uketestconfig import uke_config  # pylint: disable=unused-import
 
 
-# pylint: disable=redefined-outer-name
-
-
 def test_get_shape_lines():
     lines = list(_get_shape_lines([-1, 0, 1]))
     expected = """
