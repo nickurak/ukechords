@@ -14,8 +14,6 @@ from ukechords.theory import add_no5_quality, add_7sus2_quality
 
 from .uketestconfig import uke_config  # pylint: disable=unused-import
 
-# pylint: disable=redefined-outer-name
-
 
 def test_sharpify():
     assert _sharpify("Bb") == "A#"
