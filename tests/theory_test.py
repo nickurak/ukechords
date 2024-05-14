@@ -162,7 +162,7 @@ def get_missing_chord_params():
     for chord, _ in extra_chords_and_loaders:
         yield chord
     for chord in builtin_chords:
-        reason = f"{chord} is present, as expected"
+        reason = f"we detected that pychord already has {chord}, as expected"
         yield pytest.param(chord, marks=pytest.mark.xfail(strict=True, reason=reason))
 
 
