@@ -1,5 +1,8 @@
 # pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
 
+from typing import Callable, List, Optional
+from dataclasses import dataclass, field
+
 import tempfile
 import pytest
 
@@ -8,21 +11,21 @@ def shape_ranker(shape):
     return sum(shape)
 
 
+@dataclass
 class UkeTestConfig:
-    # pylint: disable=too-few-public-methods,too-many-instance-attributes
-    def __init__(self):
-        self.slide = False
-        self.tuning = ["C", "E", "G"]
-        self.show_notes = False
-        self.visualize = False
-        self.force_flat = False
-        self.qualities = False
-        self.no_cache = True
-        self.base = 0
-        self.max_difficulty = 20
-        self.shape_ranker = shape_ranker
-        self.num = 10
-        self.cache_dir = None
+    # pylint: disable=too-many-instance-attributes
+    slide: bool = False
+    tuning: List[str] = field(default_factory=lambda: ["C", "E", "G"])
+    show_notes: bool = False
+    visualize: bool = False
+    force_flat: bool = False
+    qualities: bool = False
+    no_cache: bool = True
+    base: int = 0
+    max_difficulty: float = 20
+    shape_ranker: Callable = shape_ranker
+    num: int = 10
+    cache_dir: Optional[str] = None
 
 
 @pytest.fixture
