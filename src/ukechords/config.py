@@ -19,7 +19,7 @@ from .render import render_chords_from_notes, render_key
 from .render import render_json
 
 
-def _get_renderfunc_from_name(name):
+def _get_renderfunc_from_name(name) -> Callable:
     render_funcs = [
         render_chord_list,
         render_chords_from_shape,
@@ -34,7 +34,7 @@ def _get_renderfunc_from_name(name):
     raise InvalidCommandException(msg)
 
 
-def _reject_conflicting_commands(args):
+def _reject_conflicting_commands(args) -> None:
     def exactly_one(iterable):
         i = iter(iterable)
         return any(i) and not any(i)
@@ -80,7 +80,7 @@ class UkeConfig:
     base: Optional[int] = None
     shape_ranker: Optional[Callable] = None
 
-    def __init__(self, args=None):
+    def __init__(self, args=None) -> None:
         # pylint: disable=too-many-branches
         # pylint: disable=too-many-statements
         self._set_defaults()
@@ -144,7 +144,7 @@ class UkeConfig:
         if args.json:
             self.render_text = render_json
 
-    def _set_defaults(self):
+    def _set_defaults(self) -> None:
         config = configparser.ConfigParser()
         config_path = BaseDirectory.load_first_config("ukechords.ini")
         config["DEFAULTS"] = {
@@ -165,12 +165,12 @@ class UkeConfig:
         if defaults["sort_by_position"].lower() in ("yes", "true", "t", "1"):
             self.shape_ranker = rank_shape_by_high_fret
 
-    def run_command(self):
+    def run_command(self) -> None:
         "Invoke the configured command with the configured configuration, and render the output"
         self.render_text(self, self.command(self))
 
 
-def get_parser():
+def get_parser() -> argparse.ArgumentParser:
     "Construct and return an argparse parser for use with ukechords on the command line"
     parser = argparse.ArgumentParser()
 
