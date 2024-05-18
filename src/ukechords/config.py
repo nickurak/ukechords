@@ -76,7 +76,7 @@ class UkeConfig:
     force_flat: bool = False
     max_difficulty: Optional[float] = None
     cache_dir: Optional[str] = None
-    tuning: Optional[str] = None
+    tuning: Optional[List[str]] = None
     base: Optional[int] = None
     shape_ranker: Optional[Callable] = None
 
