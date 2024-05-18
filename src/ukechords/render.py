@@ -50,7 +50,7 @@ def _diff_string(difficulty, barre_data, diff_width=0):
     return f"{padded_diff} ({barre_string}, else {barre_data['unbarred_difficulty']:.1f})"
 
 
-def render_chord_list(config, data):
+def render_chord_list(config, data) -> None:
     """Render a list of 1 or more ways to play chords, as requested by
     chord name, including shapes, and optionally the notes and a
     unicode visualization of how to play it
@@ -74,7 +74,7 @@ def render_chord_list(config, data):
             _draw_shape(shape["shape"])
 
 
-def render_chords_from_shape(config, data):
+def render_chords_from_shape(config, data) -> None:
     """Render named chords, as identified by shapes played on frets"""
     for shape in data["shapes"]:
         if config.show_notes:
@@ -86,12 +86,12 @@ def render_chords_from_shape(config, data):
         print(f"Difficulty: {_diff_string(data['difficulty'], data['barre_data'])}")
 
 
-def render_chords_from_notes(_, data):
+def render_chords_from_notes(_, data) -> None:
     """Render named chords, as identified by notes"""
     print(f"{_csv(data['notes'])}: {_csv(data['chords'])}")
 
 
-def render_key(_, data):
+def render_key(_, data) -> None:
     """Render information about a musical key"""
     if data["other_keys"]:
         other_str = f" ({_csv(data['other_keys'])})"
@@ -107,6 +107,6 @@ def render_key(_, data):
         print(f"{_csv(data['other_keys'])}")
 
 
-def render_json(_, data):
+def render_json(_, data) -> None:
     """Render arbitrary input data as json"""
     json.dump(data, sys.stdout, indent=2 if sys.stdout.isatty() else None)
