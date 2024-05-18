@@ -150,9 +150,9 @@ class UkeConfig:
         config["DEFAULTS"] = {
             "tuning": "ukulele-c6",
             "cache_dir": os.path.join(BaseDirectory.xdg_cache_home, "ukechords", "cached_shapes"),
-            "mute": False,
-            "max_difficulty": 29.0,
-            "sort_by_position": False,
+            "mute": "no",
+            "max_difficulty": "29.0",
+            "sort_by_position": "no",
         }
         if config_path and os.path.exists(config_path):
             config.read(config_path)
