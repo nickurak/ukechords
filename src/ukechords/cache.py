@@ -13,7 +13,7 @@ def _cached_filename(config, max_fret, max_difficulty):
     return os.path.join(config.cache_dir, filename)
 
 
-def load_scanned_chords(config, chord_shapes, max_fret):
+def load_scanned_chords(config, chord_shapes, max_fret) -> bool:
     """Load cached chords/shapes from disk"""
     for imax_difficulty in range(ceil(config.max_difficulty), 100):
         filename = _cached_filename(config, max_fret, imax_difficulty)
@@ -24,7 +24,7 @@ def load_scanned_chords(config, chord_shapes, max_fret):
     return False
 
 
-def save_scanned_chords(config, chord_shapes, max_fret):
+def save_scanned_chords(config, chord_shapes, max_fret) -> None:
     """Save chord/shapes to cache on disk"""
     filename = _cached_filename(config, max_fret, config.max_difficulty)
     Path(config.cache_dir).mkdir(parents=True, exist_ok=True)
