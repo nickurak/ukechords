@@ -9,7 +9,7 @@ from pathlib import Path
 
 def _cached_filename(config, max_fret, max_difficulty):
     tn_string = "".join(config.tuning)
-    filename = f"cache_{config.base}_{max_fret}_{tn_string}_{max_difficulty}.pcl"
+    filename = f"cache_{config.base}_{max_fret}_{tn_string}_{int(max_difficulty)}.pcl"
     return os.path.join(config.cache_dir, filename)
 
 
