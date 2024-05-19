@@ -50,7 +50,7 @@ def add_7sus2_quality() -> None:
         QualityManager().set_quality(name, new)
 
 
-def _find_pychord_from_notes(notes):
+def _get_chord_from_notes(notes):
     """Faster version of pychord's find_chord_from_notes
 
     This is a faster version of pychord's find_chord_from_notes, which
@@ -64,7 +64,7 @@ def _find_pychord_from_notes(notes):
     quality = QualityManager().find_quality_from_components(positions)
     if quality is None:
         return None
-    return Chord(f"{root}{quality}")
+    return f"{root}{quality}"
 
 
 def _get_chords_from_notes(notes, force_flat=False):
@@ -72,14 +72,14 @@ def _get_chords_from_notes(notes, force_flat=False):
         return []
     chords = []
     for seq in itertools.permutations(notes):
-        chord = _find_pychord_from_notes(seq)
+        chord = _get_chord_from_notes(seq)
         if chord is None:
             continue
         if force_flat:
-            flat_chord = _flatify(chord.chord)
+            flat_chord = _flatify(chord)
             chords.append(flat_chord)
         else:
-            chords.append(chord.chord)
+            chords.append(chord)
     return sorted(chords, key=_rank_chord_name)
 
 
