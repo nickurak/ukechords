@@ -19,7 +19,7 @@ def load_scanned_chords(config, chord_shapes, max_fret) -> bool:
         filename = _cached_filename(config, max_fret, imax_difficulty)
         if os.path.exists(filename):
             with open(filename, "rb") as cache:
-                chord_shapes.dictionary |= pickle.load(cache)
+                chord_shapes |= pickle.load(cache)
                 return True
     return False
 
@@ -29,4 +29,4 @@ def save_scanned_chords(config, chord_shapes, max_fret) -> None:
     filename = _cached_filename(config, max_fret, config.max_difficulty)
     Path(config.cache_dir).mkdir(parents=True, exist_ok=True)
     with open(filename, "wb") as cache:
-        pickle.dump(chord_shapes.dictionary, cache)
+        pickle.dump(chord_shapes, cache)

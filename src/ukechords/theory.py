@@ -98,22 +98,15 @@ def _normalize_chord(chord):
     return f"{_sharpify(root)}{quality}"
 
 
-class _ChordCollection:
-    def __init__(self):
-        self.dictionary = {}
+class _ChordCollection(dict):
+    def __contains__(self, chord, *args, **kwargs):
+        return super().__contains__(_normalize_chord(chord), *args, **kwargs)
 
-    def __contains__(self, chord):
-        return _normalize_chord(chord) in self.dictionary
+    def __setitem__(self, chord, *args, **kwargs):
+        super().__setitem__(_normalize_chord(chord), *args, **kwargs)
 
-    def __setitem__(self, chord, val):
-        self.dictionary[_normalize_chord(chord)] = val
-
-    def __getitem__(self, chord):
-        return self.dictionary[_normalize_chord(chord)]
-
-    def keys(self):
-        """Returns the chords (keys) stored in this collection"""
-        return self.dictionary.keys()
+    def __getitem__(self, chord, *args, **kwargs):
+        return super().__getitem__(_normalize_chord(chord), *args, **kwargs)
 
 
 def _get_shapes(config, max_fret=1):
