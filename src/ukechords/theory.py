@@ -1,6 +1,6 @@
 """Logic related to music-theory, mostly for stringed instruments"""
 
-from itertools import permutations
+from itertools import permutations, product
 import re
 
 from typing import List
@@ -116,27 +116,13 @@ class _ChordCollection:
         return self.dictionary.keys()
 
 
-def _increment(position, max_pos, base=0):
-    string = 0
-    while True:
-        position[string] += 1
-        if position[string] > max_pos:
-            if (string + 1) >= len(position):
-                position[string] -= 1
-                return False
-            position[string] = base
-            string += 1
-        else:
-            return True
-
-
 def _get_shapes(config, max_fret=1):
-    shape = [config.base] * len(config.tuning)
-    while True:
+    string_range = range(0, len(config.tuning))
+    fret_range = range(config.base, max_fret + 1)
+    for shape in product(*[fret_range for _ in string_range]):
+        shape = shape[::-1]  # reverse to match legacy behavior of _get_shapes
         if max(shape) >= 0 and _get_shape_difficulty(shape)[0] <= config.max_difficulty:
             yield list(shape)
-        if not _increment(shape, max_fret, base=config.base):
-            return
 
 
 def _barreless_shape_difficulty(shape):
