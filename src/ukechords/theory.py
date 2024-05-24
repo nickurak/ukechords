@@ -1,6 +1,6 @@
 """Logic related to music-theory, mostly for stringed instruments"""
 
-import itertools
+from itertools import permutations
 import re
 
 from typing import List
@@ -71,7 +71,7 @@ def _get_chords_from_notes(notes, force_flat=False):
     if not notes:
         return []
     chords = []
-    for seq in itertools.permutations(notes):
+    for seq in permutations(notes):
         chord = _get_chord_from_notes(seq)
         if chord is None:
             continue
