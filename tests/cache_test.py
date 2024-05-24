@@ -5,26 +5,20 @@ from ukechords.cache import _cached_filename, save_scanned_chords, load_scanned_
 from .uketestconfig import uke_config  # pylint: disable=unused-import
 
 
-class FakeChordCollection:  # pylint: disable=too-few-public-methods
-    def __init__(self):
-        self.dictionary = {}
-
-
 def test_load_save_cache(uke_config):
-    shapes = FakeChordCollection()
-    shapes.dictionary = {"hello": "world"}
+    shapes = {"hello": "world"}
     save_scanned_chords(uke_config, shapes, max_fret=4)
-    shapes.dictionary = {}
+    shapes = {}
     res = load_scanned_chords(uke_config, shapes, max_fret=4)
     assert res
-    assert shapes.dictionary["hello"] == "world"
+    assert shapes["hello"] == "world"
 
 
 def test_load_empty_cache(uke_config):
-    shapes = FakeChordCollection()
+    shapes = {}
     res = load_scanned_chords(uke_config, shapes, max_fret=4)
     assert res is False
-    assert not shapes.dictionary
+    assert not shapes
 
 
 def test__cached_filename(uke_config):
