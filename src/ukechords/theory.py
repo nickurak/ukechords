@@ -306,9 +306,9 @@ def _get_notes_shape_map(config, max_fret):
     return notes_shapes_map
 
 
-def _get_notes_chords_map(notes_shapes_map):
+def _get_notes_chords_map(notes_set_list):
     notes_chords_map = {}
-    for notes in notes_shapes_map:
+    for notes in notes_set_list:
         notes_chords_map[notes] = _get_chords_from_notes(notes)
     return notes_chords_map
 
@@ -328,12 +328,29 @@ def scan_chords(config, chord_shapes, max_fret=12) -> None:
     play chords. Store discovered shapes in a ChordCollection that
     maps chords to a list of shapes that will generate the notes of
     that chord.
+
+    This happens in 3 phases:
+
+    1. Generate a map of set-of-notes -> shapes-that-play-those-notes
+
+        - implemented by _get_notes_shape_map
+
+    2. Generate a map of set-of-notes (as discovered in (1)) ->
+    chords-those-notes-make
+
+        - implemented by _get_notes_chords_map
+
+    3. Store a mapping of chord -> shape for each discovered chord in
+    (2), by looking up the shapes that play that chord's notes in (1)
+
+        - implemented by _populate_chord_shapes
+
     """
     if not config.no_cache and load_scanned_chords(config, chord_shapes, max_fret):
         return
 
     notes_shapes_map = _get_notes_shape_map(config, max_fret)
-    notes_chords_map = _get_notes_chords_map(notes_shapes_map)
+    notes_chords_map = _get_notes_chords_map(notes_shapes_map.keys())
     _populate_chord_shapes(chord_shapes, notes_shapes_map, notes_chords_map)
 
     save_scanned_chords(config, max_fret=max_fret, chord_shapes=chord_shapes)
