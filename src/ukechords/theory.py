@@ -68,6 +68,11 @@ def _get_chord_from_notes(notes):
 
 
 def _get_chords_from_notes(notes, force_flat=False):
+    """
+    Return a list of chords the specified notes will generate, with no
+    consideration to the order of those notes. Returns flat versions
+    of those chords if force_flat is True.
+    """
     if not notes:
         return []
     chords = []
@@ -110,6 +115,13 @@ class _ChordCollection(dict):
 
 
 def _get_shapes(config, max_fret=1):
+    """
+    Yield shapes playable on the fretboard, including muted strings
+    (if config.base is set to -1) up to the specified fret.
+
+    Shapes which are ranked as too-difficult based on the provided
+    configuration will be excluded.
+    """
     string_range = range(0, len(config.tuning))
     fret_range = range(config.base, max_fret + 1)
     for shape in product(*[fret_range for _ in string_range]):
@@ -159,6 +171,10 @@ def _get_tuned_barre_details(shape, tuning, barre_difficulty, unbarred_difficult
 
 
 def _barre_difficulty_details(shape, unbarred_difficulty, tuning):
+    """
+    Return information on how using a barre to play the given shape
+    (if possible) affects the shape's difficulty.
+    """
     barre_difficulty = None
     barrable = len([1 for pos in shape if pos == min(shape)])
     if not (barrable > 1 and min(shape) > 0):
@@ -176,6 +192,11 @@ def _barre_difficulty_details(shape, unbarred_difficulty, tuning):
 
 
 def _get_shape_difficulty(shape, tuning=None):
+    """
+    Return a heuristic for how hard a shape is to play, including
+    information on how barreing the shape affects that difficulty
+    where appropriate.
+    """
     difficulty = _barreless_shape_difficulty(shape)
     difficulty, barre_data = _barre_difficulty_details(shape, difficulty, tuning)
     return difficulty, barre_data
@@ -208,6 +229,13 @@ def _flatify(arg):
 
 
 def _get_shape_notes(shape, tuning, force_flat=False):
+    """
+    For a given shape in a specified tuning, return the notes played
+    by thet shape.
+
+    If force_flat is True, return flat versions of those notes as
+    appropriate.
+    """
     if force_flat:
         scale = _flat_scale
     else:
@@ -296,6 +324,10 @@ def _get_key_notes(key):
 
 
 def _get_notes_shape_map(config, max_fret):
+    """
+    For each playable shape, find the notes played by that shape, and
+    then generate a reverse map of notes->shapes-that-play-those-notes
+    """
     notes_shapes_map = {}
     for shape in _get_shapes(config, max_fret=max_fret):
         notes = frozenset(_get_shape_notes(shape, tuning=config.tuning))
@@ -307,6 +339,10 @@ def _get_notes_shape_map(config, max_fret):
 
 
 def _get_notes_chords_map(notes_set_list):
+    """
+    Map each unique set of notes to the chords that those notes
+    play
+    """
     notes_chords_map = {}
     for notes in notes_set_list:
         notes_chords_map[notes] = _get_chords_from_notes(notes)
@@ -314,6 +350,10 @@ def _get_notes_chords_map(notes_set_list):
 
 
 def _populate_chord_shapes(chord_shapes, notes_shapes_map, notes_chords_map):
+    """
+    For each notes->chords association, find all the shapes that
+    play those notes, and record those shapes as options to play chord
+    """
     for notes, chords in notes_chords_map.items():
         for chord in chords:
             if chord not in chord_shapes:
