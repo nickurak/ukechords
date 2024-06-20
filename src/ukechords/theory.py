@@ -9,7 +9,7 @@ from pychord.analyzer import notes_to_positions
 from pychord import Chord, QualityManager
 
 from .cache import load_scanned_chords, save_scanned_chords
-from .errors import UnknownKeyException, ChordNotFoundException, ShapeNotFoundException
+from .errors import UnknownKeyException, ChordNotFoundException
 
 
 def add_no5_quality() -> None:
@@ -444,7 +444,9 @@ def show_chord(config, chord) -> dict:
     chord_shapes = _ChordCollection()
     scan_chords(config, chord_shapes)
     if chord not in chord_shapes:
-        raise ShapeNotFoundException(f'No shape for "{chord}" found')
+        output["chord"] = chord
+        output["shapes"] = []
+        return output
     shapes = chord_shapes[chord]
     shapes.sort(key=config.shape_ranker)
     other_names = None

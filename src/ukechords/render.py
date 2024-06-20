@@ -3,6 +3,8 @@
 import json
 import sys
 
+from .errors import ShapeNotFoundException
+
 
 def _csv(lst, sep=","):
     return sep.join(map(str, lst))
@@ -60,6 +62,8 @@ def render_chord_list(config, data) -> None:
     name_width = 0
     shape_width = 0
     diff_width = 0
+    if "shapes" not in data:
+        raise ShapeNotFoundException(f'No shape for "{data["chord"]}" found')
     for shape in data["shapes"]:
         name_width = max(name_width, len(_csv(shape["chord_names"])))
         shape_width = max(shape_width, len(_csv(["x" if x == -1 else x for x in shape["shape"]])))
