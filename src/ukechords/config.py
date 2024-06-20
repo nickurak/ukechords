@@ -18,6 +18,8 @@ from .render import render_chord_list, render_chords_from_shape
 from .render import render_chords_from_notes, render_key
 from .render import render_json
 
+from .errors import InvalidCommandException
+
 
 def _get_renderfunc_from_name(name) -> Callable:
     render_funcs = [
@@ -51,10 +53,6 @@ def _reject_conflicting_commands(args) -> None:
         msg = "Provide exactly one of "
         msg += "--all-chords, --chord, --shape, --notes, --render-cmd, or --show-key"
         raise InvalidCommandException(msg)
-
-
-class InvalidCommandException(Exception):
-    "Raised in case of an invalid command line invocation"
 
 
 @dataclass

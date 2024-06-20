@@ -9,18 +9,7 @@ from pychord.analyzer import notes_to_positions
 from pychord import Chord, QualityManager
 
 from .cache import load_scanned_chords, save_scanned_chords
-
-
-class UnknownKeyException(Exception):
-    """Returned in the event of a request for an unrecognized musical key"""
-
-
-class ChordNotFoundException(ValueError):
-    """Returned in the event of a request for an unrecognized musical chord"""
-
-
-class ShapeNotFoundException(ValueError):
-    """Returned in the event of a request for a known chord with no known way to play it"""
+from .errors import UnknownKeyException, ChordNotFoundException, ShapeNotFoundException
 
 
 def add_no5_quality() -> None:
