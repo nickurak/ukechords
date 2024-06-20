@@ -8,13 +8,9 @@ import sys
 
 
 from ukechords.theory import add_no5_quality, add_7sus2_quality
-from ukechords.theory import UnknownKeyException, ChordNotFoundException, ShapeNotFoundException
-from ukechords.config import UkeConfig, InvalidCommandException
-
-
-def error(return_code, message):
-    print(message, file=sys.stderr)
-    sys.exit(return_code)
+from ukechords.errors import UnknownKeyException, ChordNotFoundException, ShapeNotFoundException
+from ukechords.errors import error, InvalidCommandException
+from ukechords.config import UkeConfig
 
 
 def main():
