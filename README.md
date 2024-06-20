@@ -2,7 +2,7 @@
 
 Reason about stringed instrument chords (especially ukulele).
 
-Ukechords chiefly solves 2 problems (and add some accesory function as well.):
+Ukechords chiefly solves 2 problems (and add some accesory functionality as well):
 
 1. If I fret/play a particular shape on my stringed instrument, what (if any) recognized chord(s) will be made when I strum?
    - This is accomplished with the "ident" tool's `--shape/-s` option
@@ -12,6 +12,7 @@ Ukechords chiefly solves 2 problems (and add some accesory function as well.):
 This is heavily supported by the music-theory functionality of the [pychord](https://pypi.org/project/pychord/) music-theory library.
 
 Other miscellaneous functionality:
+
 - Heurestically determining the difficulty of different shapes, and ranking them
 - Rendering unicode drawings of those shapes on the command line
 - Listing all known chords and how to play them
@@ -19,7 +20,7 @@ Other miscellaneous functionality:
 - Finding chords from lists of notes
 - Accounting for muted/omitted strings
 - support for several/arbitrary tunings, with any number of strings
-- caching of calculated information (as this can be computationally intense)
+- caching of calculated chord->shape mapping information (as this can be computationally intense)
 - JSON output of all information for consumption in other tools
 
 This started as a very basic tool/experiment, but has grown into a significant part of my music hobby.
