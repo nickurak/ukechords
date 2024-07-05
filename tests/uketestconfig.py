@@ -21,7 +21,7 @@ class UkeTestConfig:
     force_flat: bool = False
     qualities: bool = False
     no_cache: bool = True
-    base: int = 0
+    mute: bool = False
     max_difficulty: float = 20
     shape_ranker: Callable = shape_ranker
     num: int = 10

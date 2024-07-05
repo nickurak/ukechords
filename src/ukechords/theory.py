@@ -105,14 +105,15 @@ class _ChordCollection(dict):
 
 def _get_shapes(config, max_fret=1):
     """
-    Yield shapes playable on the fretboard, including muted strings
-    (if config.base is set to -1) up to the specified fret.
+    Yield shapes playable on the fretboard, (optionally including
+    muted strings) up to the specified fret.
 
     Shapes which are ranked as too-difficult based on the provided
     configuration will be excluded.
+
     """
     string_range = range(0, len(config.tuning))
-    fret_range = range(config.base, max_fret + 1)
+    fret_range = range(-1 if config.mute else 0, max_fret + 1)
     for shape in product(*[fret_range for _ in string_range]):
         shape = shape[::-1]  # reverse to match legacy behavior of _get_shapes
         if max(shape) >= 0 and _get_shape_difficulty(shape)[0] <= config.max_difficulty:
