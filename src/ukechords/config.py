@@ -74,7 +74,7 @@ class UkeConfig:
     max_difficulty: Optional[float] = None  # A maximum difficulty or shapes to scan and report
     cache_dir: Optional[str] = None  # Directory in which to store cached chord->shape maps
     tuning: Optional[List[str]] = None  # A list of notes that specify the tuning to operate with
-    base: Optional[int] = None  # 0 normally, -1 if muting/skipping strings should be considered
+    mute: Optional[bool] = None  # Whether or not to consider muted shapes
     shape_ranker: Optional[Callable] = None  # Which function to use to sort discovered shapes with
 
     def __init__(self, args=None) -> None:
@@ -88,8 +88,7 @@ class UkeConfig:
                 args = get_parser().parse_args(args)
             else:
                 raise TypeError(f"Unable to handle {type(args)} as UkeConfig args")
-        if args.mute:
-            self.base = -1
+        self.mute = args.mute
         if args.tuning:
             self.tuning = get_tuning(args.tuning)
         if args.sort_by_position:
@@ -154,7 +153,7 @@ class UkeConfig:
         defaults = config["DEFAULTS"]
         self.cache_dir = defaults["cache_dir"]
         self.tuning = get_tuning(defaults["tuning"])
-        self.base = -1 if defaults["mute"].lower() in ("yes", "true", "t", "1") else 0
+        self.mute = defaults["mute"].lower() in ("yes", "true", "t", "1")
         self.max_difficulty = float(defaults["max_difficulty"])
         self.shape_ranker = rank_shape_by_difficulty
         if defaults["sort_by_position"].lower() in ("yes", "true", "t", "1"):
