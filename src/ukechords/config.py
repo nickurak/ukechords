@@ -62,7 +62,6 @@ class UkeConfig:
     # pylint: disable=too-many-instance-attributes
     render_text: Callable = render_json
     command: Callable = lambda _, __: json.load(sys.stdin)
-    json: bool = False
     qualities: Optional[list[str]] = None
     slide: bool = False
     show_notes: bool = False
@@ -89,8 +88,6 @@ class UkeConfig:
                 args = get_parser().parse_args(args)
             else:
                 raise TypeError(f"Unable to handle {type(args)} as UkeConfig args")
-        if args.json:
-            self.json = True
         if args.mute:
             self.base = -1
         if args.tuning:
