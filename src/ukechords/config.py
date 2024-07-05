@@ -60,22 +60,22 @@ class UkeConfig:
     """Configuration settings for an invocation of ukechords functionality"""
 
     # pylint: disable=too-many-instance-attributes
-    render_text: Callable = render_json
-    command: Callable = lambda _, __: json.load(sys.stdin)
-    qualities: Optional[list[str]] = None
-    slide: bool = False
-    show_notes: bool = False
-    no_cache: bool = False
-    num: Optional[int] = None
-    visualize: bool = False
-    key: Optional[str] = None
-    allowed_chords: Optional[List[str]] = None
-    force_flat: bool = False
-    max_difficulty: Optional[float] = None
-    cache_dir: Optional[str] = None
-    tuning: Optional[List[str]] = None
-    base: Optional[int] = None
-    shape_ranker: Optional[Callable] = None
+    render_text: Callable = render_json  # Function to render output in command-line mode
+    command: Callable = lambda _, __: json.load(sys.stdin)  # Command to call in command-line mode
+    qualities: Optional[list[str]] = None  # List of chord qualities to allow in output
+    slide: bool = False  # Whether to report versions of a specified shape slid up/down the neck
+    show_notes: bool = False  # Whether to include individual notes in the output
+    no_cache: bool = False  # Whether to avoid loading any available cached chord->shape maps
+    num: Optional[int] = None  # How many shapes to return for a given chord
+    visualize: bool = False  # Whether to draw shapes on screen while rendering
+    key: Optional[str] = None  # If specified, a key to limit returned chords to
+    allowed_chords: Optional[List[str]] = None  # If specified, chords whose notes are allowed
+    force_flat: bool = False  # Whether to report chords in their flat versions rather than sharp
+    max_difficulty: Optional[float] = None  # A maximum difficulty or shapes to scan and report
+    cache_dir: Optional[str] = None  # Directory in which to store cached chord->shape maps
+    tuning: Optional[List[str]] = None  # A list of notes that specify the tuning to operate with
+    base: Optional[int] = None  # 0 normally, -1 if muting/skipping strings should be considered
+    shape_ranker: Optional[Callable] = None  # Which function to use to sort discovered shapes with
 
     def __init__(self, args=None) -> None:
         # pylint: disable=too-many-branches
