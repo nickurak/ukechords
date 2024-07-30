@@ -15,6 +15,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "astroid==3.2.4",
+    "black==24.4.2",
     "certifi==2024.7.4",
     "charset-normalizer==3.3.2",
     "click==8.1.7",
@@ -28,6 +29,7 @@ dev = [
     "iniconfig==2.0.0",
     "isort==5.13.2",
     "mccabe==0.7.0",
+    "mypy==1.11.0",
     "mypy-extensions==1.0.0",
     "packaging==24.1",
     "pathspec==0.12.1",
