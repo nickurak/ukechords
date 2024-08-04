@@ -140,9 +140,8 @@ def test_slide(uke_config):
     slid_chords = list(_get_chords_by_shape(uke_config, initial_shape))
     slid_shapes = [c[0] for c in slid_chords]
     for slid_shape in slid_shapes:
-        fretted_positions = [fret for fret in slid_shape if fret > 0]
-        min_fret = min(fretted_positions)
-        unslid_shape = [fret + 1 - min_fret if fret > 0 else 0 for fret in slid_shape]
+        min_fret = min(slid_shape)
+        unslid_shape = [fret + 1 - min_fret if fret > 0 else fret for fret in slid_shape]
         assert unslid_shape == initial_shape
     assert len(slid_shapes) == 12
 
