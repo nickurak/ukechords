@@ -85,7 +85,8 @@ def render_chords_from_shape(config, data) -> None:
             print(f"Notes: {_csv(shape['notes'], sep=', ')}")
         if config.visualize:
             _draw_shape([-1 if pos == "x" else int(pos) for pos in shape["shape"]])
-        print(f'{_csv(shape["shape"])}: {_csv(shape["chords"])}')
+        shape_str = [fret if fret >= 0 else "x" for fret in shape["shape"]]
+        print(f'{_csv(shape_str)}: {_csv(shape["chords"])}')
     if not config.slide:
         print(f"Difficulty: {_diff_string(data['difficulty'], data['barre_data'])}")
 
