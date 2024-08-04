@@ -146,7 +146,6 @@ def test_slide(uke_config):
     assert len(slid_shapes) == 12
 
 
-@pytest.mark.xfail(strict=True)
 def test_slide_mute(uke_config):
     uke_config.tuning = ["C", "G", "E"]
     uke_config.slide = True
