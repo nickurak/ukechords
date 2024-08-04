@@ -87,7 +87,6 @@ def test_render_chords_from_shape(capsys, uke_config):
     assert lines[1] == f"Difficulty: {expected_diff_string}"
 
 
-@pytest.mark.xfail(strict=True)
 def test_render_shape_with_mute(capsys, uke_config):
     data = {
         "shapes": [
