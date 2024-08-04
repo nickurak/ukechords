@@ -144,6 +144,7 @@ def test_slide(uke_config):
         min_fret = min(fretted_positions)
         unslid_shape = [fret + 1 - min_fret if fret > 0 else 0 for fret in slid_shape]
         assert unslid_shape == initial_shape
+    assert len(slid_shapes) == 12
 
 
 def test_weird_flat_sharps():
