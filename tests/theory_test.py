@@ -146,6 +146,21 @@ def test_slide(uke_config):
     assert len(slid_shapes) == 12
 
 
+@pytest.mark.xfail(strict=True)
+def test_slide_mute(uke_config):
+    uke_config.tuning = ["C", "G", "E"]
+    uke_config.slide = True
+    initial_shape = [1, 2, -1]
+    slid_chords = list(_get_chords_by_shape(uke_config, initial_shape))
+    slid_shapes = [c[0] for c in slid_chords]
+    for slid_shape in slid_shapes:
+        assert slid_shape[2] == -1
+        min_fret = min(fret for fret in slid_shape if fret > 0)
+        unslid_shape = [fret + 1 - min_fret if fret > 0 else fret for fret in slid_shape]
+        assert unslid_shape == initial_shape
+    assert len(slid_shapes) == 12
+
+
 def test_weird_flat_sharps():
     assert _weird_sharp_scale == ["B#", "C#", "D", "D#", "E", "E#", "F#", "G", "G#", "A", "A#", "B"]
     assert _weird_flat_scale == ["C", "Db", "D", "Eb", "Fb", "F", "Gb", "G", "Ab", "A", "Bb", "Cb"]
