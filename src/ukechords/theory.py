@@ -1,6 +1,7 @@
 """Logic related to music-theory, mostly for stringed instruments"""
 
 from itertools import permutations, product
+from functools import cache
 import re
 
 from typing import List
@@ -39,6 +40,7 @@ def add_7sus2_quality() -> None:
         QualityManager().set_quality(name, new)
 
 
+@cache
 def _get_chord_from_notes(notes):
     """Faster version of pychord's find_chord_from_notes
 
@@ -313,75 +315,23 @@ def _get_key_notes(key):
     return [_chromatic_scale[interval + _note_intervals[root]] for interval in intervals]
 
 
-def _get_notes_shape_map(config, max_fret):
-    """
-    For each playable shape, find the notes played by that shape, and
-    then generate a reverse map of notes->shapes-that-play-those-notes
-    """
-    notes_shapes_map = {}
-    for shape in _get_shapes(config, max_fret=max_fret):
-        notes = frozenset(_get_shape_notes(shape, tuning=config.tuning))
-        if notes in notes_shapes_map:
-            notes_shapes_map[notes].append(shape)
-            continue
-        notes_shapes_map[notes] = [shape]
-    return notes_shapes_map
-
-
-def _get_notes_chords_map(notes_set_list):
-    """
-    Map each unique set of notes to the chords that those notes
-    play
-    """
-    notes_chords_map = {}
-    for notes in notes_set_list:
-        notes_chords_map[notes] = _get_chords_from_notes(notes)
-    return notes_chords_map
-
-
-def _populate_chord_shapes(chord_shapes, notes_shapes_map, notes_chords_map):
-    """
-    For each notes->chords association, find all the shapes that
-    play those notes, and record those shapes as options to play chord
-    """
-    for notes, chords in notes_chords_map.items():
-        for chord in chords:
-            if chord not in chord_shapes:
-                chord_shapes[chord] = []
-            for shape in notes_shapes_map[notes]:
-                chord_shapes[chord].append(shape)
-
-
 def scan_chords(config, chord_shapes, max_fret=12) -> None:
     """
     Based on the provided configuration, scan for possible ways to
     play chords. Store discovered shapes in a ChordCollection that
     maps chords to a list of shapes that will generate the notes of
     that chord.
-
-    This happens in 3 phases:
-
-    1. Generate a map of set-of-notes -> shapes-that-play-those-notes
-
-        - implemented by _get_notes_shape_map
-
-    2. Generate a map of set-of-notes (as discovered in (1)) ->
-    chords-those-notes-make
-
-        - implemented by _get_notes_chords_map
-
-    3. Store a mapping of chord -> shape for each discovered chord in
-    (2), by looking up the shapes that play that chord's notes in (1)
-
-        - implemented by _populate_chord_shapes
-
     """
     if not config.no_cache and load_scanned_chords(config, chord_shapes, max_fret):
         return
 
-    notes_shapes_map = _get_notes_shape_map(config, max_fret)
-    notes_chords_map = _get_notes_chords_map(notes_shapes_map.keys())
-    _populate_chord_shapes(chord_shapes, notes_shapes_map, notes_chords_map)
+    for shape in _get_shapes(config, max_fret=max_fret):
+        notes = frozenset(_get_shape_notes(shape, tuning=config.tuning))
+        for chord in _get_chords_from_notes(notes):
+            if chord not in chord_shapes:
+                chord_shapes[chord] = [shape]
+            else:
+                chord_shapes[chord].append(shape)
 
     save_scanned_chords(config, max_fret=max_fret, chord_shapes=chord_shapes)
 
