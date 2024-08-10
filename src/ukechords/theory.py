@@ -329,9 +329,8 @@ def scan_chords(config, chord_shapes, max_fret=12) -> None:
         notes = frozenset(_get_shape_notes(shape, tuning=config.tuning))
         for chord in _get_chords_from_notes(notes):
             if chord not in chord_shapes:
-                chord_shapes[chord] = [shape]
-            else:
-                chord_shapes[chord].append(shape)
+                chord_shapes[chord] = []
+            chord_shapes[chord].append(shape)
 
     save_scanned_chords(config, max_fret=max_fret, chord_shapes=chord_shapes)
 
