@@ -1,0 +1,25 @@
+name: Ukechords test execution
+
+on: [pull_request,push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: setup flit
+        run: pip install flit
+      - name: install ukechords
+        run: flit install --extras dev
+      - name: Run flake8
+        run: flake8 .
+      - name: Run pylint
+        run: pylint . --recursive=yes
+      - name: Run mypy
+        run: mypy .
+      - name: Run tests
+        run: pytest .

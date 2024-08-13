@@ -1,0 +1,23 @@
+name: Ukechords fixup detections
+
+on: [pull_request]
+
+jobs:
+  flag-fixups:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch target branch
+        env:
+          BASE: ${{ github['base_ref'] }}
+        run: git fetch --no-tags origin +refs/heads/${BASE}:refs/remotes/origin/${BASE}
+      - name: Fetch source branch
+        env:
+          HEAD: ${{ github['head_ref'] }}
+        run: git fetch --no-tags origin +refs/heads/${HEAD}:refs/remotes/origin/${HEAD}
+      - name: flag missing fixup/squash commits
+        env:
+          BASE: origin/${{ github['base_ref'] }}
+          HEAD: origin/${{ github['head_ref'] }}
+        run: tests/flag-autosquash "$BASE" "$HEAD"
