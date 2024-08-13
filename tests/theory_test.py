@@ -11,6 +11,7 @@ from ukechords.theory import _get_key_notes, _get_dupe_scales_from_key
 from ukechords.theory import show_chord, show_chords_by_shape, show_all
 from ukechords.theory import _weird_sharp_scale, _weird_flat_scale
 from ukechords.theory import add_no5_quality, add_7sus2_quality
+from ukechords.theory import show_key
 
 from .uketestconfig import uke_config  # pylint: disable=unused-import
 
@@ -191,3 +192,13 @@ def test_clean_missing_quality(chord):
 def test_extra_quality(chord, loader):
     loader()
     Chord(chord)
+
+
+def test_show_key_by_notes():
+    data = show_key(None, "C,D,E,F,G,A,B")
+    assert "Am" in data["other_keys"]
+
+
+def test_show_key_aliases():
+    data = show_key(None, "C")
+    assert "Am" in data["other_keys"]
