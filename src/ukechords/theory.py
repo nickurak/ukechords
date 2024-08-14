@@ -18,7 +18,7 @@ def add_no5_quality() -> None:
     new_qs = []
     for name, quality in QualityManager().get_qualities().items():
         no5name = name + "no5"
-        if "/" in name or 7 not in quality.components:
+        if "/" in name or 7 not in quality.components or len(quality.components) < 4:
             continue
         new = tuple(filter(lambda x: x != 7, quality.components))
         new_qs.append((no5name, new))
