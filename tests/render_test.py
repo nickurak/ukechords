@@ -3,7 +3,7 @@
 import pytest  # pylint: disable=unused-import
 
 from ukechords.render import _get_shape_lines, render_chord_list
-from ukechords.render import render_chords_from_shape
+from ukechords.render import render_chords_from_shape, render_key
 from ukechords.render import _diff_string
 
 from ukechords.render import _csv
@@ -101,3 +101,44 @@ def test_render_shape_with_mute(capsys, uke_config):
     lines = out.strip("\n").split("\n")
     shapes_str = lines[0].split(":")[0]
     assert shapes_str == "0,x"
+
+
+def test_render_key(capsys):
+    data = {
+        "key": "test_key",
+        "other_keys": ["alias1", "alias2"],
+        "notes": [f"n{x}" for x in range(0, 10)],
+    }
+    render_key(None, data)
+    out, err = capsys.readouterr()
+    assert err == ""
+    lines = out.strip("\n").split("\n")
+    (header, note_str) = lines
+    assert header == f"{data['key']} ({','.join(data['other_keys'])}):"
+    assert note_str == ",".join(data["notes"])
+
+
+def test_render_key_from_notes(capsys):
+    data = {
+        "other_keys": ["test_key1", "test_key2"],
+        "notes": [f"n{x}" for x in range(0, 10)],
+    }
+    render_key(None, data)
+    out, err = capsys.readouterr()
+    assert err == ""
+    lines = out.strip("\n").split("\n")
+    (output,) = lines
+    assert output == ",".join(data["other_keys"])
+
+
+def test_render_unknown_key_from_notes(capsys):
+    data = {
+        "other_keys": [],
+        "notes": [f"n{x}" for x in range(0, 10)],
+    }
+    render_key(None, data)
+    out, err = capsys.readouterr()
+    assert err == ""
+    lines = out.strip("\n").split("\n")
+    (err_msg,) = lines
+    assert err_msg == "No key found"
