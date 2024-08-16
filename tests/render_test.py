@@ -142,3 +142,44 @@ def test_render_unknown_key_from_notes(capsys):
     lines = out.strip("\n").split("\n")
     (err_msg,) = lines
     assert err_msg == "No key found"
+
+
+def test_render_chords_from_shape_with_vis_and_notes(capsys, uke_config):
+    uke_config.visualize = True
+    uke_config.show_notes = True
+    data = {
+        "shapes": [
+            {
+                "shape": [-1, 0, 1],
+                "chords": ["tc1", "tc2"],
+                "notes": [f"n{x}" for x in range(0, 10)],
+            },
+        ],
+        "difficulty": 45.6,
+        "barre_data": None,
+    }
+    render_chords_from_shape(uke_config, data)
+    out, err = capsys.readouterr()
+    assert err == ""
+    lines = out.strip("\n").split("\n")
+    notes_line = lines.pop(0)
+    difficulty_line = lines.pop()
+    shape_chord_line = lines.pop()
+    assert notes_line == f"Notes: {', '.join(data['shapes'][0]['notes'])}"
+    assert difficulty_line == f"Difficulty: {data['difficulty']}"
+    (shape_str, chord_str) = shape_chord_line.split(": ")
+    expected_pos_list = ["x" if pos < 0 else str(pos) for pos in data["shapes"][0]["shape"]]
+    assert shape_str == ",".join(expected_pos_list)
+    assert chord_str == ",".join(data["shapes"][0]["chords"])
+
+    vis_expected = """
+╓─┬─┬─┬──
+║●│ │╷│ 
+║ │ │╵│ 
+║⃠ │ │ │ 
+╙─┴─┴─┴──
+"""  # noqa
+    vis_lines = vis_expected.split("\n")
+    vis_lines = vis_lines[1:-1]
+    assert len(lines) == len(vis_lines)
+    assert vis_lines == lines
