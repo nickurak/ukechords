@@ -358,11 +358,11 @@ def get_tuning(tuning_spec) -> List[str]:
     """For a given tuning (by name or comma-separated notes), return
     the notes in order
     """
-    if tuning_spec in ("ukulele", "ukulele-c6"):
+    if tuning_spec in ("ukulele", "ukulele-c6", "uke", "u"):
         return list("GCEA")
     if tuning_spec in ("ukulele-g6", "baritone"):
         return list("DGBE")
-    if tuning_spec == "guitar":
+    if tuning_spec in ("guitar", "g"):
         return list("EADGBE")
     if tuning_spec == "mandolin":
         return list("GDAE")
