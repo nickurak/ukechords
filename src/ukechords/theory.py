@@ -319,7 +319,9 @@ def _get_key_notes(key: str) -> tuple[str, ...]:
     return tuple(_chromatic_scale[interval + _note_intervals[root]] for interval in intervals)
 
 
-def _get_shapes(config: UkeConfig, max_fret: int = 1) -> Generator[tuple[int, ...], None, None]:
+def _get_shapes(
+    config: UkeConfig, max_fret: int = 1, notes: tuple[str, ...] | None = None
+) -> Generator[tuple[int, ...], None, None]:
     """
     Yield shapes playable on the fretboard, (optionally including
     muted strings) up to the specified fret.
@@ -327,36 +329,53 @@ def _get_shapes(config: UkeConfig, max_fret: int = 1) -> Generator[tuple[int, ..
     Shapes which are ranked as too-difficult based on the provided
     configuration will be excluded.
 
+    if notes is specified, limit shapes to those that only use those notes
     """
     string_fret_options = []
     fret_range = range(-1 if config.mute else 0, max_fret + 1)
-    for _ in config.tuning:
+    notes_set: set[str] = set()
+    if notes:
+        notes_set = set(_flatify(list(notes)))
+    for string_note in config.tuning:
         fret_options = []
         for pos in fret_range:
-            fret_options.append(pos)
+            if (
+                not notes
+                or pos == -1
+                or _flat_scale[_note_intervals[string_note] + pos] in notes_set
+            ):
+                fret_options.append(pos)
         string_fret_options.append(fret_options)
     for shape in product(*string_fret_options):
         if max(shape) >= 0 and _get_shape_difficulty(shape)[0] <= config.max_difficulty:
             yield tuple(shape)
 
 
-def _scan_chords(config: UkeConfig, chord_shapes: ChordCollection, max_fret: int = 12) -> None:
+def _scan_chords(
+    config: UkeConfig,
+    chord_shapes: ChordCollection,
+    max_fret: int = 12,
+    notes: tuple[str, ...] | None = None,
+) -> None:
     """
     Based on the provided configuration, scan for possible ways to
     play chords. Store discovered shapes in a ChordCollection that
     maps chords to a list of shapes that will generate the notes of
     that chord.
     """
-    if not config.no_cache and load_scanned_chords(config, chord_shapes, max_fret):
-        return
+    if not (notes or config.no_cache):
+        if load_scanned_chords(config, chord_shapes, max_fret):
+            return
 
-    for shape in _get_shapes(config, max_fret=max_fret):
-        notes = frozenset(_get_shape_notes(shape, tuning=config.tuning))
-        for chord in _get_chords_from_notes(notes):
+    for shape in _get_shapes(config, max_fret=max_fret, notes=notes):
+        shape_notes = frozenset(_get_shape_notes(shape, tuning=config.tuning))
+        for chord in _get_chords_from_notes(shape_notes):
             if chord not in chord_shapes:
                 chord_shapes[chord] = []
             chord_shapes[chord].append(shape)
 
+    if notes:
+        return
     save_scanned_chords(config, max_fret=max_fret, chord_shapes=chord_shapes)
 
 
@@ -420,7 +439,7 @@ def show_chord(config: UkeConfig, chord: str) -> ChordShapes:
         notes = tuple(p_chord.components())
         output["notes"] = notes
     chord_shapes = ChordCollection()
-    _scan_chords(config, chord_shapes)
+    _scan_chords(config, chord_shapes, notes=notes)
     if chord not in chord_shapes:
         output["chord"] = chord
         return output
