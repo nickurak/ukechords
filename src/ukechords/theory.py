@@ -173,9 +173,8 @@ def _barre_difficulty_details(shape, unbarred_difficulty, tuning):
         return unbarred_difficulty, None
 
     barre_shape = [x - min(shape) for x in shape]
-    min_barre_extra = min([0, *filter(lambda x: x > 0, barre_shape)])
     barre_difficulty = _get_shape_difficulty(barre_shape, tuning=tuning)[0] * 2.2
-    barre_difficulty += min(shape) * 3.0 + min_barre_extra * 4.0
+    barre_difficulty += min(shape) * 3.0
 
     barred = barre_difficulty < unbarred_difficulty
     difficulty = barre_difficulty if barred else unbarred_difficulty
