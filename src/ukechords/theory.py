@@ -41,6 +41,15 @@ def add_7sus2_quality() -> None:
 
 
 @cache
+def _get_quality_map():
+    quality_map = {}
+    for name, quality in QualityManager().get_qualities().items():
+        if quality.components not in quality_map:
+            quality_map[quality.components] = name
+    return quality_map
+
+
+@cache
 def _get_chord_from_notes(notes):
     """Faster version of pychord's find_chord_from_notes
 
@@ -51,8 +60,8 @@ def _get_chord_from_notes(notes):
     in-order
     """
     root = notes[0]
-    positions = notes_to_positions(notes, root)
-    quality = QualityManager().find_quality_from_components(positions)
+    positions = tuple(notes_to_positions(notes, root))
+    quality = _get_quality_map().get(positions)
     if quality is None:
         return None
     return f"{root}{quality}"
