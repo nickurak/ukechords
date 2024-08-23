@@ -168,13 +168,14 @@ def _barre_difficulty_details(shape, unbarred_difficulty, tuning):
     (if possible) affects the shape's difficulty.
     """
     barre_difficulty = None
-    barrable = len([1 for pos in shape if pos == min(shape)])
-    if not (barrable > 1 and min(shape) > 0):
+    barre_level = min(shape)
+    barrable = len([1 for pos in shape if pos == barre_level])
+    if not (barrable > 1 and barre_level > 0):
         return unbarred_difficulty, None
 
-    barre_shape = [x - min(shape) for x in shape]
+    barre_shape = [x - barre_level for x in shape]
     barre_difficulty = _get_shape_difficulty(barre_shape, tuning=tuning)[0] * 2.2
-    barre_difficulty += min(shape) * 3.0
+    barre_difficulty += barre_level * 3.0
 
     barred = barre_difficulty < unbarred_difficulty
     difficulty = barre_difficulty if barred else unbarred_difficulty
