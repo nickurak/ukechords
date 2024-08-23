@@ -4,8 +4,10 @@ from __future__ import annotations
 
 from itertools import permutations, product
 from functools import cache
+import multiprocessing as mp
+import os
 import re
-from typing import Any, Generator, TypeVar, Iterable
+from typing import Any, Generator, TypeVar, Iterable, NoReturn
 
 from pychord.analyzer import notes_to_positions
 from pychord import Chord, QualityManager
@@ -320,7 +322,11 @@ def _get_key_notes(key: str) -> tuple[str, ...]:
 
 
 def _get_shapes(
-    config: UkeConfig, max_fret: int = 1, notes: tuple[str, ...] | None = None
+    config: UkeConfig,
+    max_fret: int = 1,
+    notes: tuple[str, ...] | None = None,
+    partition: int = 0,
+    partitions: int = 1,
 ) -> Generator[tuple[int, ...], None, None]:
     """
     Yield shapes playable on the fretboard, (optionally including
@@ -336,9 +342,11 @@ def _get_shapes(
     notes_set: set[str] = set()
     if notes:
         notes_set = set(_flatify(list(notes)))
-    for string_note in config.tuning:
+    for i, string_note in enumerate(config.tuning):
         fret_options = []
         for pos in fret_range:
+            if i == 0 and pos % partitions != partition:
+                continue
             if (
                 not notes
                 or pos == -1
@@ -349,6 +357,23 @@ def _get_shapes(
     for shape in product(*string_fret_options):
         if max(shape) >= 0 and _get_shape_difficulty(shape)[0] <= config.max_difficulty:
             yield tuple(shape)
+
+
+def _get_chord_shapes_map(
+    config: UkeConfig,
+    max_fret: int,
+    allowed_notes: tuple[str, ...] | None = None,
+    partition: int = 0,
+    partitions: int = 1,
+) -> ChordCollection:
+    my_shapes = ChordCollection()
+    for shape in _get_shapes(config, max_fret, allowed_notes, partition, partitions):
+        notes = frozenset(_get_shape_notes(shape, tuning=config.tuning))
+        for chord in _get_chords_from_notes(notes):
+            if chord not in my_shapes:
+                my_shapes[chord] = []
+            my_shapes[chord].append(shape)
+    return my_shapes
 
 
 def _scan_chords(
@@ -367,12 +392,26 @@ def _scan_chords(
         if load_scanned_chords(config, chord_shapes, max_fret):
             return
 
-    for shape in _get_shapes(config, max_fret=max_fret, notes=notes):
-        shape_notes = frozenset(_get_shape_notes(shape, tuning=config.tuning))
-        for chord in _get_chords_from_notes(shape_notes):
+    def mp_merge_shapes(mp_shapes: ChordCollection) -> None:
+        for chord, shapes in mp_shapes.items():
             if chord not in chord_shapes:
                 chord_shapes[chord] = []
-            chord_shapes[chord].append(shape)
+            chord_shapes[chord].extend(shapes)
+
+    partitions = cpu_count * 2 if (cpu_count := os.cpu_count()) is not None else 1
+    with mp.Pool() as pool:
+
+        def mp_error(e: BaseException) -> NoReturn:
+            pool.terminate()
+            raise e
+
+        for partition in range(0, partitions):
+            args = (config, max_fret, notes, partition, partitions)
+            pool.apply_async(
+                _get_chord_shapes_map, args=args, callback=mp_merge_shapes, error_callback=mp_error
+            )
+        pool.close()
+        pool.join()
 
     if notes:
         return
