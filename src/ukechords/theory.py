@@ -50,24 +50,6 @@ def _get_quality_map():
 
 
 @cache
-def _get_chord_from_notes(notes):
-    """Faster version of pychord's find_chord_from_notes
-
-    This is a faster version of pychord's find_chord_from_notes, which
-    explicitly doesn't handle slash chords, to improve our chord
-    lookup performance. Note that, unlike our get_chords
-    functionality, this code requires that the notes/note-intervals be
-    in-order
-    """
-    root = notes[0]
-    positions = tuple(notes_to_positions(notes, root))
-    quality = _get_quality_map().get(positions)
-    if quality is None:
-        return None
-    return f"{root}{quality}"
-
-
-@cache
 def _get_chords_from_notes(notes, force_flat=False):
     """
     Return a list of chords the specified notes will generate, with no
@@ -78,14 +60,14 @@ def _get_chords_from_notes(notes, force_flat=False):
         return []
     chords = []
     for seq in permutations(notes):
-        chord = _get_chord_from_notes(seq)
-        if chord is None:
+        root = seq[0]
+        positions = tuple(notes_to_positions(seq, root))
+        if (quality := _get_quality_map().get(positions)) is None:
             continue
+        chord = f"{root}{quality}"
         if force_flat:
-            flat_chord = _flatify(chord)
-            chords.append(flat_chord)
-        else:
-            chords.append(chord)
+            chord = _flatify(chord)
+        chords.append(chord)
     return sorted(chords, key=_rank_chord_name)
 
 
