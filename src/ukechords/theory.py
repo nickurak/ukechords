@@ -42,6 +42,12 @@ def add_7sus2_quality() -> None:
 
 @cache
 def _get_quality_map():
+    """
+    Return a mapping of all {intervals}->quality relationships by
+    reversing pychord's quality db.
+
+    This will be used to rapidly look up qualities.
+    """
     quality_map = {}
     for name, quality in QualityManager().get_qualities().items():
         if quality.components not in quality_map:
