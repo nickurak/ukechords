@@ -67,6 +67,7 @@ def _get_chord_from_notes(notes):
     return f"{root}{quality}"
 
 
+@cache
 def _get_chords_from_notes(notes, force_flat=False):
     """
     Return a list of chords the specified notes will generate, with no
@@ -155,7 +156,7 @@ def _get_tuned_barre_details(shape, tuning, barre_difficulty, unbarred_difficult
     if not tuning:
         return None
     barre_shape = tuple(x - min(shape) for x in shape)
-    chords = sorted(_get_chords_from_notes(set(_get_shape_notes(barre_shape, tuning=tuning))))
+    chords = sorted(_get_chords_from_notes(frozenset(_get_shape_notes(barre_shape, tuning=tuning))))
     chords.sort(key=_rank_chord_name)
     chord = chords[0] if len(chords) > 0 else None
     barre_data = {
@@ -382,7 +383,7 @@ def get_tuning(tuning_spec) -> tuple[str, ...]:
 
 
 def _get_other_names(shape, chord_name, tuning):
-    for chord in _get_chords_from_notes(set(_get_shape_notes(shape, tuning))):
+    for chord in _get_chords_from_notes(_get_shape_notes(shape, tuning)):
         if _normalize_chord(chord) != _normalize_chord(chord_name):
             yield chord
 
@@ -528,7 +529,7 @@ def show_chords_by_shape(config, pshape) -> dict:
 
 def show_chords_by_notes(_, notes) -> dict:
     """Return information on what chords are played by the specified notes"""
-    return {"notes": list(notes), "chords": _get_chords_from_notes(notes)}
+    return {"notes": list(notes), "chords": _get_chords_from_notes(tuple(notes))}
 
 
 def show_key(_, key) -> dict:
