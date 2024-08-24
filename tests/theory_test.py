@@ -29,22 +29,22 @@ def test_sharpify():
 def test_force_flat_shape(uke_config):
     uke_config.tuning = ("G", "C", "E")
     uke_config.force_flat = True
-    pshape = [3, 2, 1]
+    pshape = (3, 2, 1)
     resp = list(_get_chords_by_shape(uke_config, pshape))
     assert len(resp) == 1
     shape, chords, notes = resp[0]
-    assert shape == [3, 2, 1]
+    assert shape == (3, 2, 1)
     assert chords == ["Bb"]
     assert notes == set(["Bb", "F", "D"])
 
 
 def test_no_force_flat_shape(uke_config):
     uke_config.tuning = ("G", "C", "E")
-    pshape = [3, 2, 1]
+    pshape = (3, 2, 1)
     resp = list(_get_chords_by_shape(uke_config, pshape))
     assert len(resp) == 1
     shape, chords, notes = resp[0]
-    assert shape == [3, 2, 1]
+    assert shape == (3, 2, 1)
     assert chords == ["A#"]
     assert notes == set(["A#", "F", "D"])
 
@@ -64,7 +64,7 @@ def test_basic_scan_maj(uke_config, mocker):
     chord_shapes = _ChordCollection()
 
     def get_cmaj7_shape(*_, **__):
-        return [[0, 0, 0, 2]]
+        return [(0, 0, 0, 2)]
 
     mock_get_shapes = mocker.patch("ukechords.theory._get_shapes", wraps=get_cmaj7_shape)
     scan_chords(uke_config, chord_shapes, max_fret=3)
@@ -91,7 +91,7 @@ def test_show_chord(uke_config):
     assert len(output["shapes"]) == 2
     first_result = output["shapes"][0]
     assert first_result["chord_names"] == ["C#"]
-    assert first_result["shape"] == [1, 1, 1]
+    assert first_result["shape"] == (1, 1, 1)
     assert output["notes"] == ["C#", "F", "G#"]
 
 
@@ -102,7 +102,7 @@ def test_show_chordless_shape(uke_config):
     assert len(shapes) == 1
     only_shape = shapes[0]
     assert only_shape["chords"] == []
-    assert only_shape["shape"] == [-1, -1, -1]
+    assert only_shape["shape"] == (-1, -1, -1)
 
 
 def test_list_all(uke_config):
@@ -114,7 +114,7 @@ def test_list_all(uke_config):
     c_shapes = [shape for shape in output["shapes"] if "C" in shape["chord_names"]]
     assert len(c_shapes) == 1
     c_shape = c_shapes[0]
-    assert c_shape["shape"] == [0, 0, 0]
+    assert c_shape["shape"] == (0, 0, 0)
     assert c_shape["difficulty"] == 0.0
 
 
@@ -123,7 +123,7 @@ def test_barrable_barred(uke_config):
     barre_data = data["barre_data"]
     assert barre_data["barred"]
     assert barre_data["fret"] == 1
-    assert barre_data["shape"] == [0, 0, 0]
+    assert barre_data["shape"] == (0, 0, 0)
 
 
 def test_barrable_unbarred(uke_config):
@@ -131,7 +131,7 @@ def test_barrable_unbarred(uke_config):
     barre_data = data["barre_data"]
     assert not barre_data["barred"]
     assert barre_data["fret"] == 1
-    assert barre_data["shape"] == [0, 0, 2]
+    assert barre_data["shape"] == (0, 0, 2)
 
 
 def test_slide(uke_config):
