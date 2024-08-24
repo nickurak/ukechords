@@ -393,13 +393,13 @@ def show_chord(config, chord) -> dict:
     - Optionally the notes in the chord, if config.show_notes is set
     """
     output = {}
+    try:
+        p_chord = Chord(chord)
+    except ValueError as exc:
+        raise ChordNotFoundException(f"Error looking up chord \"{chord}\"") from exc
     if config.show_notes:
-        try:
-            p_chord = Chord(chord)
-            notes = p_chord.components()
-            output["notes"] = notes
-        except ValueError as exc:
-            raise ChordNotFoundException(f"Error looking up chord {chord}") from exc
+        notes = p_chord.components()
+        output["notes"] = notes
     chord_shapes = _ChordCollection()
     scan_chords(config, chord_shapes)
     if chord not in chord_shapes:
