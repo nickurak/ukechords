@@ -1,6 +1,6 @@
 # pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
 
-from typing import Callable, List, Optional
+from typing import Callable, Optional
 from dataclasses import dataclass, field
 
 import tempfile
@@ -15,7 +15,7 @@ def shape_ranker(shape):
 class UkeTestConfig:
     # pylint: disable=too-many-instance-attributes
     slide: bool = False
-    tuning: List[str] = field(default_factory=lambda: ["C", "E", "G"])
+    tuning: tuple[str, ...] = field(default_factory=lambda: ("C", "E", "G"))
     show_notes: bool = False
     visualize: bool = False
     force_flat: bool = False

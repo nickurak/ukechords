@@ -27,7 +27,7 @@ def test_sharpify():
 
 
 def test_force_flat_shape(uke_config):
-    uke_config.tuning = ["G", "C", "E"]
+    uke_config.tuning = ("G", "C", "E")
     uke_config.force_flat = True
     pshape = [3, 2, 1]
     resp = list(_get_chords_by_shape(uke_config, pshape))
@@ -39,7 +39,7 @@ def test_force_flat_shape(uke_config):
 
 
 def test_no_force_flat_shape(uke_config):
-    uke_config.tuning = ["G", "C", "E"]
+    uke_config.tuning = ("G", "C", "E")
     pshape = [3, 2, 1]
     resp = list(_get_chords_by_shape(uke_config, pshape))
     assert len(resp) == 1
@@ -60,7 +60,7 @@ def test_basic_scan(uke_config):
 
 
 def test_basic_scan_maj(uke_config, mocker):
-    uke_config.tuning = ["G", "C", "E", "A"]
+    uke_config.tuning = ("G", "C", "E", "A")
     chord_shapes = _ChordCollection()
 
     def get_cmaj7_shape(*_, **__):
@@ -135,7 +135,7 @@ def test_barrable_unbarred(uke_config):
 
 
 def test_slide(uke_config):
-    uke_config.tuning = ["C", "G"]
+    uke_config.tuning = ("C", "G")
     uke_config.slide = True
     initial_shape = [1, 2]
     slid_chords = list(_get_chords_by_shape(uke_config, initial_shape))
@@ -148,7 +148,7 @@ def test_slide(uke_config):
 
 
 def test_slide_mute(uke_config):
-    uke_config.tuning = ["C", "G", "E"]
+    uke_config.tuning = ("C", "G", "E")
     uke_config.slide = True
     initial_shape = [1, 2, -1]
     slid_chords = list(_get_chords_by_shape(uke_config, initial_shape))

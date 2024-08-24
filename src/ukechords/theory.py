@@ -363,19 +363,19 @@ def _rank_chord_name(name):
         return ("no" in name, has_symbol, len(name), name)
 
 
-def get_tuning(tuning_spec) -> List[str]:
+def get_tuning(tuning_spec) -> tuple[str, ...]:
     """For a given tuning (by name or comma-separated notes), return
     the notes in order
     """
     if tuning_spec in ("ukulele", "ukulele-c6", "uke", "u"):
-        return list("GCEA")
+        return tuple("GCEA")
     if tuning_spec in ("ukulele-g6", "baritone"):
-        return list("DGBE")
+        return tuple("DGBE")
     if tuning_spec in ("guitar", "g"):
-        return list("EADGBE")
+        return tuple("EADGBE")
     if tuning_spec == "mandolin":
-        return list("GDAE")
-    return tuning_spec.split(",")
+        return tuple("GDAE")
+    return tuple(tuning_spec.split(","))
 
 
 def _get_other_names(shape, chord_name, tuning):
