@@ -229,6 +229,7 @@ def _flatify(arg):
     return _normalizer(arg, _flat_scale)
 
 
+@cache
 def _get_shape_notes(shape, tuning, force_flat=False):
     """
     For a given shape in a specified tuning, return the notes played
@@ -237,6 +238,7 @@ def _get_shape_notes(shape, tuning, force_flat=False):
     If force_flat is True, return flat versions of those notes as
     appropriate.
     """
+    notes = ()
     if force_flat:
         scale = _flat_scale
     else:
@@ -244,7 +246,8 @@ def _get_shape_notes(shape, tuning, force_flat=False):
     for string, position in enumerate(shape):
         if position == -1:
             continue
-        yield scale[_note_intervals[tuning[string]] + position]
+        notes = notes + (scale[_note_intervals[tuning[string]] + position],)
+    return notes
 
 
 def _is_flat(note):
@@ -495,12 +498,12 @@ def _get_chords_by_shape(config, pshape):
     else:
         shapes.append(pshape)
     for shape in shapes:
-        notes = set(_get_shape_notes(shape, tuning=config.tuning, force_flat=config.force_flat))
-        chords = _get_chords_from_notes(notes, config.force_flat)
+        notes = _get_shape_notes(shape, tuning=config.tuning, force_flat=config.force_flat)
+        chords = _get_chords_from_notes(frozenset(notes), config.force_flat)
         if config.qualities:
             chords = [c for c in chords if Chord(c).quality.quality in config.qualities]
         if chords:
-            yield shape, chords, notes
+            yield shape, chords, set(notes)
 
 
 def show_chords_by_shape(config, pshape) -> dict:
