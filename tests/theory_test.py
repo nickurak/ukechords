@@ -50,23 +50,13 @@ def test_no_force_flat_shape(uke_config):
 
 
 def test_basic_scan(uke_config):
+    uke_config.tuning = ("G", "C", "E", "A")
     chord_shapes = _ChordCollection()
     scan_chords(uke_config, chord_shapes, max_fret=3)
     assert "C" in chord_shapes
-    assert chord_shapes["C"] is not None
+    assert "Cmaj7" in chord_shapes
     with pytest.raises(KeyError):
         _ = chord_shapes["C9"]
-    assert "C" in chord_shapes.keys()
-
-
-def test_basic_scan_maj(uke_config, mocker):
-    uke_config.tuning = ("G", "C", "E", "A")
-    chord_shapes = _ChordCollection()
-    mock_get_shapes = mocker.patch("ukechords.theory._get_shapes", return_value=[(0, 0, 0, 2)])
-    scan_chords(uke_config, chord_shapes, max_fret=3)
-    mock_get_shapes.assert_called_once()
-    assert "Cmaj7" in chord_shapes
-    assert chord_shapes["Cmaj7"] is not None
 
 
 def test_scale():
