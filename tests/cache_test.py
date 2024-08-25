@@ -21,7 +21,7 @@ def test_load_empty_cache(uke_config):
     assert not shapes
 
 
-def test__cached_filename(uke_config):
+def test_cached_filename(uke_config):
     uke_config.mute = True
     uke_config.tuning = ["A"]
     fn_str = _cached_filename(uke_config, 4, 50)
