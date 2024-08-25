@@ -27,6 +27,8 @@ def main():
         error(1, exc)
     except InvalidCommandException as exc:
         error(5, exc)
+    except KeyboardInterrupt:
+        error(128, "(aborted)")
     return 0
 
 
