@@ -4,6 +4,7 @@ from __future__ import annotations
 from typing import Generator, Any, Callable
 
 import pytest
+
 from pychord import Chord, QualityManager
 
 from ukechords.theory import _sharpify, _flatify
@@ -19,6 +20,7 @@ from ukechords.errors import UnslidableEmptyShapeException
 
 from ukechords.config import UkeConfig
 from .uketestconfig import uke_config
+from .fake_pool import fake_pool  # pylint: disable=unused-import
 
 
 def test_sharpify_flatify() -> None:
