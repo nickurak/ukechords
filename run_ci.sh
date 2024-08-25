@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# This script assumes that the pyvenv installed in PYDIR exists, and
-# has ukechords and all its dependencies.
+# This script assumes that the pyvenv installed in UKECHORDS_PYDIR
+# exists, and has ukechords and all its dependencies.
 
 if [ -z "$UKECHORDS_PYDIR" ]; then
     UKECHORDS_PYDIR="${HOME}/.local/pyvenv/ukechords/"
