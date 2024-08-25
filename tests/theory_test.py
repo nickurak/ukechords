@@ -62,11 +62,7 @@ def test_basic_scan(uke_config):
 def test_basic_scan_maj(uke_config, mocker):
     uke_config.tuning = ("G", "C", "E", "A")
     chord_shapes = _ChordCollection()
-
-    def get_cmaj7_shape(*_, **__):
-        return [(0, 0, 0, 2)]
-
-    mock_get_shapes = mocker.patch("ukechords.theory._get_shapes", wraps=get_cmaj7_shape)
+    mock_get_shapes = mocker.patch("ukechords.theory._get_shapes", return_value=[(0, 0, 0, 2)])
     scan_chords(uke_config, chord_shapes, max_fret=3)
     mock_get_shapes.assert_called_once()
     assert "Cmaj7" in chord_shapes
