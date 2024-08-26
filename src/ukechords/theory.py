@@ -311,7 +311,6 @@ def _get_shapes(config, max_fret=1):
     string_range = range(0, len(config.tuning))
     fret_range = range(-1 if config.mute else 0, max_fret + 1)
     for shape in product(*[fret_range for _ in string_range]):
-        shape = shape[::-1]  # reverse to match legacy behavior of _get_shapes
         if max(shape) >= 0 and _get_shape_difficulty(shape)[0] <= config.max_difficulty:
             yield tuple(shape)
 
@@ -336,9 +335,9 @@ def scan_chords(config, chord_shapes, max_fret=12) -> None:
     save_scanned_chords(config, max_fret=max_fret, chord_shapes=chord_shapes)
 
 
-def rank_shape_by_difficulty(shape) -> float:
+def rank_shape_by_difficulty(shape) -> tuple:
     """Enable sorting a list of shapes by how hard they are to play"""
-    return _get_shape_difficulty(shape)[0]
+    return (_get_shape_difficulty(shape)[0], shape[::-1])
 
 
 def rank_shape_by_high_fret(shape) -> List:
