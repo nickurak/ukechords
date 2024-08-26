@@ -103,23 +103,6 @@ class _ChordCollection(dict):
         return super().__getitem__(_normalize_chord(chord), *args, **kwargs)
 
 
-def _get_shapes(config, max_fret=1):
-    """
-    Yield shapes playable on the fretboard, (optionally including
-    muted strings) up to the specified fret.
-
-    Shapes which are ranked as too-difficult based on the provided
-    configuration will be excluded.
-
-    """
-    string_range = range(0, len(config.tuning))
-    fret_range = range(-1 if config.mute else 0, max_fret + 1)
-    for shape in product(*[fret_range for _ in string_range]):
-        shape = shape[::-1]  # reverse to match legacy behavior of _get_shapes
-        if max(shape) >= 0 and _get_shape_difficulty(shape)[0] <= config.max_difficulty:
-            yield tuple(shape)
-
-
 def _barreless_shape_difficulty(shape):
     difficulty = 0.0 + max(shape) / 10.0
     last_fretted_position = None
@@ -314,6 +297,23 @@ def _get_key_notes(key):
     if _is_flat(root):
         return [_flat_scale[interval + _note_intervals[root]] for interval in intervals]
     return [_chromatic_scale[interval + _note_intervals[root]] for interval in intervals]
+
+
+def _get_shapes(config, max_fret=1):
+    """
+    Yield shapes playable on the fretboard, (optionally including
+    muted strings) up to the specified fret.
+
+    Shapes which are ranked as too-difficult based on the provided
+    configuration will be excluded.
+
+    """
+    string_range = range(0, len(config.tuning))
+    fret_range = range(-1 if config.mute else 0, max_fret + 1)
+    for shape in product(*[fret_range for _ in string_range]):
+        shape = shape[::-1]  # reverse to match legacy behavior of _get_shapes
+        if max(shape) >= 0 and _get_shape_difficulty(shape)[0] <= config.max_difficulty:
+            yield tuple(shape)
 
 
 def scan_chords(config, chord_shapes, max_fret=12) -> None:
