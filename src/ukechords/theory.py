@@ -328,9 +328,14 @@ def _get_shapes(config: UkeConfig, max_fret: int = 1) -> Generator[tuple[int, ..
     configuration will be excluded.
 
     """
-    string_range = range(0, len(config.tuning))
+    string_fret_options = []
     fret_range = range(-1 if config.mute else 0, max_fret + 1)
-    for shape in product(*[fret_range for _ in string_range]):
+    for _ in config.tuning:
+        fret_options = []
+        for pos in fret_range:
+            fret_options.append(pos)
+        string_fret_options.append(fret_options)
+    for shape in product(*string_fret_options):
         if max(shape) >= 0 and _get_shape_difficulty(shape)[0] <= config.max_difficulty:
             yield tuple(shape)
 
