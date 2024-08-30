@@ -192,7 +192,6 @@ def test_missing_chord(uke_config):
         render_chord_list(uke_config, data)
 
 
-@pytest.mark.xfail(strict=True)
 def test_empty_chord_list(capsys, uke_config):
     data = {"shapes": []}
     render_chord_list(uke_config, data)
