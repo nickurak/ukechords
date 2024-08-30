@@ -5,6 +5,7 @@ import pytest  # pylint: disable=unused-import
 from ukechords.render import _get_shape_lines, render_chord_list
 from ukechords.render import render_chords_from_shape, render_key
 from ukechords.render import _diff_string
+from ukechords.errors import ShapeNotFoundException
 
 from ukechords.render import _csv
 
@@ -183,3 +184,9 @@ def test_render_chords_from_shape_with_vis_and_notes(capsys, uke_config):
     vis_lines = vis_lines[1:-1]
     assert len(lines) == len(vis_lines)
     assert vis_lines == lines
+
+
+def test_missing_chord(uke_config):
+    data = {"chord": "C9", "shapes": []}
+    with pytest.raises(ShapeNotFoundException):
+        render_chord_list(uke_config, data)
