@@ -11,7 +11,8 @@ fi
 
 set -e
 
-flake8 . && echo 'flake8 passed'
+flake8 . && echo 'flake8 passed' || exit $?
+
 find . -name '*.py' | grep -v flycheck | xargs -d '\n' pylint
 
 mypy .
