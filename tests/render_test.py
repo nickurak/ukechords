@@ -190,3 +190,14 @@ def test_missing_chord(uke_config):
     data = {"chord": "C9", "shapes": []}
     with pytest.raises(ShapeNotFoundException):
         render_chord_list(uke_config, data)
+
+
+@pytest.mark.xfail(strict=True)
+def test_empty_chord_list(capsys, uke_config):
+    data = {"shapes": []}
+    render_chord_list(uke_config, data)
+    out, err = capsys.readouterr()
+    assert err == ""
+    lines = out.strip("\n").split("\n")
+    assert len(lines) == 1
+    assert lines[0] == "No matching chords found"
