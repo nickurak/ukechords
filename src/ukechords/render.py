@@ -117,3 +117,4 @@ def render_key(_, data) -> None:
 def render_json(_, data) -> None:
     """Render arbitrary input data as json"""
     json.dump(data, sys.stdout, indent=2 if sys.stdout.isatty() else None)
+    print()
