@@ -1,0 +1,30 @@
+#!/bin/bash
+
+cleanup() {
+    rm -Rf "$UKECHORDS_PYDIR"
+    rm -Rf "$SRC_DIR"
+}
+
+trap "cleanup" SIGINT SIGTERM ERR
+
+set -Eeuo pipefail
+
+while read -r OLDREV NEWREV REFNAME; do
+    echo "Handling request to move $REFNAME from $OLDREV -> $NEWREV"
+    export UKECHORDS_PYDIR="$(mktemp -d -p /tmp tmp_ukechords_pydir_XXXX)"
+    export SRC_DIR="$(mktemp -d -p /tmp tmp_ukechords_src_XXXX)"
+
+    git archive "$NEWREV" | tar -x -C "$SRC_DIR"
+
+    python -m venv "$UKECHORDS_PYDIR"
+
+    cd "$SRC_DIR"
+    (. "$UKECHORDS_PYDIR/bin/activate"; pip install flit; flit install)
+
+    if ! ./run_ci.sh; then
+      echo "CI checks failed, rejecting commit"
+      cleanup
+      exit 1
+    fi
+    cleanup
+done
