@@ -387,7 +387,7 @@ def show_chord(config, chord) -> dict:
     try:
         p_chord = Chord(chord)
     except ValueError as exc:
-        raise ChordNotFoundException(f"Error looking up chord \"{chord}\"") from exc
+        raise ChordNotFoundException(f'Error looking up chord "{chord}"') from exc
     if config.show_notes:
         notes = p_chord.components()
         output["notes"] = notes
