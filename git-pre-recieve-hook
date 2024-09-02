@@ -1,8 +1,14 @@
 #!/bin/bash
 
 cleanup() {
-    rm -Rf "$UKECHORDS_PYDIR"
-    rm -Rf "$SRC_DIR"
+    [ -z "${UKECHORD_PYDIR+x}" ] || rm -Rf "$UKECHORDS_PYDIR"
+    [ -z "${SRC_DIR+x}" ] || rm -Rf "$SRC_DIR"
+}
+
+fail() {
+    echo "$*"
+    cleanup
+    exit 1
 }
 
 trap "cleanup" SIGINT SIGTERM ERR
@@ -22,9 +28,7 @@ while read -r OLDREV NEWREV REFNAME; do
     (. "$UKECHORDS_PYDIR/bin/activate"; pip install flit; flit install)
 
     if ! ./run_ci.sh; then
-      echo "CI checks failed, rejecting commit"
-      cleanup
-      exit 1
+      fail "CI checks failed, rejecting commit"
     fi
     cleanup
 done
