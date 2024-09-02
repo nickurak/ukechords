@@ -17,6 +17,13 @@ set -Eeuo pipefail
 
 while read -r OLDREV NEWREV REFNAME; do
     echo "Handling request to move $REFNAME from $OLDREV -> $NEWREV"
+
+    BADCOMMITS="$(git log --pretty=%h --grep "fixup!" --grep "squash!" "$OLDREV..$NEWREV")"
+
+    if [ -n "$BADCOMMITS" ]; then
+        fail "{$(echo $BADCOMMITS | sed 's/ /, /g')} are uncaught fixup/squash commits."
+    fi
+
     export UKECHORDS_PYDIR="$(mktemp -d -p /tmp tmp_ukechords_pydir_XXXX)"
     export SRC_DIR="$(mktemp -d -p /tmp tmp_ukechords_src_XXXX)"
 
