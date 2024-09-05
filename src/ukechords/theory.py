@@ -14,7 +14,7 @@ from .errors import UnknownKeyException, ChordNotFoundException
 
 
 def add_no5_quality() -> None:
-    """Add a fifth-less quality to pychord's known qualities"""
+    """Add a fifth-less variant to many of pychord's known qualities"""
     for orig_name, quality in list(QualityManager().get_qualities().items()):
         if "/" in orig_name or 7 not in quality.components or len(quality.components) < 4:
             continue
