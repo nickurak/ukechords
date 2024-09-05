@@ -28,16 +28,9 @@ def add_no5_quality() -> None:
 
 def add_7sus2_quality() -> None:
     """Add a 7sus2 quality to pychord's known qualities"""
-    new_qs = []
-    for name, quality in QualityManager().get_qualities().items():
-        if name != "sus2":
-            continue
-        components = list(quality.components)
-        components.append(10)
-        new_name = f"7{name}"
-        new_qs.append((new_name, tuple(components)))
-    for name, new in new_qs:
-        QualityManager().set_quality(name, new)
+    sus2 = QualityManager().get_quality("sus2")
+    new = (*sus2.components, 10)
+    QualityManager().set_quality("7sus2", new)
 
 
 @cache
