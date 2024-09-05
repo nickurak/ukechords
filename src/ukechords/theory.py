@@ -15,15 +15,11 @@ from .errors import UnknownKeyException, ChordNotFoundException
 
 def add_no5_quality() -> None:
     """Add a fifth-less quality to pychord's known qualities"""
-    new_qs = []
-    for name, quality in QualityManager().get_qualities().items():
-        no5name = name + "no5"
-        if "/" in name or 7 not in quality.components or len(quality.components) < 4:
+    for orig_name, quality in list(QualityManager().get_qualities().items()):
+        if "/" in orig_name or 7 not in quality.components or len(quality.components) < 4:
             continue
         new = tuple(filter(lambda x: x != 7, quality.components))
-        new_qs.append((no5name, new))
-    for name, new in new_qs:
-        QualityManager().set_quality(name, new)
+        QualityManager().set_quality(f"{orig_name}no5", new)
 
 
 def add_7sus2_quality() -> None:
