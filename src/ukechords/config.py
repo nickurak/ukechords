@@ -81,7 +81,7 @@ class UkeConfig:
         # pylint: disable=too-many-branches
         # pylint: disable=too-many-statements
         self._set_defaults()
-        if not args:
+        if args is None:
             return
         if isinstance(args, list):
             args = get_parser().parse_args(args)
