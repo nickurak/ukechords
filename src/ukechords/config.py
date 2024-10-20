@@ -61,7 +61,7 @@ class UkeConfig:
 
     # pylint: disable=too-many-instance-attributes
     render_text: Callable = render_json  # Function to render output in command-line mode
-    command: Callable = lambda _, __: json.load(sys.stdin)  # Command to call in command-line mode
+    command: Optional[Callable] = None  # Command to call in command-line mode
     qualities: Optional[list[str]] = None  # List of chord qualities to allow in output
     slide: bool = False  # Whether to report versions of a specified shape slid up/down the neck
     show_notes: bool = False  # Whether to include individual notes in the output
@@ -131,6 +131,7 @@ class UkeConfig:
             self.command = lambda x: show_key(x, args.show_key)
             self.render_text = render_key
         if args.render_cmd:
+            self.command = lambda _: json.load(sys.stdin)
             self.render_text = _get_renderfunc_from_name(args.render_cmd)
         if args.cache_dir:
             self.cache_dir = args.cache_dir
@@ -160,6 +161,7 @@ class UkeConfig:
 
     def run_command(self) -> None:
         "Invoke the configured command with the configured configuration, and render the output"
+        assert self.command
         self.render_text(self, self.command(self))
 
 
