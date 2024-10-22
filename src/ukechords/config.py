@@ -83,11 +83,10 @@ class UkeConfig:
         self._set_defaults()
         if not args:
             return
+        if isinstance(args, list):
+            args = get_parser().parse_args(args)
         if not isinstance(args, argparse.Namespace):
-            if isinstance(args, list):
-                args = get_parser().parse_args(args)
-            else:
-                raise TypeError(f"Unable to handle {type(args)} as UkeConfig args")
+            raise TypeError(f"Unable to handle {type(args)} as UkeConfig args")
         self.mute = args.mute
         if args.tuning:
             self.tuning = get_tuning(args.tuning)
