@@ -484,7 +484,7 @@ def show_all(config: UkeConfig) -> ChordShapes:
         notes.extend(Chord(chord).components())
     if notes and any(map(_is_flat, notes)):
         config.force_flat = True
-    _scan_chords(config, chord_shapes)
+    _scan_chords(config, chord_shapes, notes=tuple(notes))
     ichords = list(chord_shapes.keys())
     sort_offset = 0
     if config.keys:
