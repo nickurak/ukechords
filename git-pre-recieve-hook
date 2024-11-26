@@ -36,7 +36,7 @@ while read -r OLDREV NEWREV REFNAME; do
     (. "$UKECHORDS_PYDIR/bin/activate"; pip install flit; flit install)
 
     if ! ./run_ci.sh; then
-      fail "CI checks failed, rejecting commit"
+        fail "CI checks failed, rejecting commit"
     fi
     cleanup
 done
