@@ -124,9 +124,9 @@ class UkeConfig:
     def _setup_command(self, args) -> None:
         if args.chord:
             self.command = lambda x: show_chord(x, args.chord)
-        if args.all_chords or args.keys or args.allowed_chords or args.keys:
+        if args.all_chords or args.keys or args.allowed_chords:
             self.command = show_all
-        if args.chord or args.all_chords or args.keys or args.allowed_chords or args.keys:
+        if args.chord or args.all_chords or args.keys or args.allowed_chords:
             self.render_text = render_chord_list
         if args.shape:
             self.command = lambda x: show_chords_by_shape(x, args.shape)
