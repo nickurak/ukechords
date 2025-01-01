@@ -2,8 +2,6 @@
 
 """Simple command-line client to invoke ukechords functionality"""
 
-# pylint: disable=missing-function-docstring
-
 import sys
 
 
@@ -14,6 +12,7 @@ from ukechords.config import UkeConfig
 
 
 def main():
+    # pylint: disable=missing-function-docstring
     add_no5_quality()
     add_7sus2_quality()
     try:
