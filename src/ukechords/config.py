@@ -36,7 +36,7 @@ def _get_renderfunc_from_name(name) -> Callable:
     raise InvalidCommandException(msg)
 
 
-def _reject_conflicting_commands(args) -> None:
+def _check_argument_errors(args) -> None:
     def exactly_one(iterable):
         i = iter(iterable)
         return any(i) and not any(i)
@@ -53,6 +53,12 @@ def _reject_conflicting_commands(args) -> None:
         msg = "Provide exactly one of "
         msg += "--all-chords, --chord, --shape, --notes, --render-cmd, or --show-key"
         raise InvalidCommandException(msg)
+
+    if args.qualities and args.simple:
+        raise InvalidCommandException("Provide only one of -p/--simple or -q/--qualities")
+
+    if args.slide and not args.shape:
+        raise InvalidCommandException("--slide requries a --shape")
 
 
 @dataclass
@@ -94,16 +100,12 @@ class UkeConfig:
             self.shape_ranker = rank_shape_by_high_fret
         if args.max_difficulty:
             self.max_difficulty = args.max_difficulty
-        _reject_conflicting_commands(args)
-        if args.qualities and args.simple:
-            raise InvalidCommandException("Provide only one of -p/--simple or -q/--qualities")
+        _check_argument_errors(args)
         if args.simple:
             self.qualities = ["", "m", "7", "dim", "maj", "m7"]
         if args.qualities is not None:
             self.qualities = args.qualities.split(",")
         self.slide = args.slide
-        if args.slide and not args.shape:
-            raise InvalidCommandException("--slide requries a --shape")
         self.num = args.num
         if args.single:
             self.num = 1
