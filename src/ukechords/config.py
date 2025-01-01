@@ -68,7 +68,7 @@ class UkeConfig:
     # pylint: disable=too-many-instance-attributes
     render_text: Callable = render_json  # Function to render output in command-line mode
     command: Optional[Callable] = None  # Command to call in command-line mode
-    qualities: Optional[list[str]] = None  # List of chord qualities to allow in output
+    qualities: Optional[List[str]] = None  # List of chord qualities to allow in output
     slide: bool = False  # Whether to report versions of a specified shape slid up/down the neck
     show_notes: bool = False  # Whether to include individual notes in the output
     no_cache: bool = False  # Whether to avoid loading any available cached chord->shape maps
