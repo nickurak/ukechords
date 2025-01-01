@@ -93,6 +93,7 @@ class UkeConfig:
             args = get_parser().parse_args(args)
         if not isinstance(args, argparse.Namespace):
             raise TypeError(f"Unable to handle {type(args)} as UkeConfig args")
+        _check_argument_errors(args)
         self.mute = args.mute
         if args.tuning:
             self.tuning = get_tuning(args.tuning)
@@ -100,7 +101,6 @@ class UkeConfig:
             self.shape_ranker = rank_shape_by_high_fret
         if args.max_difficulty:
             self.max_difficulty = args.max_difficulty
-        _check_argument_errors(args)
         if args.simple:
             self.qualities = ["", "m", "7", "dim", "maj", "m7"]
         if args.qualities is not None:
