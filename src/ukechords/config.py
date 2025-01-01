@@ -84,8 +84,6 @@ class UkeConfig:
     shape_ranker: Optional[Callable] = None  # Which function to use to sort discovered shapes with
 
     def __init__(self, args=None) -> None:
-        # pylint: disable=too-many-branches
-        # pylint: disable=too-many-statements
         self._set_defaults()
         if args is None:
             return
@@ -115,14 +113,21 @@ class UkeConfig:
         self.no_cache = args.no_cache
         self.visualize = args.visualize
         self.force_flat = args.force_flat
+        self.key = args.key
+        self.allowed_chords = args.allowed_chords
+        if args.cache_dir:
+            self.cache_dir = args.cache_dir
+        self._setup_command(args)
+        if args.json:
+            self.render_text = render_json
+
+    def _setup_command(self, args) -> None:
         if args.chord:
             self.command = lambda x: show_chord(x, args.chord)
         if args.all_chords or args.key or args.allowed_chords or args.key:
             self.command = show_all
         if args.chord or args.all_chords or args.key or args.allowed_chords or args.key:
             self.render_text = render_chord_list
-        self.key = args.key
-        self.allowed_chords = args.allowed_chords
         if args.shape:
             self.command = lambda x: show_chords_by_shape(x, args.shape)
             self.render_text = render_chords_from_shape
@@ -135,10 +140,6 @@ class UkeConfig:
         if args.render_cmd:
             self.command = lambda _: json.load(sys.stdin)
             self.render_text = _get_renderfunc_from_name(args.render_cmd)
-        if args.cache_dir:
-            self.cache_dir = args.cache_dir
-        if args.json:
-            self.render_text = render_json
 
     def _set_defaults(self) -> None:
         config = configparser.ConfigParser()
