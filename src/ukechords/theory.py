@@ -422,7 +422,7 @@ def show_all(config) -> dict:
     """
     notes = []
     chord_shapes = _ChordCollection()
-    for key in config.key or []:
+    for key in config.keys or []:
         notes.extend(_get_key_notes(key))
     for chord in config.allowed_chords or []:
         notes.extend(Chord(chord).components())
@@ -431,8 +431,8 @@ def show_all(config) -> dict:
     scan_chords(config, chord_shapes)
     ichords = list(chord_shapes.keys())
     sort_offset = 0
-    if config.key:
-        sort_offset = _note_intervals[_get_key_notes(config.key[0])[0]]
+    if config.keys:
+        sort_offset = _note_intervals[_get_key_notes(config.keys[0])[0]]
 
     def chord_sorter(name):
         pos = _note_intervals[Chord(name).root] - sort_offset

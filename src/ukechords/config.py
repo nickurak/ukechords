@@ -46,7 +46,7 @@ def _check_argument_errors(args) -> None:
         args.notes,
         args.chord,
         args.shape,
-        (args.all_chords or args.key or args.allowed_chords),
+        (args.all_chords or args.keys or args.allowed_chords),
         args.show_key,
     ]
     if not exactly_one(mutually_exclusive_groups):
@@ -74,7 +74,7 @@ class UkeConfig:
     no_cache: bool = False  # Whether to avoid loading any available cached chord->shape maps
     num: Optional[int] = None  # How many shapes to return for a given chord
     visualize: bool = False  # Whether to draw shapes on screen while rendering
-    key: Optional[List[str]] = None  # If specified, a key to limit returned chords to
+    keys: Optional[List[str]] = None  # If specified, a key to limit returned chords to
     allowed_chords: Optional[List[str]] = None  # If specified, chords whose notes are allowed
     force_flat: bool = False  # Whether to report chords in their flat versions rather than sharp
     max_difficulty: Optional[float] = None  # A maximum difficulty or shapes to scan and report
@@ -113,7 +113,7 @@ class UkeConfig:
         self.no_cache = args.no_cache
         self.visualize = args.visualize
         self.force_flat = args.force_flat
-        self.key = args.key
+        self.keys = args.keys
         self.allowed_chords = args.allowed_chords
         if args.cache_dir:
             self.cache_dir = args.cache_dir
@@ -124,9 +124,9 @@ class UkeConfig:
     def _setup_command(self, args) -> None:
         if args.chord:
             self.command = lambda x: show_chord(x, args.chord)
-        if args.all_chords or args.key or args.allowed_chords or args.key:
+        if args.all_chords or args.keys or args.allowed_chords or args.keys:
             self.command = show_all
-        if args.chord or args.all_chords or args.key or args.allowed_chords or args.key:
+        if args.chord or args.all_chords or args.keys or args.allowed_chords or args.keys:
             self.render_text = render_chord_list
         if args.shape:
             self.command = lambda x: show_chords_by_shape(x, args.shape)
@@ -187,8 +187,8 @@ def get_parser() -> argparse.ArgumentParser:
     pa("-a", "--all-chords", action="store_true", help=all_help)
     pa("-m", "--mute", action="store_true", help="Include shapes that require muting strings")
     pa("-n", "--num", type=int, help="Show <NUM> shapes for the given chord")
-    key_help = "Limit chords to those playable in <KEY> (can be specified multiple times)"
-    pa("-k", "--key", action="append", help=key_help)
+    keys_help = "Limit chords to those playable in <KEY> (can be specified multiple times)"
+    pa("-k", "--keys", action="append", help=keys_help)
     pa("-q", "--qualities", help="Limit chords to chords with the specified <QUALITIES>")
     simple_help = "Limit to chords with major, minor, and dim qualities"
     pa("-p", "--simple", action="store_true", help=simple_help)
