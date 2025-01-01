@@ -74,7 +74,7 @@ class UkeConfig:
     no_cache: bool = False  # Whether to avoid loading any available cached chord->shape maps
     num: Optional[int] = None  # How many shapes to return for a given chord
     visualize: bool = False  # Whether to draw shapes on screen while rendering
-    key: Optional[str] = None  # If specified, a key to limit returned chords to
+    key: Optional[List[str]] = None  # If specified, a key to limit returned chords to
     allowed_chords: Optional[List[str]] = None  # If specified, chords whose notes are allowed
     force_flat: bool = False  # Whether to report chords in their flat versions rather than sharp
     max_difficulty: Optional[float] = None  # A maximum difficulty or shapes to scan and report
