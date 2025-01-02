@@ -93,8 +93,8 @@ def test_show_chordless_shape(uke_config):
 
 def test_list_all(uke_config):
     uke_config.qualities = ["", "m", "7", "dim", "maj", "m7"]
-    uke_config.keys = "C"
-    uke_config.allowed_chords = False
+    uke_config.keys = ["C"]
+    uke_config.allowed_chords = None
     output = show_all(uke_config)
 
     c_shapes = [shape for shape in output["shapes"] if "C" in shape["chord_names"]]
