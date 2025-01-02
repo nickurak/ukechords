@@ -1,5 +1,8 @@
 # pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
 
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
 import pytest
 
 from ukechords.render import _get_shape_lines, render_chord_list
@@ -10,6 +13,9 @@ from ukechords.errors import ShapeNotFoundException
 from ukechords.render import _csv
 
 from .uketestconfig import uke_config
+
+if TYPE_CHECKING:
+    from ukechords.config import UkeConfig
 
 
 def get_capsys_lines(capsys):
@@ -90,7 +96,7 @@ def test_render_chords_from_shape(capsys, uke_config):
     assert lines[1] == f"Difficulty: {expected_diff_string}"
 
 
-def test_render_shape_with_mute(capsys, uke_config) -> None:
+def test_render_shape_with_mute(capsys, uke_config: UkeConfig) -> None:
     data = {
         "shapes": [
             {"shape": [0, -1], "chords": [], "notes": ["G"]},
@@ -178,7 +184,7 @@ def test_render_chords_from_shape_with_vis_and_notes(capsys, uke_config):
     assert vis_lines == lines
 
 
-def test_missing_chord(uke_config) -> None:
+def test_missing_chord(uke_config: UkeConfig) -> None:
     data = {"chord": "C9", "shapes": []}
     with pytest.raises(ShapeNotFoundException):
         render_chord_list(uke_config, data)

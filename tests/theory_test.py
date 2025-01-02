@@ -1,7 +1,9 @@
 # pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
 
-import pytest
+from __future__ import annotations
+from typing import TYPE_CHECKING
 
+import pytest
 from pychord import Chord, QualityManager
 
 from ukechords.theory import _sharpify, _flatify
@@ -15,6 +17,9 @@ from ukechords.theory import show_key
 
 from .uketestconfig import uke_config
 
+if TYPE_CHECKING:
+    from ukechords.config import UkeConfig
+
 
 def test_sharpify() -> None:
     assert _sharpify("Bb") == "A#"
@@ -27,7 +32,7 @@ def test_sharpify() -> None:
 
 
 @pytest.mark.xfail(strict=True)
-def test_force_flat_bbsus2(uke_config) -> None:
+def test_force_flat_bbsus2(uke_config: UkeConfig) -> None:
     uke_config.tuning = ("G", "C", "E")
     uke_config.force_flat = True
     pshape = (3, 0, 1)
@@ -39,7 +44,7 @@ def test_force_flat_bbsus2(uke_config) -> None:
     assert notes == set(["Bb", "F", "D"])
 
 
-def test_force_flat_shape(uke_config) -> None:
+def test_force_flat_shape(uke_config: UkeConfig) -> None:
     uke_config.tuning = ("G", "C", "E")
     uke_config.force_flat = True
     pshape = (3, 2, 1)
@@ -51,7 +56,7 @@ def test_force_flat_shape(uke_config) -> None:
     assert notes == set(["Bb", "F", "D"])
 
 
-def test_no_force_flat_shape(uke_config) -> None:
+def test_no_force_flat_shape(uke_config: UkeConfig) -> None:
     uke_config.tuning = ("G", "C", "E")
     pshape = (3, 2, 1)
     resp = list(_get_chords_by_shape(uke_config, pshape))
@@ -62,7 +67,7 @@ def test_no_force_flat_shape(uke_config) -> None:
     assert notes == set(["A#", "F", "D"])
 
 
-def test_basic_scan(uke_config) -> None:
+def test_basic_scan(uke_config: UkeConfig) -> None:
     uke_config.tuning = ("G", "C", "E", "A")
     chord_shapes = _ChordCollection()
     _scan_chords(uke_config, chord_shapes, max_fret=3)
@@ -83,7 +88,7 @@ def test_scale() -> None:
     assert "Am" in dupes
 
 
-def test_show_chord(uke_config) -> None:
+def test_show_chord(uke_config: UkeConfig) -> None:
     uke_config.show_notes = True
     output = show_chord(uke_config, "C#")
     assert {frozenset(shape["chord_names"]) for shape in output["shapes"]} == {frozenset(["C#"])}
@@ -94,7 +99,7 @@ def test_show_chord(uke_config) -> None:
     assert output["notes"] == ["C#", "F", "G#"]
 
 
-def test_show_chordless_shape(uke_config) -> None:
+def test_show_chordless_shape(uke_config: UkeConfig) -> None:
     chordless_shape = "x,x,x"
     output = show_chords_by_shape(uke_config, chordless_shape)
     shapes = output["shapes"]
@@ -104,7 +109,7 @@ def test_show_chordless_shape(uke_config) -> None:
     assert only_shape["shape"] == (-1, -1, -1)
 
 
-def test_list_all(uke_config) -> None:
+def test_list_all(uke_config: UkeConfig) -> None:
     uke_config.qualities = ["", "m", "7", "dim", "maj", "m7"]
     uke_config.keys = ["C"]
     uke_config.allowed_chords = None
@@ -117,7 +122,7 @@ def test_list_all(uke_config) -> None:
     assert c_shape["difficulty"] == 0.0
 
 
-def test_barrable_barred(uke_config) -> None:
+def test_barrable_barred(uke_config: UkeConfig) -> None:
     data = show_chords_by_shape(uke_config, "1,1,1")
     barre_data = data["barre_data"]
     assert barre_data["barred"]
@@ -125,7 +130,7 @@ def test_barrable_barred(uke_config) -> None:
     assert barre_data["shape"] == (0, 0, 0)
 
 
-def test_barrable_unbarred(uke_config) -> None:
+def test_barrable_unbarred(uke_config: UkeConfig) -> None:
     data = show_chords_by_shape(uke_config, "1,1,3")
     barre_data = data["barre_data"]
     assert not barre_data["barred"]
@@ -144,7 +149,7 @@ def test_barrable_unbarred(uke_config) -> None:
         ),
     ],
 )
-def test_slide(uke_config, tuning, initial_shape) -> None:
+def test_slide(uke_config: UkeConfig, tuning, initial_shape) -> None:
     uke_config.tuning = tuning
     uke_config.slide = True
     slid_chords = list(_get_chords_by_shape(uke_config, initial_shape))
@@ -156,7 +161,7 @@ def test_slide(uke_config, tuning, initial_shape) -> None:
     assert len(slid_shapes) == 12
 
 
-def test_slide_mute(uke_config) -> None:
+def test_slide_mute(uke_config: UkeConfig) -> None:
     uke_config.tuning = ("C", "G", "E")
     uke_config.slide = True
     initial_shape = (1, 2, -1)
