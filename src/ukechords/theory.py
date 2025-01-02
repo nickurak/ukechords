@@ -138,7 +138,6 @@ def _barre_difficulty_details(shape, unbarred_difficulty, tuning):
     Return information on how using a barre to play the given shape
     (if possible) affects the shape's difficulty.
     """
-    barre_difficulty = None
     barre_level = min(shape)
     barrable = len([1 for pos in shape if pos == barre_level])
     if not (barrable > 1 and barre_level > 0):
