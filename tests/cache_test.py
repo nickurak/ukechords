@@ -9,9 +9,10 @@ from .uketestconfig import uke_config
 
 if TYPE_CHECKING:
     from ukechords.theory import _ChordCollection
+    from ukechords.config import UkeConfig
 
 
-def test_load_save_cache(uke_config) -> None:
+def test_load_save_cache(uke_config: UkeConfig) -> None:
     shapes: _ChordCollection = {"hello": "world"}  # type: ignore
     save_scanned_chords(uke_config, shapes, max_fret=4)
     shapes = {}  # type: ignore
@@ -20,14 +21,14 @@ def test_load_save_cache(uke_config) -> None:
     assert shapes["hello"] == "world"
 
 
-def test_load_empty_cache(uke_config) -> None:
+def test_load_empty_cache(uke_config: UkeConfig) -> None:
     shapes: _ChordCollection = {}  # type: ignore
     res = load_scanned_chords(uke_config, shapes, max_fret=4)
     assert res is False
     assert not shapes
 
 
-def test_cached_filename(uke_config) -> None:
+def test_cached_filename(uke_config: UkeConfig) -> None:
     uke_config.mute = True
     uke_config.tuning = ("A",)
     fn_str = _cached_filename(uke_config, 4, 50)
