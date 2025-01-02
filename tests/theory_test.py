@@ -6,7 +6,7 @@ from pychord import Chord, QualityManager
 
 from ukechords.theory import _sharpify, _flatify
 from ukechords.theory import _get_chords_by_shape
-from ukechords.theory import _ChordCollection, scan_chords
+from ukechords.theory import _ChordCollection, _scan_chords
 from ukechords.theory import _get_key_notes, _get_dupe_scales_from_key
 from ukechords.theory import show_chord, show_chords_by_shape, show_all
 from ukechords.theory import _weird_sharp_scale, _weird_flat_scale
@@ -52,7 +52,7 @@ def test_no_force_flat_shape(uke_config):
 def test_basic_scan(uke_config):
     uke_config.tuning = ("G", "C", "E", "A")
     chord_shapes = _ChordCollection()
-    scan_chords(uke_config, chord_shapes, max_fret=3)
+    _scan_chords(uke_config, chord_shapes, max_fret=3)
     assert "C" in chord_shapes
     assert "Cmaj7" in chord_shapes
     with pytest.raises(KeyError):
