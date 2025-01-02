@@ -16,7 +16,7 @@ from ukechords.theory import show_key
 from .uketestconfig import uke_config
 
 
-def test_sharpify():
+def test_sharpify() -> None:
     assert _sharpify("Bb") == "A#"
     assert _sharpify("A#") == "A#"
     assert _flatify("A#") == "Bb"
@@ -27,7 +27,7 @@ def test_sharpify():
 
 
 @pytest.mark.xfail(strict=True)
-def test_force_flat_bbsus2(uke_config):
+def test_force_flat_bbsus2(uke_config) -> None:
     uke_config.tuning = ("G", "C", "E")
     uke_config.force_flat = True
     pshape = (3, 0, 1)
@@ -39,7 +39,7 @@ def test_force_flat_bbsus2(uke_config):
     assert notes == set(["Bb", "F", "D"])
 
 
-def test_force_flat_shape(uke_config):
+def test_force_flat_shape(uke_config) -> None:
     uke_config.tuning = ("G", "C", "E")
     uke_config.force_flat = True
     pshape = (3, 2, 1)
@@ -51,7 +51,7 @@ def test_force_flat_shape(uke_config):
     assert notes == set(["Bb", "F", "D"])
 
 
-def test_no_force_flat_shape(uke_config):
+def test_no_force_flat_shape(uke_config) -> None:
     uke_config.tuning = ("G", "C", "E")
     pshape = (3, 2, 1)
     resp = list(_get_chords_by_shape(uke_config, pshape))
@@ -62,7 +62,7 @@ def test_no_force_flat_shape(uke_config):
     assert notes == set(["A#", "F", "D"])
 
 
-def test_basic_scan(uke_config):
+def test_basic_scan(uke_config) -> None:
     uke_config.tuning = ("G", "C", "E", "A")
     chord_shapes = _ChordCollection()
     _scan_chords(uke_config, chord_shapes, max_fret=3)
@@ -72,7 +72,7 @@ def test_basic_scan(uke_config):
         _ = chord_shapes["C9"]
 
 
-def test_scale():
+def test_scale() -> None:
     key1 = "C"
     key2 = "Am"
 
@@ -83,7 +83,7 @@ def test_scale():
     assert "Am" in dupes
 
 
-def test_show_chord(uke_config):
+def test_show_chord(uke_config) -> None:
     uke_config.show_notes = True
     output = show_chord(uke_config, "C#")
     assert {frozenset(shape["chord_names"]) for shape in output["shapes"]} == {frozenset(["C#"])}
@@ -94,7 +94,7 @@ def test_show_chord(uke_config):
     assert output["notes"] == ["C#", "F", "G#"]
 
 
-def test_show_chordless_shape(uke_config):
+def test_show_chordless_shape(uke_config) -> None:
     chordless_shape = "x,x,x"
     output = show_chords_by_shape(uke_config, chordless_shape)
     shapes = output["shapes"]
@@ -104,7 +104,7 @@ def test_show_chordless_shape(uke_config):
     assert only_shape["shape"] == (-1, -1, -1)
 
 
-def test_list_all(uke_config):
+def test_list_all(uke_config) -> None:
     uke_config.qualities = ["", "m", "7", "dim", "maj", "m7"]
     uke_config.keys = ["C"]
     uke_config.allowed_chords = None
@@ -117,7 +117,7 @@ def test_list_all(uke_config):
     assert c_shape["difficulty"] == 0.0
 
 
-def test_barrable_barred(uke_config):
+def test_barrable_barred(uke_config) -> None:
     data = show_chords_by_shape(uke_config, "1,1,1")
     barre_data = data["barre_data"]
     assert barre_data["barred"]
@@ -125,7 +125,7 @@ def test_barrable_barred(uke_config):
     assert barre_data["shape"] == (0, 0, 0)
 
 
-def test_barrable_unbarred(uke_config):
+def test_barrable_unbarred(uke_config) -> None:
     data = show_chords_by_shape(uke_config, "1,1,3")
     barre_data = data["barre_data"]
     assert not barre_data["barred"]
@@ -144,7 +144,7 @@ def test_barrable_unbarred(uke_config):
         ),
     ],
 )
-def test_slide(uke_config, tuning, initial_shape):
+def test_slide(uke_config, tuning, initial_shape) -> None:
     uke_config.tuning = tuning
     uke_config.slide = True
     slid_chords = list(_get_chords_by_shape(uke_config, initial_shape))
@@ -156,7 +156,7 @@ def test_slide(uke_config, tuning, initial_shape):
     assert len(slid_shapes) == 12
 
 
-def test_slide_mute(uke_config):
+def test_slide_mute(uke_config) -> None:
     uke_config.tuning = ("C", "G", "E")
     uke_config.slide = True
     initial_shape = (1, 2, -1)
@@ -170,7 +170,7 @@ def test_slide_mute(uke_config):
     assert len(slid_shapes) == 12
 
 
-def test_weird_flat_sharps():
+def test_weird_flat_sharps() -> None:
     assert _weird_sharp_scale == ["B#", "C#", "D", "D#", "E", "E#", "F#", "G", "G#", "A", "A#", "B"]
     assert _weird_flat_scale == ["C", "Db", "D", "Eb", "Fb", "F", "Gb", "G", "Ab", "A", "Bb", "Cb"]
 
@@ -191,23 +191,23 @@ def get_missing_chord_params():
 
 
 @pytest.mark.parametrize("chord", list(get_missing_chord_params()))
-def test_clean_missing_quality(chord):
+def test_clean_missing_quality(chord) -> None:
     QualityManager().load_default_qualities()
     with pytest.raises(ValueError):
         Chord(chord)
 
 
 @pytest.mark.parametrize("chord,loader", extra_chords_and_loaders)
-def test_extra_quality(chord, loader):
+def test_extra_quality(chord, loader) -> None:
     loader()
     Chord(chord)
 
 
-def test_show_key_by_notes():
+def test_show_key_by_notes() -> None:
     data = show_key(None, "C,D,E,F,G,A,B")
     assert "Am" in data["other_keys"]
 
 
-def test_show_key_aliases():
+def test_show_key_aliases() -> None:
     data = show_key(None, "C")
     assert "Am" in data["other_keys"]

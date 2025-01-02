@@ -90,7 +90,7 @@ def test_render_chords_from_shape(capsys, uke_config):
     assert lines[1] == f"Difficulty: {expected_diff_string}"
 
 
-def test_render_shape_with_mute(capsys, uke_config):
+def test_render_shape_with_mute(capsys, uke_config) -> None:
     data = {
         "shapes": [
             {"shape": [0, -1], "chords": [], "notes": ["G"]},
@@ -104,7 +104,7 @@ def test_render_shape_with_mute(capsys, uke_config):
     assert shapes_str == "0,x"
 
 
-def test_render_key(capsys):
+def test_render_key(capsys) -> None:
     data = {
         "key": "test_key",
         "other_keys": ["alias1", "alias2"],
@@ -117,7 +117,7 @@ def test_render_key(capsys):
     assert note_str == ",".join(data["notes"])
 
 
-def test_render_key_from_notes(capsys):
+def test_render_key_from_notes(capsys) -> None:
     data = {
         "other_keys": ["test_key1", "test_key2"],
         "notes": [f"n{x}" for x in range(0, 10)],
@@ -128,7 +128,7 @@ def test_render_key_from_notes(capsys):
     assert output == ",".join(data["other_keys"])
 
 
-def test_render_unknown_key_from_notes(capsys):
+def test_render_unknown_key_from_notes(capsys) -> None:
     data = {
         "other_keys": [],
         "notes": [f"n{x}" for x in range(0, 10)],
@@ -178,7 +178,7 @@ def test_render_chords_from_shape_with_vis_and_notes(capsys, uke_config):
     assert vis_lines == lines
 
 
-def test_missing_chord(uke_config):
+def test_missing_chord(uke_config) -> None:
     data = {"chord": "C9", "shapes": []}
     with pytest.raises(ShapeNotFoundException):
         render_chord_list(uke_config, data)
