@@ -11,7 +11,7 @@ from ukechords.errors import error, InvalidCommandException
 from ukechords.config import UkeConfig
 
 
-def main():
+def main() -> int:
     # pylint: disable=missing-function-docstring
     add_no5_quality()
     add_7sus2_quality()
