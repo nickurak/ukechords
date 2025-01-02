@@ -1,6 +1,7 @@
 """Our defined errors/exceptions and error handling logic"""
 
 import sys
+from typing import NoReturn, Any
 
 
 class UnknownKeyException(Exception):
@@ -19,7 +20,7 @@ class InvalidCommandException(Exception):
     "Raised in case of an invalid command line invocation"
 
 
-def error(return_code, message):
+def error(return_code: int, message: Any) -> NoReturn:
     """ "Display an error and exit with the given status"""
     print(message, file=sys.stderr)
     sys.exit(return_code)
