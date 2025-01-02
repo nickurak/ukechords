@@ -305,7 +305,7 @@ def _get_shapes(config, max_fret=1):
             yield tuple(shape)
 
 
-def scan_chords(config, chord_shapes, max_fret=12) -> None:
+def _scan_chords(config, chord_shapes, max_fret=12) -> None:
     """
     Based on the provided configuration, scan for possible ways to
     play chords. Store discovered shapes in a ChordCollection that
@@ -382,7 +382,7 @@ def show_chord(config, chord) -> dict:
         notes = p_chord.components()
         output["notes"] = notes
     chord_shapes = _ChordCollection()
-    scan_chords(config, chord_shapes)
+    _scan_chords(config, chord_shapes)
     if chord not in chord_shapes:
         output["chord"] = chord
         output["shapes"] = []
@@ -429,7 +429,7 @@ def show_all(config) -> dict:
         notes.extend(Chord(chord).components())
     if notes and any(map(_is_flat, notes)):
         config.force_flat = True
-    scan_chords(config, chord_shapes)
+    _scan_chords(config, chord_shapes)
     ichords = list(chord_shapes.keys())
     sort_offset = 0
     if config.keys:
