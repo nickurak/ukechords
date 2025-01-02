@@ -23,6 +23,6 @@ def test_load_empty_cache(uke_config):
 
 def test_cached_filename(uke_config):
     uke_config.mute = True
-    uke_config.tuning = ["A"]
+    uke_config.tuning = ("A",)
     fn_str = _cached_filename(uke_config, 4, 50)
     assert fn_str.endswith("/cache_mTrue_4_A_50.pcl")
