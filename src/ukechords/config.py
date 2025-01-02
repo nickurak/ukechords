@@ -77,8 +77,8 @@ class UkeConfig:
     keys: Optional[List[str]] = None  # If specified, a key to limit returned chords to
     allowed_chords: Optional[List[str]] = None  # If specified, chords whose notes are allowed
     force_flat: bool = False  # Whether to report chords in their flat versions rather than sharp
-    max_difficulty: Optional[float] = None  # A maximum difficulty or shapes to scan and report
-    cache_dir: Optional[str] = None  # Directory in which to store cached chord->shape maps
+    max_difficulty: float = 100.0  # A maximum difficulty or shapes to scan and report
+    cache_dir: str = ""  # Directory in which to store cached chord->shape maps
     tuning: tuple[str, ...] = ()  # A list of notes in the desired tuning
     mute: Optional[bool] = None  # Whether or not to consider muted shapes
     shape_ranker: Optional[Callable] = None  # Which function to use to sort discovered shapes with
