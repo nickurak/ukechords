@@ -1,21 +1,27 @@
 # pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
 
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
 from ukechords.cache import _cached_filename, save_scanned_chords, load_scanned_chords
 
 from .uketestconfig import uke_config
 
+if TYPE_CHECKING:
+    from ukechords.theory import _ChordCollection
+
 
 def test_load_save_cache(uke_config):
-    shapes = {"hello": "world"}
+    shapes: _ChordCollection = {"hello": "world"}  # type: ignore
     save_scanned_chords(uke_config, shapes, max_fret=4)
-    shapes = {}
+    shapes = {}  # type: ignore
     res = load_scanned_chords(uke_config, shapes, max_fret=4)
     assert res
     assert shapes["hello"] == "world"
 
 
 def test_load_empty_cache(uke_config):
-    shapes = {}
+    shapes: _ChordCollection = {}  # type: ignore
     res = load_scanned_chords(uke_config, shapes, max_fret=4)
     assert res is False
     assert not shapes
