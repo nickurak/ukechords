@@ -13,7 +13,7 @@ from ukechords.theory import _weird_sharp_scale, _weird_flat_scale
 from ukechords.theory import add_no5_quality, add_7sus2_quality
 from ukechords.theory import show_key
 
-from .uketestconfig import uke_config  # pylint: disable=unused-import
+from .uketestconfig import uke_config
 
 
 def test_sharpify():

@@ -1,6 +1,6 @@
 # pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
 
-import pytest  # pylint: disable=unused-import
+import pytest
 
 from ukechords.render import _get_shape_lines, render_chord_list
 from ukechords.render import render_chords_from_shape, render_key
@@ -9,7 +9,7 @@ from ukechords.errors import ShapeNotFoundException
 
 from ukechords.render import _csv
 
-from .uketestconfig import uke_config  # pylint: disable=unused-import
+from .uketestconfig import uke_config
 
 
 def get_capsys_lines(capsys):
