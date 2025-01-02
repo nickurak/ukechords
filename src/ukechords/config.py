@@ -6,7 +6,7 @@ import sys
 import configparser
 import os
 from dataclasses import dataclass
-from typing import Callable, Optional, List
+from typing import Callable, Optional, List, Union, Any, Iterable
 
 from xdg import BaseDirectory
 
@@ -21,8 +21,8 @@ from .render import render_json
 from .errors import InvalidCommandException
 
 
-def _get_renderfunc_from_name(name) -> Callable:
-    render_funcs = [
+def _get_renderfunc_from_name(name: str) -> Callable:
+    render_funcs: List[Callable] = [
         render_chord_list,
         render_chords_from_shape,
         render_chords_from_notes,
@@ -30,14 +30,15 @@ def _get_renderfunc_from_name(name) -> Callable:
     ]
     render_func_map = {f.__name__: f for f in render_funcs}
     if name in render_func_map:
+        print(f"{type(render_func_map[name])=}")
         return render_func_map[name]
 
     msg = f'No such rendering function "{name}". Options: {", ".join(render_func_map)}'
     raise InvalidCommandException(msg)
 
 
-def _check_argument_errors(args) -> None:
-    def exactly_one(iterable):
+def _check_argument_errors(args: argparse.Namespace) -> None:
+    def exactly_one(iterable: Iterable) -> bool:
         i = iter(iterable)
         return any(i) and not any(i)
 
@@ -83,7 +84,7 @@ class UkeConfig:
     mute: Optional[bool] = None  # Whether or not to consider muted shapes
     shape_ranker: Optional[Callable] = None  # Which function to use to sort discovered shapes with
 
-    def __init__(self, args=None) -> None:
+    def __init__(self, args: Optional[Union[List, argparse.Namespace]] = None) -> None:
         self._set_defaults()
         if args is None:
             return
@@ -121,7 +122,7 @@ class UkeConfig:
         if args.json:
             self.render_text = render_json
 
-    def _setup_command(self, args) -> None:
+    def _setup_command(self, args: argparse.Namespace) -> None:
         if args.chord:
             self.command = lambda x: show_chord(x, args.chord)
         if args.all_chords or args.keys or args.allowed_chords:
@@ -172,7 +173,7 @@ def get_parser() -> argparse.ArgumentParser:
     "Construct and return an argparse parser for use with ukechords on the command line"
     parser = argparse.ArgumentParser()
 
-    def pa(*args, **kwargs):
+    def pa(*args: Any, **kwargs: Any) -> None:
         parser.add_argument(*args, **kwargs)
 
     pa("-c", "--chord", help="Show how to play <CHORD>")
