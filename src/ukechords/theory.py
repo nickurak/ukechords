@@ -340,7 +340,7 @@ def _rank_chord_name(name):
     for char in ["+", "-", "(", ")"]:
         if char in name:
             has_symbol = True
-        return ("no" in name, has_symbol, len(name), name)
+    return ("no" in name, has_symbol, len(name), name)
 
 
 def get_tuning(tuning_spec) -> tuple[str, ...]:
