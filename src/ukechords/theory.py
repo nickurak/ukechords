@@ -75,7 +75,8 @@ def _normalize_chord(chord):
     """For duplicate and match detection, convert to a canonical
     sharp version, including replacing "maj" with "M" per pychord
     convention."""
-    match = re.match("^([A-G][b#]?)(.*)$", chord)
+    if not (match := re.match("^([A-G][b#]?)(.*)$", chord)):
+        raise ChordNotFoundException(f'Couldn\'t find a valid root in "{chord}"')
     (root, quality) = match.groups()
     quality = quality.replace("maj", "M")
     return f"{_sharpify(root)}{quality}"
