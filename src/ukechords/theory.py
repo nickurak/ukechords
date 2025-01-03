@@ -61,7 +61,7 @@ def _get_chords_from_notes(notes, force_flat=False):
             continue
         chord = f"{root}{quality}"
         if force_flat:
-            chord = _flatify(chord)
+            chord = str(_flatify(chord))
         chords.append(chord)
     return sorted(chords, key=_rank_chord_name)
 
@@ -143,7 +143,7 @@ def _barre_difficulty_details(shape, unbarred_difficulty, tuning):
     if not (barrable > 1 and barre_level > 0):
         return unbarred_difficulty, None
 
-    barre_shape = [x - barre_level for x in shape]
+    barre_shape = tuple(x - barre_level for x in shape)
     barre_difficulty = _get_shape_difficulty(barre_shape, tuning=tuning)[0] * 2.2
     barre_difficulty += barre_level * 3.0
 
@@ -227,7 +227,7 @@ def _get_scales():
         (["phmod"], [0, 1, 3, 5, 7, 8, 10]),
         (["gypsymajor"], [0, 1, 4, 5, 7, 8, 11]),
         (["gypsyminor"], [0, 2, 3, 6, 7, 8, 11]),
-        (["chromatic"], range(0, 12)),
+        (["chromatic"], list(range(0, 12))),
     ]
 
     mods = {}
@@ -409,7 +409,7 @@ def show_chord(config, chord) -> dict:
 
 def _chord_built_from_notes(chord, notes):
     for note in _sharpify(Chord(chord).components()):
-        if note not in _sharpify(notes):
+        if note not in _sharpify(list(notes)):
             return False
     return True
 
@@ -447,7 +447,7 @@ def show_all(config) -> dict:
             chord = _flatify(Chord(chord).root) + Chord(chord).quality.quality
         if config.qualities and Chord(chord).quality.quality not in config.qualities:
             continue
-        if notes and not _chord_built_from_notes(chord, notes):
+        if notes and not _chord_built_from_notes(chord, tuple(notes)):
             continue
         shape = chord_shapes[chord][0]
         difficulty, barre_data = _get_shape_difficulty(shape, tuning=config.tuning)
@@ -514,10 +514,10 @@ def show_key(_, key) -> dict:
     notes = key.split(",")
     if len(notes) > 1:
         output["notes"] = notes
-        output["other_keys"] = list(_get_dupe_scales_from_notes(notes))
+        other_keys = list(_get_dupe_scales_from_notes(notes))
     else:
         output["key"] = key
-        output["other_keys"] = list(_get_dupe_scales_from_key(key))
+        other_keys = list(_get_dupe_scales_from_key(key))
         output["notes"] = _get_key_notes(key)
-    output["other_keys"].sort(key=_rank_chord_name)
+    output["other_keys"] = sorted(other_keys, key=_rank_chord_name)
     return output
