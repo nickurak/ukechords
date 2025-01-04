@@ -15,7 +15,7 @@ flake8 . && echo 'flake8 passed' || exit $?
 
 find . -name '*.py' | grep -v flycheck | xargs -d '\n' pylint
 
-mypy .
+mypy --disallow-untyped-calls --disallow-untyped-defs --disallow-incomplete-defs .
 
 export COVERAGE_CORE=sysmon
 pytest . "$@"

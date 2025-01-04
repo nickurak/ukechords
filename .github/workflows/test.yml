@@ -20,6 +20,6 @@ jobs:
       - name: Run pylint
         run: pylint . --recursive=yes
       - name: Run mypy
-        run: mypy .
+        run: mypy --disallow-untyped-calls --disallow-untyped-defs --disallow-incomplete-defs .
       - name: Run tests
         run: pytest .
