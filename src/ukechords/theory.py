@@ -1,16 +1,20 @@
 """Logic related to music-theory, mostly for stringed instruments"""
 
+from __future__ import annotations
+
 from itertools import permutations, product
 from functools import cache
 import re
-
-from typing import List
+from typing import TYPE_CHECKING, Union, List, Any, Optional, Generator
 
 from pychord.analyzer import notes_to_positions
 from pychord import Chord, QualityManager
 
 from .cache import load_scanned_chords, save_scanned_chords
 from .errors import UnknownKeyException, ChordNotFoundException
+
+if TYPE_CHECKING:
+    from .config import UkeConfig
 
 
 def add_no5_quality() -> None:
@@ -30,7 +34,7 @@ def add_7sus2_quality() -> None:
 
 
 @cache
-def _get_quality_map():
+def _get_quality_map() -> dict[tuple[int, ...], str]:
     """
     Return a mapping of all {intervals}->quality relationships by
     reversing pychord's quality db.
@@ -45,7 +49,7 @@ def _get_quality_map():
 
 
 @cache
-def _get_chords_from_notes(notes, force_flat=False):
+def _get_chords_from_notes(notes: List[str], force_flat: bool = False) -> List[str]:
     """
     Return a list of chords the specified notes will generate, with no
     consideration to the order of those notes. Returns flat versions
@@ -56,7 +60,7 @@ def _get_chords_from_notes(notes, force_flat=False):
     chords = []
     for seq in permutations(notes):
         root = seq[0]
-        positions = tuple(notes_to_positions(seq, root))
+        positions: tuple[int, ...] = tuple(notes_to_positions(seq, root))
         if (quality := _get_quality_map().get(positions)) is None:
             continue
         chord = f"{root}{quality}"
@@ -67,11 +71,11 @@ def _get_chords_from_notes(notes, force_flat=False):
 
 
 class _CircularList(list):
-    def __getitem__(self, index):
+    def __getitem__(self, index: Any) -> Any:
         return super().__getitem__(index % len(self))
 
 
-def _normalize_chord(chord):
+def _normalize_chord(chord: str) -> str:
     """For duplicate and match detection, convert to a canonical
     sharp version, including replacing "maj" with "M" per pychord
     convention."""
@@ -83,17 +87,30 @@ def _normalize_chord(chord):
 
 
 class _ChordCollection(dict):
-    def __contains__(self, chord, *args, **kwargs):
-        return super().__contains__(_normalize_chord(chord), *args, **kwargs)
+    """A specialization of a dictionary, which normalizes chord names
+    to catch multiple names for the same chord. For example BbM and
+    A#maj are different names for the same chord, and thus produce the
+    same behavior when used as a key.
 
-    def __setitem__(self, chord, *args, **kwargs):
-        super().__setitem__(_normalize_chord(chord), *args, **kwargs)
+    Note that because it normalizes string keys,it will not work
+    correctly with non-string keys.
+    """
 
-    def __getitem__(self, chord, *args, **kwargs):
-        return super().__getitem__(_normalize_chord(chord), *args, **kwargs)
+    def __contains__(self, chord: str, /) -> bool:  # type: ignore[override]
+        return super().__contains__(_normalize_chord(str(chord)))
+
+    def __setitem__(
+        self, chord: str, /, *args: Any, **kwargs: Any
+    ) -> None:  # type: ignore[override]
+        super().__setitem__(_normalize_chord(str(chord)), *args, **kwargs)
+
+    def __getitem__(
+        self, chord: str, /, *args: Any, **kwargs: Any
+    ) -> Any:  # type: ignore[override]
+        return super().__getitem__(_normalize_chord(str(chord)), *args, **kwargs)
 
 
-def _barreless_shape_difficulty(shape):
+def _barreless_shape_difficulty(shape: tuple) -> float:
     difficulty = 0.0 + max(shape) / 10.0
     last_fretted_position = None
     for string, position in enumerate(shape):
@@ -113,7 +130,12 @@ def _barreless_shape_difficulty(shape):
     return difficulty
 
 
-def _get_tuned_barre_details(shape, tuning, barre_difficulty, unbarred_difficulty):
+def _get_tuned_barre_details(
+    shape: tuple[int, ...],
+    tuning: Optional[tuple[str, ...]],
+    barre_difficulty: float,
+    unbarred_difficulty: float,
+) -> Optional[dict[str, Any]]:
     if not tuning:
         return None
     barre_shape = tuple(x - min(shape) for x in shape)
@@ -133,7 +155,9 @@ def _get_tuned_barre_details(shape, tuning, barre_difficulty, unbarred_difficult
     return barre_data
 
 
-def _barre_difficulty_details(shape, unbarred_difficulty, tuning):
+def _barre_difficulty_details(
+    shape: tuple[int, ...], unbarred_difficulty: float, tuning: Optional[tuple[str, ...]]
+) -> tuple[float, Optional[dict[str, Any]]]:
     """
     Return information on how using a barre to play the given shape
     (if possible) affects the shape's difficulty.
@@ -153,7 +177,9 @@ def _barre_difficulty_details(shape, unbarred_difficulty, tuning):
     return difficulty, details
 
 
-def _get_shape_difficulty(shape, tuning=None):
+def _get_shape_difficulty(
+    shape: tuple[int, ...], tuning: Optional[tuple[str, ...]] = None
+) -> tuple[float, Optional[dict[str, Any]]]:
     """
     Return a heuristic for how hard a shape is to play, including
     information on how barreing the shape affects that difficulty
@@ -176,22 +202,24 @@ _note_intervals |= {note: index for index, note in enumerate(_weird_sharp_scale)
 _note_intervals |= {note: index for index, note in enumerate(_weird_flat_scale)}
 
 
-def _normalizer(arg, scale):
+def _normalizer(arg: Union[str, List[str]], scale: List) -> Union[str, List[str]]:
     if isinstance(arg, list):
         return [scale[_note_intervals[note]] for note in arg]
     return scale[_note_intervals[arg]]
 
 
-def _sharpify(arg):
+def _sharpify(arg: Union[str, List[str]]) -> Union[str, List[str]]:
     return _normalizer(arg, _chromatic_scale)
 
 
-def _flatify(arg):
+def _flatify(arg: Union[str, List[str]]) -> Union[str, List[str]]:
     return _normalizer(arg, _flat_scale)
 
 
 @cache
-def _get_shape_notes(shape, tuning, force_flat=False):
+def _get_shape_notes(
+    shape: tuple[int, ...], tuning: tuple[str, ...], force_flat: bool = False
+) -> tuple[str, ...]:
     """
     For a given shape in a specified tuning, return the notes played
     by thet shape.
@@ -199,7 +227,7 @@ def _get_shape_notes(shape, tuning, force_flat=False):
     If force_flat is True, return flat versions of those notes as
     appropriate.
     """
-    notes = ()
+    notes: tuple[str, ...] = ()
     if force_flat:
         scale = _flat_scale
     else:
@@ -211,11 +239,11 @@ def _get_shape_notes(shape, tuning, force_flat=False):
     return notes
 
 
-def _is_flat(note):
+def _is_flat(note: str) -> bool:
     return note[-1] == "b"
 
 
-def _get_scales():
+def _get_scales() -> dict[str, List[int]]:
     scales = [
         (["", "maj", "major"], [0, 2, 4, 5, 7, 9, 11]),
         (["m", "min", "minor"], [0, 2, 3, 5, 7, 8, 10]),
@@ -238,7 +266,7 @@ def _get_scales():
     return mods
 
 
-def _get_dupe_scales_from_intervals(root, intervals):
+def _get_dupe_scales_from_intervals(root: str, intervals: List[int]) -> set[str]:
     mods = _get_scales()
     dupes = {}
     for inc in range(0, 12):
@@ -253,7 +281,7 @@ def _get_dupe_scales_from_intervals(root, intervals):
     return {val for _, val in dupes.items()}
 
 
-def _get_dupe_scales_from_notes(notes):
+def _get_dupe_scales_from_notes(notes: List[str]) -> set[str]:
     root = notes[0]
     intervals = [0]
     root_interval = _note_intervals[root]
@@ -263,7 +291,7 @@ def _get_dupe_scales_from_notes(notes):
     return _get_dupe_scales_from_intervals(root, intervals)
 
 
-def _get_dupe_scales_from_key(key):
+def _get_dupe_scales_from_key(key: str) -> set[str]:
     mods = _get_scales()
 
     match = re.match(f'^([A-G][b#]?)({"|".join(mods.keys())})$', key)
@@ -275,7 +303,7 @@ def _get_dupe_scales_from_key(key):
     return _get_dupe_scales_from_intervals(root, intervals) - {key}
 
 
-def _get_key_notes(key):
+def _get_key_notes(key: str) -> tuple[str]:
     mods = _get_scales()
 
     match = re.match(f'^([A-G][b#]?)({"|".join(mods.keys())})$', key)
@@ -284,11 +312,11 @@ def _get_key_notes(key):
     (root, extra) = match.groups()
     intervals = mods[extra]
     if _is_flat(root):
-        return [_flat_scale[interval + _note_intervals[root]] for interval in intervals]
-    return [_chromatic_scale[interval + _note_intervals[root]] for interval in intervals]
+        return tuple(_flat_scale[interval + _note_intervals[root]] for interval in intervals)
+    return tuple(_chromatic_scale[interval + _note_intervals[root]] for interval in intervals)
 
 
-def _get_shapes(config, max_fret=1):
+def _get_shapes(config: UkeConfig, max_fret: int = 1) -> Generator[tuple[int, ...], None, None]:
     """
     Yield shapes playable on the fretboard, (optionally including
     muted strings) up to the specified fret.
@@ -304,7 +332,7 @@ def _get_shapes(config, max_fret=1):
             yield tuple(shape)
 
 
-def _scan_chords(config, chord_shapes, max_fret=12) -> None:
+def _scan_chords(config: UkeConfig, chord_shapes: _ChordCollection, max_fret: int = 12) -> None:
     """
     Based on the provided configuration, scan for possible ways to
     play chords. Store discovered shapes in a ChordCollection that
@@ -324,18 +352,18 @@ def _scan_chords(config, chord_shapes, max_fret=12) -> None:
     save_scanned_chords(config, max_fret=max_fret, chord_shapes=chord_shapes)
 
 
-def rank_shape_by_difficulty(shape) -> tuple:
+def rank_shape_by_difficulty(shape: tuple[int, ...]) -> tuple:
     """Enable sorting a list of shapes by how hard they are to play"""
     return (_get_shape_difficulty(shape)[0], shape[::-1])
 
 
-def rank_shape_by_high_fret(shape) -> List:
+def rank_shape_by_high_fret(shape: tuple) -> List:
     '''Enable sorting a list of shapes by how high their fret usage.
     This accomplishes finding chord shapes by "first position"'''
     return sorted(shape, reverse=True)
 
 
-def _rank_chord_name(name):
+def _rank_chord_name(name: str) -> tuple[bool, bool, int, str]:
     has_symbol = False
     for char in ["+", "-", "(", ")"]:
         if char in name:
@@ -343,7 +371,7 @@ def _rank_chord_name(name):
     return ("no" in name, has_symbol, len(name), name)
 
 
-def get_tuning(tuning_spec) -> tuple[str, ...]:
+def get_tuning(tuning_spec: str) -> tuple[str, ...]:
     """For a given tuning (by name or comma-separated notes), return
     the notes in order
     """
@@ -358,13 +386,15 @@ def get_tuning(tuning_spec) -> tuple[str, ...]:
     return tuple(tuning_spec.split(","))
 
 
-def _get_other_names(shape, chord_name, tuning):
+def _get_other_names(
+    shape: tuple[int, ...], chord_name: str, tuning: tuple[str, ...]
+) -> Generator[str, None, None]:
     for chord in _get_chords_from_notes(_get_shape_notes(shape, tuning)):
         if _normalize_chord(chord) != _normalize_chord(chord_name):
             yield chord
 
 
-def show_chord(config, chord) -> dict:
+def show_chord(config: UkeConfig, chord: str) -> dict:
     """Return information on how to play a given chord, including:
 
     - Shape options for playing it, including their difficulty and
@@ -407,20 +437,20 @@ def show_chord(config, chord) -> dict:
     return output
 
 
-def _chord_built_from_notes(chord, notes):
+def _chord_built_from_notes(chord: str, notes: tuple[str, ...]) -> bool:
     for note in _sharpify(Chord(chord).components()):
         if note not in _sharpify(list(notes)):
             return False
     return True
 
 
-def show_all(config) -> dict:
+def show_all(config: UkeConfig) -> dict:
     """Return one way to play each known/specified chord
 
     If config.{key,qualities,allowed_chords} are set, they will
     restrict which chords are returned accordingly
     """
-    notes = []
+    notes: List = []
     chord_shapes = _ChordCollection()
     for key in config.keys or []:
         notes.extend(_get_key_notes(key))
@@ -434,7 +464,7 @@ def show_all(config) -> dict:
     if config.keys:
         sort_offset = _note_intervals[_get_key_notes(config.keys[0])[0]]
 
-    def chord_sorter(name):
+    def chord_sorter(name: str) -> tuple[int, str]:
         pos = _note_intervals[Chord(name).root] - sort_offset
         return pos % len(_chromatic_scale), name
 
@@ -464,7 +494,9 @@ def show_all(config) -> dict:
     return output
 
 
-def _get_chords_by_shape(config, pshape):
+def _get_chords_by_shape(
+    config: UkeConfig, pshape: tuple[int, ...]
+) -> Generator[tuple[tuple[int, ...], List[str], set[str]], None, None]:
     shapes = []
     if config.slide:
         min_fret = min(fret for fret in pshape if fret > 0)
@@ -483,14 +515,14 @@ def _get_chords_by_shape(config, pshape):
             yield shape, chords, set(notes)
 
 
-def show_chords_by_shape(config, pshape) -> dict:
+def show_chords_by_shape(config: UkeConfig, input_shape: str) -> dict:
     """Return information on what chords are generated by a specified shape"""
-    pshape = tuple(-1 if pos == "x" else int(pos) for pos in pshape.split(","))
+    pshape = tuple(-1 if pos == "x" else int(pos) for pos in input_shape.split(","))
     output: dict = {}
     output["shapes"] = []
 
-    def append_shape(shape, chords, notes):
-        output["shapes"].append({"shape": shape, "chords": chords, "notes": list(notes)})
+    def append_shape(shape: tuple[int, ...], chords: List[str], notes: set[str]) -> None:
+        output["shapes"].append({"shape": shape, "chords": chords, "notes": tuple(notes)})
 
     for shape, chords, notes in _get_chords_by_shape(config, pshape):
         append_shape(shape, chords, notes)
@@ -503,17 +535,17 @@ def show_chords_by_shape(config, pshape) -> dict:
     return output
 
 
-def show_chords_by_notes(_, notes) -> dict:
+def show_chords_by_notes(_: Optional[UkeConfig], notes: set) -> dict:
     """Return information on what chords are played by the specified notes"""
-    return {"notes": list(notes), "chords": _get_chords_from_notes(tuple(notes))}
+    return {"notes": tuple(notes), "chords": _get_chords_from_notes(tuple(notes))}
 
 
-def show_key(_, key) -> dict:
+def show_key(_: Optional[UkeConfig], key: str) -> dict:
     """Return information on the specified key, including other names and the notes it includes"""
-    output = {}
+    output: dict[str, Union[str, List[str], tuple[str, ...]]] = {}
     notes = key.split(",")
     if len(notes) > 1:
-        output["notes"] = notes
+        output["notes"] = tuple(notes)
         other_keys = list(_get_dupe_scales_from_notes(notes))
     else:
         output["key"] = key
