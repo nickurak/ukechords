@@ -1,16 +1,21 @@
 """Rendering logic, chiefly for CLI usage of ukechords"""
 
+from __future__ import annotations
+from typing import TYPE_CHECKING, Generator, Any, Optional, Iterable
 import json
 import sys
 
 from .errors import ShapeNotFoundException
 
+if TYPE_CHECKING:
+    from .config import UkeConfig
 
-def _csv(lst, sep=","):
+
+def _csv(lst: Iterable[Any], sep: str = ",") -> str:
     return sep.join(map(str, lst))
 
 
-def _get_shape_lines(shape):
+def _get_shape_lines(shape: tuple) -> Generator[str, None, None]:
     marks = {
         3: " ╷╵ ",
         5: " ╷╵ ",
@@ -32,12 +37,12 @@ def _get_shape_lines(shape):
     yield "╙" + "┴".join(lines) + "─"
 
 
-def _draw_shape(shape):
+def _draw_shape(shape: tuple[int, ...]) -> None:
     for line in _get_shape_lines(shape):
         print(line)
 
 
-def _diff_string(difficulty, barre_data, diff_width=0):
+def _diff_string(difficulty: float, barre_data, diff_width: int = 0) -> str:
     padded_diff = f"{difficulty:{diff_width}.1f}"
     if not barre_data:
         return padded_diff
@@ -52,7 +57,7 @@ def _diff_string(difficulty, barre_data, diff_width=0):
     return f"{padded_diff} ({barre_string}, else {barre_data['unbarred_difficulty']:.1f})"
 
 
-def render_chord_list(config, data) -> None:
+def render_chord_list(config: UkeConfig, data) -> None:
     """Render a list of 1 or more ways to play chords, as requested by
     chord name, including shapes, and optionally the notes and a
     unicode visualization of how to play it
@@ -68,11 +73,13 @@ def render_chord_list(config, data) -> None:
         print("No matching chords found")
     for shape in data["shapes"]:
         name_width = max(name_width, len(_csv(shape["chord_names"])))
-        shape_width = max(shape_width, len(_csv(["x" if x == -1 else x for x in shape["shape"]])))
+        shape_width = max(
+            shape_width, len(_csv(["x" if x == -1 else str(x) for x in shape["shape"]]))
+        )
         diff_width = max(diff_width, len(f"{shape['difficulty']:.1}"))
     name_width += 1
     for shape in data["shapes"]:
-        shape_string = _csv(["x" if x == -1 else x for x in shape["shape"]])
+        shape_string = _csv(["x" if x == -1 else str(x) for x in shape["shape"]])
         d_string = _diff_string(shape["difficulty"], shape["barre_data"], diff_width=diff_width)
         chord_names = _csv(shape["chord_names"]) + ":"
         print(f"{chord_names:{name_width}} {shape_string:{shape_width}} difficulty:{d_string:}")
@@ -80,25 +87,25 @@ def render_chord_list(config, data) -> None:
             _draw_shape(shape["shape"])
 
 
-def render_chords_from_shape(config, data) -> None:
+def render_chords_from_shape(config: UkeConfig, data) -> None:
     """Render named chords, as identified by shapes played on frets"""
     for shape in data["shapes"]:
         if config.show_notes:
             print(f"Notes: {_csv(shape['notes'], sep=', ')}")
         if config.visualize:
-            _draw_shape([-1 if pos == "x" else int(pos) for pos in shape["shape"]])
+            _draw_shape(tuple(-1 if pos == "x" else int(pos) for pos in shape["shape"]))
         shape_str = [fret if fret >= 0 else "x" for fret in shape["shape"]]
         print(f'{_csv(shape_str)}: {_csv(shape["chords"])}')
     if not config.slide:
         print(f"Difficulty: {_diff_string(data['difficulty'], data['barre_data'])}")
 
 
-def render_chords_from_notes(_, data) -> None:
+def render_chords_from_notes(_: Optional[UkeConfig], data) -> None:
     """Render named chords, as identified by notes"""
     print(f"{_csv(data['notes'])}: {_csv(data['chords'])}")
 
 
-def render_key(_, data) -> None:
+def render_key(_: Optional[UkeConfig], data) -> None:
     """Render information about a musical key"""
     if data["other_keys"]:
         other_str = f" ({_csv(data['other_keys'])})"
@@ -114,7 +121,7 @@ def render_key(_, data) -> None:
         print(f"{_csv(data['other_keys'])}")
 
 
-def render_json(_, data) -> None:
+def render_json(_: Optional[UkeConfig], data: dict[Any, Any]) -> None:
     """Render arbitrary input data as json"""
     json.dump(data, sys.stdout, indent=2 if sys.stdout.isatty() else None)
     print()
