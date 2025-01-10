@@ -26,6 +26,19 @@ def test_sharpify():
     assert all(x == y for x, y in zip(_flatify(["Bb", "A#"]), ["Bb", "Bb"]))
 
 
+@pytest.mark.xfail(strict=True)
+def test_force_flat_bbsus2(uke_config):
+    uke_config.tuning = ("G", "C", "E")
+    uke_config.force_flat = True
+    pshape = (3, 0, 1)
+    resp = list(_get_chords_by_shape(uke_config, pshape))
+    assert len(resp) == 1
+    shape, chords, notes = resp[0]
+    assert shape == (3, 2, 1)
+    assert chords == ["Bb"]
+    assert notes == set(["Bb", "F", "D"])
+
+
 def test_force_flat_shape(uke_config):
     uke_config.tuning = ("G", "C", "E")
     uke_config.force_flat = True
