@@ -1,7 +1,7 @@
 # pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
 
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Generator, Any, Callable
 
 import pytest
 from pychord import Chord, QualityManager
@@ -151,7 +151,9 @@ def test_barrable_unbarred(uke_config: UkeConfig) -> None:
         ),
     ],
 )
-def test_slide(uke_config: UkeConfig, tuning, initial_shape) -> None:
+def test_slide(
+    uke_config: UkeConfig, tuning: tuple[str, ...], initial_shape: tuple[int, ...]
+) -> None:
     uke_config.tuning = tuning
     uke_config.slide = True
     slid_chords = list(_get_chords_by_shape(uke_config, initial_shape))
@@ -189,23 +191,24 @@ extra_chords_and_loaders = [
 builtin_chords = ["C7"]
 
 
-def get_missing_chord_params():
+def get_missing_chord_params() -> Generator[Any, None, None]:
     for chord, _ in extra_chords_and_loaders:
         yield chord
     for chord in builtin_chords:
         reason = f"we detected that pychord already has {chord}, as expected"
+        print(f"{type(pytest.param(chord, marks=pytest.mark.xfail(strict=True, reason=reason)))}")
         yield pytest.param(chord, marks=pytest.mark.xfail(strict=True, reason=reason))
 
 
 @pytest.mark.parametrize("chord", list(get_missing_chord_params()))
-def test_clean_missing_quality(chord) -> None:
+def test_clean_missing_quality(chord: str) -> None:
     QualityManager().load_default_qualities()
     with pytest.raises(ValueError):
         Chord(chord)
 
 
 @pytest.mark.parametrize("chord,loader", extra_chords_and_loaders)
-def test_extra_quality(chord, loader) -> None:
+def test_extra_quality(chord: str, loader: Callable) -> None:
     loader()
     Chord(chord)
 
