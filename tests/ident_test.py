@@ -5,7 +5,7 @@ import pytest
 from ukechords.ident import error
 
 
-def test_error(capsys) -> None:
+def test_error(capsys: pytest.CaptureFixture) -> None:
     with pytest.raises(SystemExit) as excinfo:
         error(5, "error!")
     assert excinfo.value.code == 5
