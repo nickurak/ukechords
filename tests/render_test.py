@@ -1,7 +1,7 @@
 # pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
 
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 import pytest
 
@@ -16,16 +16,17 @@ from .uketestconfig import uke_config
 
 if TYPE_CHECKING:
     from ukechords.config import UkeConfig
+    from ukechords.types import ChordShapes, ChordsByShape, KeyInfo
 
 
-def get_capsys_lines(capsys):
+def get_capsys_lines(capsys: pytest.CaptureFixture) -> List[str]:
     out, err = capsys.readouterr()
     assert err == ""
     return out.strip("\n").split("\n")
 
 
-def test_get_shape_lines():
-    lines = list(_get_shape_lines([-1, 0, 1]))
+def test_get_shape_lines() -> None:
+    lines = list(_get_shape_lines((-1, 0, 1)))
     expected = """
 ╓─┬─┬─┬──
 ║●│ │╷│ 
@@ -39,22 +40,22 @@ def test_get_shape_lines():
     assert expected_lines == lines
 
 
-def test_render_chord_list(capsys, uke_config):
-    sl_data = {
+def test_render_chord_list(capsys: pytest.CaptureFixture, uke_config: UkeConfig) -> None:
+    sl_data: ChordShapes = {
         "shapes": [
             {
-                "shape": [1],
+                "shape": (1,),
                 "difficulty": 15.0,
                 "chord_names": ["something"],
                 "barre_data": {
                     "barred": False,
                     "barred_difficulty": 32.0,
                     "fret": 4,
-                    "shape": [5, 4],
+                    "shape": (5, 4),
                     "chord": "chord",
                 },
             },
-            {"shape": [2, 3], "difficulty": 2.0, "chord_names": ["something"], "barre_data": None},
+            {"shape": (2, 3), "difficulty": 2.0, "chord_names": ["something"], "barre_data": None},
         ]
     }
     render_chord_list(uke_config, sl_data)
@@ -73,15 +74,15 @@ def test_render_chord_list(capsys, uke_config):
             assert diff_parts[1] == expected_diff_desc
 
 
-def test_render_chords_from_shape(capsys, uke_config):
-    sl_data = {
-        "shapes": [{"shape": [1], "chords": ["c1", "c2"], "notes": ["n1", "n2"]}],
+def test_render_chords_from_shape(capsys: pytest.CaptureFixture, uke_config: UkeConfig) -> None:
+    sl_data: ChordsByShape = {
+        "shapes": [{"shape": (1,), "chords": ["c1", "c2"], "notes": ("n1", "n2")}],
         "difficulty": 15.0,
         "barre_data": {
             "barred": False,
             "barred_difficulty": 32.0,
             "fret": 4,
-            "shape": [5, 4],
+            "shape": (5, 4),
             "chord": "chord",
         },
     }
@@ -96,10 +97,10 @@ def test_render_chords_from_shape(capsys, uke_config):
     assert lines[1] == f"Difficulty: {expected_diff_string}"
 
 
-def test_render_shape_with_mute(capsys, uke_config: UkeConfig) -> None:
-    data = {
+def test_render_shape_with_mute(capsys: pytest.CaptureFixture, uke_config: UkeConfig) -> None:
+    data: ChordsByShape = {
         "shapes": [
-            {"shape": [0, -1], "chords": [], "notes": ["G"]},
+            {"shape": (0, -1), "chords": [], "notes": ("G",)},
         ],
         "difficulty": 1.1,
         "barre_data": None,
@@ -110,11 +111,11 @@ def test_render_shape_with_mute(capsys, uke_config: UkeConfig) -> None:
     assert shapes_str == "0,x"
 
 
-def test_render_key(capsys) -> None:
-    data = {
+def test_render_key(capsys: pytest.CaptureFixture) -> None:
+    data: KeyInfo = {
         "key": "test_key",
         "other_keys": ["alias1", "alias2"],
-        "notes": [f"n{x}" for x in range(0, 10)],
+        "notes": tuple(f"n{x}" for x in range(0, 10)),
     }
     render_key(None, data)
     lines = get_capsys_lines(capsys)
@@ -123,10 +124,10 @@ def test_render_key(capsys) -> None:
     assert note_str == ",".join(data["notes"])
 
 
-def test_render_key_from_notes(capsys) -> None:
-    data = {
+def test_render_key_from_notes(capsys: pytest.CaptureFixture) -> None:
+    data: KeyInfo = {
         "other_keys": ["test_key1", "test_key2"],
-        "notes": [f"n{x}" for x in range(0, 10)],
+        "notes": tuple(f"n{x}" for x in range(0, 10)),
     }
     render_key(None, data)
     lines = get_capsys_lines(capsys)
@@ -134,10 +135,10 @@ def test_render_key_from_notes(capsys) -> None:
     assert output == ",".join(data["other_keys"])
 
 
-def test_render_unknown_key_from_notes(capsys) -> None:
-    data = {
+def test_render_unknown_key_from_notes(capsys: pytest.CaptureFixture) -> None:
+    data: KeyInfo = {
         "other_keys": [],
-        "notes": [f"n{x}" for x in range(0, 10)],
+        "notes": tuple(f"n{x}" for x in range(0, 10)),
     }
     render_key(None, data)
     lines = get_capsys_lines(capsys)
@@ -145,15 +146,17 @@ def test_render_unknown_key_from_notes(capsys) -> None:
     assert err_msg == "No key found"
 
 
-def test_render_chords_from_shape_with_vis_and_notes(capsys, uke_config):
+def test_render_chords_from_shape_with_vis_and_notes(
+    capsys: pytest.CaptureFixture, uke_config: UkeConfig
+) -> None:
     uke_config.visualize = True
     uke_config.show_notes = True
-    data = {
+    data: ChordsByShape = {
         "shapes": [
             {
-                "shape": [-1, 0, 1],
+                "shape": (-1, 0, 1),
                 "chords": ["tc1", "tc2"],
-                "notes": [f"n{x}" for x in range(0, 10)],
+                "notes": tuple(f"n{x}" for x in range(0, 10)),
             },
         ],
         "difficulty": 45.6,
@@ -185,13 +188,13 @@ def test_render_chords_from_shape_with_vis_and_notes(capsys, uke_config):
 
 
 def test_missing_chord(uke_config: UkeConfig) -> None:
-    data = {"chord": "C9", "shapes": []}
+    data: ChordShapes = {"chord": "C9", "shapes": []}
     with pytest.raises(ShapeNotFoundException):
         render_chord_list(uke_config, data)
 
 
-def test_empty_chord_list(capsys, uke_config):
-    data = {"shapes": []}
+def test_empty_chord_list(capsys: pytest.CaptureFixture, uke_config: UkeConfig) -> None:
+    data: ChordShapes = {"shapes": []}
     render_chord_list(uke_config, data)
     lines = get_capsys_lines(capsys)
     assert len(lines) == 1

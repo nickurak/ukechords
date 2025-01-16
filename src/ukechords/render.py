@@ -9,6 +9,7 @@ from .errors import ShapeNotFoundException
 
 if TYPE_CHECKING:
     from .config import UkeConfig
+    from .types import ChordShapes, ChordsByShape, ChordsByNotes, KeyInfo, BarreData
 
 
 def _csv(lst: Iterable[Any], sep: str = ",") -> str:
@@ -42,7 +43,7 @@ def _draw_shape(shape: tuple[int, ...]) -> None:
         print(line)
 
 
-def _diff_string(difficulty: float, barre_data, diff_width: int = 0) -> str:
+def _diff_string(difficulty: float, barre_data: Optional[BarreData], diff_width: int = 0) -> str:
     padded_diff = f"{difficulty:{diff_width}.1f}"
     if not barre_data:
         return padded_diff
@@ -57,7 +58,7 @@ def _diff_string(difficulty: float, barre_data, diff_width: int = 0) -> str:
     return f"{padded_diff} ({barre_string}, else {barre_data['unbarred_difficulty']:.1f})"
 
 
-def render_chord_list(config: UkeConfig, data) -> None:
+def render_chord_list(config: UkeConfig, data: ChordShapes) -> None:
     """Render a list of 1 or more ways to play chords, as requested by
     chord name, including shapes, and optionally the notes and a
     unicode visualization of how to play it
@@ -87,7 +88,7 @@ def render_chord_list(config: UkeConfig, data) -> None:
             _draw_shape(shape["shape"])
 
 
-def render_chords_from_shape(config: UkeConfig, data) -> None:
+def render_chords_from_shape(config: UkeConfig, data: ChordsByShape) -> None:
     """Render named chords, as identified by shapes played on frets"""
     for shape in data["shapes"]:
         if config.show_notes:
@@ -100,12 +101,12 @@ def render_chords_from_shape(config: UkeConfig, data) -> None:
         print(f"Difficulty: {_diff_string(data['difficulty'], data['barre_data'])}")
 
 
-def render_chords_from_notes(_: Optional[UkeConfig], data) -> None:
+def render_chords_from_notes(_: Optional[UkeConfig], data: ChordsByNotes) -> None:
     """Render named chords, as identified by notes"""
     print(f"{_csv(data['notes'])}: {_csv(data['chords'])}")
 
 
-def render_key(_: Optional[UkeConfig], data) -> None:
+def render_key(_: Optional[UkeConfig], data: KeyInfo) -> None:
     """Render information about a musical key"""
     if data["other_keys"]:
         other_str = f" ({_csv(data['other_keys'])})"
