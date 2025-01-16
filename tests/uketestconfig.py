@@ -1,13 +1,13 @@
 # pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
 
-from typing import Callable, Optional
+from typing import Callable, Optional, Generator
 from dataclasses import dataclass, field
 
 import tempfile
 import pytest
 
 
-def shape_ranker(shape):
+def shape_ranker(shape: tuple[int, ...]) -> int:
     return sum(shape)
 
 
@@ -29,7 +29,7 @@ class UkeTestConfig:
 
 
 @pytest.fixture
-def uke_config():
+def uke_config() -> Generator[UkeTestConfig, None, None]:
     with tempfile.TemporaryDirectory() as tmpdirname:
         config_obj = UkeTestConfig()
         config_obj.cache_dir = tmpdirname
