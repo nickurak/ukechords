@@ -135,6 +135,14 @@ def test_barrable_unbarred(uke_config):
 
 @pytest.mark.parametrize(
     "tuning,initial_shape",
+    [
+        (("C", "G"), [1, 2]),
+        pytest.param(
+            ("C", "G"),
+            [0, 0],
+            marks=pytest.mark.xfail(strict=True, reason="buggy handling of sliding empty shapes"),
+        ),
+    ],
 )
 def test_slide(uke_config, tuning, initial_shape):
     uke_config.tuning = tuning
