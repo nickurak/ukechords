@@ -133,10 +133,12 @@ def test_barrable_unbarred(uke_config):
     assert barre_data["shape"] == (0, 0, 2)
 
 
-def test_slide(uke_config):
-    uke_config.tuning = ("C", "G")
+@pytest.mark.parametrize(
+    "tuning,initial_shape",
+)
+def test_slide(uke_config, tuning, initial_shape):
+    uke_config.tuning = tuning
     uke_config.slide = True
-    initial_shape = [1, 2]
     slid_chords = list(_get_chords_by_shape(uke_config, initial_shape))
     slid_shapes = [c[0] for c in slid_chords]
     for slid_shape in slid_shapes:
