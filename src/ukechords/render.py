@@ -58,6 +58,10 @@ def _diff_string(difficulty: float, barre_data: Optional[BarreData], diff_width:
     return f"{padded_diff} ({barre_string}, else {barre_data['unbarred_difficulty']:.1f})"
 
 
+def _get_shape_string(shape: Iterable) -> str:
+    return _csv(["x" if x == -1 else str(x) for x in shape])
+
+
 def render_chord_list(config: UkeConfig, data: ChordShapes) -> None:
     """Render a list of 1 or more ways to play chords, as requested by
     chord name, including shapes, and optionally the notes and a
@@ -74,13 +78,12 @@ def render_chord_list(config: UkeConfig, data: ChordShapes) -> None:
         print("No matching chords found")
     for shape in data["shapes"]:
         name_width = max(name_width, len(_csv(shape["chord_names"])))
-        shape_width = max(
-            shape_width, len(_csv(["x" if x == -1 else str(x) for x in shape["shape"]]))
-        )
+        shape_string = _get_shape_string(shape["shape"])
+        shape_width = max(shape_width, len(shape_string))
         diff_width = max(diff_width, len(f"{shape['difficulty']:.1}"))
     name_width += 1
     for shape in data["shapes"]:
-        shape_string = _csv(["x" if x == -1 else str(x) for x in shape["shape"]])
+        shape_string = _get_shape_string(shape["shape"])
         d_string = _diff_string(shape["difficulty"], shape["barre_data"], diff_width=diff_width)
         chord_names = _csv(shape["chord_names"]) + ":"
         print(f"{chord_names:{name_width}} {shape_string:{shape_width}} difficulty:{d_string:}")
@@ -95,8 +98,8 @@ def render_chords_from_shape(config: UkeConfig, data: ChordsByShape) -> None:
             print(f"Notes: {_csv(shape['notes'], sep=', ')}")
         if config.visualize:
             _draw_shape(tuple(-1 if pos == "x" else int(pos) for pos in shape["shape"]))
-        shape_str = [fret if fret >= 0 else "x" for fret in shape["shape"]]
-        print(f'{_csv(shape_str)}: {_csv(shape["chords"])}')
+        shape_string = _get_shape_string(shape["shape"])
+        print(f'{shape_string}: {_csv(shape["chords"])}')
     if not config.slide:
         print(f"Difficulty: {_diff_string(data['difficulty'], data['barre_data'])}")
 
