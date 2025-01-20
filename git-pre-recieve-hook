@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cleanup() {
-    [ -z "${UKECHORD_PYDIR+x}" ] || rm -Rf "$UKECHORDS_PYDIR"
+    [ -z "${UKECHORDS_PYDIR+x}" ] || rm -Rf "$UKECHORDS_PYDIR"
     [ -z "${SRC_DIR+x}" ] || rm -Rf "$SRC_DIR"
 }
 
