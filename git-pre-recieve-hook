@@ -42,7 +42,11 @@ while read -r OLDREV NEWREV REFNAME; do
     python -m venv "$UKECHORDS_PYDIR"
 
     cd "$SRC_DIR"
-    (. "$UKECHORDS_PYDIR/bin/activate"; pip install --upgrade pip flit; flit install)
+    (
+        . "$UKECHORDS_PYDIR/bin/activate"
+        pip install --upgrade pip flit
+        flit install
+    )
 
     if ! ./run_ci.sh; then
         fail "CI checks failed, rejecting commit"
