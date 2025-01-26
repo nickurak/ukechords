@@ -172,6 +172,7 @@ def _barre_difficulty_details(
     barre_shape = tuple(x - barre_level for x in shape)
     barre_difficulty = _get_shape_difficulty(barre_shape, tuning=tuning)[0] * 2.2
     barre_difficulty += barre_level * 3.0
+    barre_difficulty += max(barre_shape) ** 2 / 3
 
     barred = barre_difficulty < unbarred_difficulty
     difficulty = barre_difficulty if barred else unbarred_difficulty
