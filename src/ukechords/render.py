@@ -125,7 +125,7 @@ def render_key(_: Optional[UkeConfig], data: KeyInfo) -> None:
         print(f"{_csv(data['other_keys'])}")
 
 
-def render_json(_: Optional[UkeConfig], data: dict[Any, Any]) -> None:
+def render_json(_: Optional[UkeConfig], data: Any) -> None:
     """Render arbitrary input data as json"""
     json.dump(data, sys.stdout, indent=2 if sys.stdout.isatty() else None)
     print()
