@@ -360,10 +360,10 @@ def rank_shape_by_difficulty(shape: tuple[int, ...]) -> tuple:
     return (_get_shape_difficulty(shape)[0], shape[::-1])
 
 
-def rank_shape_by_high_fret(shape: tuple) -> List:
+def rank_shape_by_high_fret(shape: tuple) -> tuple:
     '''Enable sorting a list of shapes by how high their fret usage.
     This accomplishes finding chord shapes by "first position"'''
-    return sorted(shape, reverse=True)
+    return tuple(sorted(shape, reverse=True))
 
 
 def _rank_chord_name(name: str) -> tuple[bool, bool, int, str]:
