@@ -1,36 +1,15 @@
 # pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
 
-from typing import Callable, Optional, Generator
-from dataclasses import dataclass, field
+from typing import Generator
 
 import tempfile
 import pytest
 
-
-def shape_ranker(shape: tuple[int, ...]) -> int:
-    return sum(shape)
-
-
-@dataclass
-class UkeTestConfig:
-    # pylint: disable=too-many-instance-attributes
-    slide: bool = False
-    tuning: tuple[str, ...] = field(default_factory=lambda: ("C", "E", "G"))
-    show_notes: bool = False
-    visualize: bool = False
-    force_flat: bool = False
-    qualities: bool = False
-    no_cache: bool = True
-    mute: bool = False
-    max_difficulty: float = 20
-    shape_ranker: Callable = shape_ranker
-    num: int = 10
-    cache_dir: Optional[str] = None
+from ukechords.config import UkeConfig
 
 
 @pytest.fixture
-def uke_config() -> Generator[UkeTestConfig, None, None]:
+def uke_config() -> Generator[UkeConfig, None, None]:
     with tempfile.TemporaryDirectory() as tmpdirname:
-        config_obj = UkeTestConfig()
-        config_obj.cache_dir = tmpdirname
+        config_obj = UkeConfig(cache_dir=tmpdirname, tuning=("C", "E", "G"), max_difficulty=20.0)
         yield config_obj
