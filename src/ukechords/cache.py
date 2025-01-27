@@ -21,7 +21,7 @@ def _cached_filename(config: UkeConfig, max_fret: int, max_difficulty: float) ->
 
 def load_scanned_chords(config: UkeConfig, chord_shapes: _ChordCollection, max_fret: int) -> bool:
     """Load cached chords/shapes from disk"""
-    for imax_difficulty in range(ceil(config.max_difficulty), 100):
+    for imax_difficulty in range(ceil(config.max_difficulty), 100 + 1):
         filename = _cached_filename(config, max_fret, imax_difficulty)
         if os.path.exists(filename):
             with open(filename, "rb") as cache:
