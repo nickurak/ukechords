@@ -16,7 +16,7 @@ def _csv(lst: Iterable[Any], sep: str = ",") -> str:
     return sep.join(map(str, lst))
 
 
-def _get_shape_lines(shape: tuple) -> Generator[str, None, None]:
+def _get_shape_lines(shape: tuple, barre: int) -> Generator[str, None, None]:
     marks = {
         3: " ╷╵ ",
         5: " ╷╵ ",
@@ -34,12 +34,15 @@ def _get_shape_lines(shape: tuple) -> Generator[str, None, None]:
                 chars[mark - 1] = marks[mark][string - (len(shape) - 4) // 2]
         if pos > 0:
             chars[pos - 1] = "●"
+        if barre > 0:
+            chars[barre - 1] = "▒"
         yield "║" + ("⃠" if pos < 0 else "") + "│".join(chars)
     yield "╙" + "┴".join(lines) + "─"
 
 
-def _draw_shape(shape: tuple[int, ...]) -> None:
-    for line in _get_shape_lines(shape):
+def _draw_shape(shape: tuple[int, ...], barre_data: Optional[BarreData]) -> None:
+    barre = barre_data["fret"] if barre_data else 0
+    for line in _get_shape_lines(shape, barre):
         print(line)
 
 
@@ -88,7 +91,7 @@ def render_chord_list(config: UkeConfig, data: ChordShapes) -> None:
         chord_names = _csv(shape["chord_names"]) + ":"
         print(f"{chord_names:{name_width}} {shape_string:{shape_width}} difficulty:{d_string:}")
         if config.visualize:
-            _draw_shape(shape["shape"])
+            _draw_shape(shape["shape"], shape["barre_data"])
 
 
 def render_chords_from_shape(config: UkeConfig, data: ChordsByShape) -> None:
@@ -97,7 +100,8 @@ def render_chords_from_shape(config: UkeConfig, data: ChordsByShape) -> None:
         if config.show_notes:
             print(f"Notes: {_csv(shape['notes'], sep=', ')}")
         if config.visualize:
-            _draw_shape(tuple(-1 if pos == "x" else int(pos) for pos in shape["shape"]))
+            barre_data = data.get("barre_data")
+            _draw_shape(tuple(-1 if pos == "x" else int(pos) for pos in shape["shape"]), barre_data)
         shape_string = _get_shape_string(shape["shape"])
         print(f'{shape_string}: {_csv(shape["chords"])}')
     if not config.slide:
