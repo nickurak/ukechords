@@ -8,7 +8,7 @@ from typing import Callable, Optional, List
 from .theory import rank_shape_by_high_fret
 
 
-@dataclass
+@dataclass(kw_only=True)
 class UkeConfig:
     """Configuration settings for an invocation of ukechords functionality"""
 
