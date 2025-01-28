@@ -26,7 +26,7 @@ def get_capsys_lines(capsys: pytest.CaptureFixture) -> List[str]:
 
 
 def test_get_shape_lines() -> None:
-    lines = list(_get_shape_lines((-1, 0, 1)))
+    lines = list(_get_shape_lines((-1, 0, 1), 0))
     expected = """
 ╓─┬─┬─┬──
 ║●│ │╷│ 
