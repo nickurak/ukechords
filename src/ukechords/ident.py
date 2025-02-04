@@ -65,7 +65,8 @@ def _get_parser() -> argparse.ArgumentParser:
         parser.add_argument(*args, **kwargs)
 
     pa("-c", "--chord", help="Show how to play <CHORD>")
-    pa("--notes", help="Show what chord(s) these <NOTES> play")
+    notes_help = "Show what chord(s) these <NOTES> play"
+    pa("--notes", help=notes_help, type=lambda notes: set(notes.split(",")))
     pa("-s", "--shape", help="Show what chord(s) this <SHAPE> plays")
     slide_help = "Show what chord(s) this <SHAPE> could play when slid up or down"
     pa("--slide", action="store_true", help=slide_help)
@@ -186,7 +187,7 @@ def run_command(config: UkeConfig, args: argparse.Namespace) -> None:
         data = show_chords_by_shape(config, args.shape)
     elif args.notes:
         renderer = render_chords_from_notes
-        data = show_chords_by_notes(config, set(args.notes.split(",")))
+        data = show_chords_by_notes(config, args.notes)
     elif args.show_key:
         renderer = render_key
         data = show_key(config, args.show_key)
