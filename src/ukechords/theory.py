@@ -5,7 +5,7 @@ from __future__ import annotations
 from itertools import permutations, product
 from functools import cache
 import re
-from typing import TYPE_CHECKING, Union, List, Any, Optional, Generator
+from typing import Union, List, Any, Optional, Generator
 
 from pychord.analyzer import notes_to_positions
 from pychord import Chord, QualityManager
@@ -13,10 +13,9 @@ from pychord import Chord, QualityManager
 from .cache import load_scanned_chords, save_scanned_chords
 from .errors import UnknownKeyException, ChordNotFoundException
 
-if TYPE_CHECKING:
-    from .types import KeyInfo, ChordsByNotes, ChordsByShape, Shape
-    from .types import BarreData, ChordShapes, ChordShape
-    from .config import UkeConfig
+from .types import KeyInfo, ChordsByNotes, ChordsByShape, Shape
+from .types import BarreData, ChordShapes
+from .config import UkeConfig
 
 
 def add_no5_quality() -> None:

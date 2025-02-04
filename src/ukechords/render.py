@@ -1,15 +1,14 @@
 """Rendering logic, chiefly for CLI usage of ukechords"""
 
 from __future__ import annotations
-from typing import TYPE_CHECKING, Generator, Any, Optional, Iterable
+from typing import Generator, Any, Optional, Iterable
 import json
 import sys
 
 from .errors import ShapeNotFoundException
 
-if TYPE_CHECKING:
-    from .config import UkeConfig
-    from .types import ChordShapes, ChordsByShape, ChordsByNotes, KeyInfo, BarreData
+from .config import UkeConfig
+from .types import ChordShapes, ChordsByShape, ChordsByNotes, KeyInfo, BarreData
 
 
 def _csv(lst: Iterable[Any], sep: str = ",") -> str:
