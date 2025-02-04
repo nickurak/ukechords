@@ -5,8 +5,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Callable, Optional, List
 
-from .theory import rank_shape_by_high_fret
-
 
 @dataclass(kw_only=True)
 class UkeConfig:
@@ -26,6 +24,4 @@ class UkeConfig:
     cache_dir: str = ""  # Directory in which to store cached chord->shape maps
     tuning: tuple[str, ...] = ()  # Notes that individual strings are tuned to
     mute: bool = False  # Whether or not to consider muted shapes
-    shape_ranker: Callable = (
-        rank_shape_by_high_fret  # Function to use to sort discovered shapes with
-    )
+    shape_ranker: Callable = sum  # Function to use to sort discovered shapes with
