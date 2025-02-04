@@ -1,7 +1,7 @@
 # pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
 
 from __future__ import annotations
-from typing import TYPE_CHECKING, Generator, Any, Callable
+from typing import Generator, Any, Callable
 
 import pytest
 from pychord import Chord, QualityManager
@@ -15,10 +15,8 @@ from ukechords.theory import _weird_sharp_scale, _weird_flat_scale
 from ukechords.theory import add_no5_quality, add_7sus2_quality
 from ukechords.theory import show_key
 
+from ukechords.config import UkeConfig
 from .uketestconfig import uke_config
-
-if TYPE_CHECKING:
-    from ukechords.config import UkeConfig
 
 
 def test_sharpify() -> None:

@@ -5,11 +5,12 @@ from typing import TYPE_CHECKING
 
 from ukechords.cache import _cached_filename, save_scanned_chords, load_scanned_chords
 
+from ukechords.config import UkeConfig
 from .uketestconfig import uke_config
+
 
 if TYPE_CHECKING:
     from ukechords.theory import _ChordCollection
-    from ukechords.config import UkeConfig
 
 
 def test_load_save_cache(uke_config: UkeConfig) -> None:

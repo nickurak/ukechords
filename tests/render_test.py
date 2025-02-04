@@ -1,7 +1,7 @@
 # pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
 
 from __future__ import annotations
-from typing import TYPE_CHECKING, List
+from typing import List
 
 import pytest
 
@@ -12,11 +12,9 @@ from ukechords.errors import ShapeNotFoundException
 
 from ukechords.render import _csv
 
+from ukechords.types import ChordShapes, ChordsByShape, KeyInfo
+from ukechords.config import UkeConfig
 from .uketestconfig import uke_config
-
-if TYPE_CHECKING:
-    from ukechords.config import UkeConfig
-    from ukechords.types import ChordShapes, ChordsByShape, KeyInfo
 
 
 def get_capsys_lines(capsys: pytest.CaptureFixture) -> List[str]:

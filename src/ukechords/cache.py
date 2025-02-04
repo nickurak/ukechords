@@ -8,8 +8,9 @@ import pickle
 from math import ceil
 from pathlib import Path
 
+from .config import UkeConfig
+
 if TYPE_CHECKING:
-    from .config import UkeConfig
     from .theory import _ChordCollection
 
 
