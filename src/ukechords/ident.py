@@ -75,7 +75,8 @@ def _get_parser() -> argparse.ArgumentParser:
     pa("-v", "--visualize", action="store_true", help="Visualize shapes with Unicode drawings")
     all_help = "Show all matching chords, not just one selected one"
     pa("-a", "--all-chords", action="store_true", help=all_help)
-    pa("-m", "--mute", action="store_true", help="Include shapes that require muting strings")
+    mute_help = "Include shapes that require muting strings"
+    pa("-m", "--mute", action=argparse.BooleanOptionalAction, help=mute_help)
     pa("-n", "--num", type=int, help="Show <NUM> shapes for the given chord")
     keys_help = "Limit chords to those playable in <KEY> (can be specified multiple times)"
     pa("-k", "--keys", action="append", help=keys_help)
@@ -128,7 +129,8 @@ def _get_config(args: argparse.Namespace) -> UkeConfig:
     "Unpack argparse options into a new UkeConfig"
     _check_argument_errors(args)
     config = _get_config_from_preferences()
-    config.mute = args.mute
+    if args.mute is not None:
+        config.mute = args.mute
     if args.tuning:
         config.tuning = get_tuning(args.tuning)
     if args.sort_by_position:
