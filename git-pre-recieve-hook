@@ -1,7 +1,6 @@
 #!/bin/bash
 
 cleanup() {
-    [ -z "${UKECHORDS_PYDIR+x}" ] || rm -Rf "$UKECHORDS_PYDIR"
     [ -z "${SRC_DIR+x}" ] || rm -Rf "$SRC_DIR"
 }
 
@@ -34,19 +33,11 @@ while read -r OLDREV NEWREV REFNAME; do
         fi
     fi
 
-    export UKECHORDS_PYDIR="$(mktemp -d -p /tmp tmp_ukechords_pydir_XXXX)"
     export SRC_DIR="$(mktemp -d -p /tmp tmp_ukechords_src_XXXX)"
 
     git archive "$NEWREV" | tar -x -C "$SRC_DIR"
 
-    python -m venv "$UKECHORDS_PYDIR"
-
-    cd "$SRC_DIR"
-    (
-        . "$UKECHORDS_PYDIR/bin/activate"
-        pip install --upgrade pip flit
-        flit install
-    )
+    cd "$SRC_DIR" && uv sync --dev --link-mode=symlink
 
     if ! ./run_ci.sh; then
         fail "CI checks failed, rejecting commit"

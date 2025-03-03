@@ -1,21 +1,12 @@
 #!/bin/bash
 
-# This script assumes that the pyvenv installed in UKECHORDS_PYDIR
-# exists, and has ukechords and all its dependencies.
+SRC_DIRS=(src tests)
 
-if [ -z "$UKECHORDS_PYDIR" ]; then
-    UKECHORDS_PYDIR="${HOME}/.local/pyvenv/ukechords/"
-fi
+uv run flake8 "${SRC_DIRS[@]}" && echo 'flake8 passed' || exit $?
 
-. "$UKECHORDS_PYDIR/bin/activate"
+find "${SRC_DIRS[@]}" -name '*.py' | grep -v flycheck | xargs -d '\n' uv run pylint
 
-set -e
-
-flake8 . && echo 'flake8 passed' || exit $?
-
-find . -name '*.py' | grep -v flycheck | xargs -d '\n' pylint
-
-mypy --disallow-untyped-calls --disallow-untyped-defs --disallow-incomplete-defs .
+uv run mypy --disallow-untyped-calls --disallow-untyped-defs --disallow-incomplete-defs "${SRC_DIRS[@]}"
 
 export COVERAGE_CORE=sysmon
-pytest . "$@"
+uv run pytest "$@" "${SRC_DIRS[@]}"
