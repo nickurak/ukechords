@@ -11,7 +11,7 @@ from pathlib import Path
 from .config import UkeConfig
 
 if TYPE_CHECKING:
-    from .theory import _ChordCollection
+    from .theory import ChordCollection
 
 
 def _cached_filename(config: UkeConfig, max_fret: int, max_difficulty: float) -> str:
@@ -20,7 +20,7 @@ def _cached_filename(config: UkeConfig, max_fret: int, max_difficulty: float) ->
     return os.path.join(config.cache_dir, filename)
 
 
-def load_scanned_chords(config: UkeConfig, chord_shapes: _ChordCollection, max_fret: int) -> bool:
+def load_scanned_chords(config: UkeConfig, chord_shapes: ChordCollection, max_fret: int) -> bool:
     """Load cached chords/shapes from disk"""
     for imax_difficulty in range(ceil(config.max_difficulty), 100 + 1):
         filename = _cached_filename(config, max_fret, imax_difficulty)
@@ -31,7 +31,7 @@ def load_scanned_chords(config: UkeConfig, chord_shapes: _ChordCollection, max_f
     return False
 
 
-def save_scanned_chords(config: UkeConfig, chord_shapes: _ChordCollection, max_fret: int) -> None:
+def save_scanned_chords(config: UkeConfig, chord_shapes: ChordCollection, max_fret: int) -> None:
     """Save chord/shapes to cache on disk"""
     filename = _cached_filename(config, max_fret, config.max_difficulty)
     Path(config.cache_dir).mkdir(parents=True, exist_ok=True)

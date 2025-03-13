@@ -87,7 +87,7 @@ def _normalize_chord(chord: str) -> str:
     return f"{_sharpify(root)}{quality}"
 
 
-class _ChordCollection(dict):
+class ChordCollection(dict):
     """A specialization of a dictionary, which normalizes chord names
     to catch multiple names for the same chord. For example BbM and
     A#maj are different names for the same chord, and thus produce the
@@ -334,7 +334,7 @@ def _get_shapes(config: UkeConfig, max_fret: int = 1) -> Generator[tuple[int, ..
             yield tuple(shape)
 
 
-def _scan_chords(config: UkeConfig, chord_shapes: _ChordCollection, max_fret: int = 12) -> None:
+def _scan_chords(config: UkeConfig, chord_shapes: ChordCollection, max_fret: int = 12) -> None:
     """
     Based on the provided configuration, scan for possible ways to
     play chords. Store discovered shapes in a ChordCollection that
@@ -412,7 +412,7 @@ def show_chord(config: UkeConfig, chord: str) -> ChordShapes:
     if config.show_notes:
         notes = p_chord.components()
         output["notes"] = notes
-    chord_shapes = _ChordCollection()
+    chord_shapes = ChordCollection()
     _scan_chords(config, chord_shapes)
     if chord not in chord_shapes:
         output["chord"] = chord
@@ -451,7 +451,7 @@ def show_all(config: UkeConfig) -> ChordShapes:
     restrict which chords are returned accordingly
     """
     notes: List = []
-    chord_shapes = _ChordCollection()
+    chord_shapes = ChordCollection()
     for key in config.keys or []:
         notes.extend(_get_key_notes(key))
     for chord in config.allowed_chords or []:
