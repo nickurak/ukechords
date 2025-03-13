@@ -11,15 +11,15 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
-      - name: setup flit
-        run: pip install flit
+      - name: setup uv
+        run: pip install uv
       - name: install ukechords
-        run: flit install --extras dev
+        run:  uv sync --dev --link-mode=symlink
       - name: Run flake8
-        run: flake8 .
+        run: uv run flake8 src tests
       - name: Run pylint
-        run: pylint . --recursive=yes
+        run: uv run pylint src tests --recursive=yes
       - name: Run mypy
-        run: mypy --disallow-untyped-calls --disallow-untyped-defs --disallow-incomplete-defs .
+        run: uv run mypy --disallow-untyped-calls --disallow-untyped-defs --disallow-incomplete-defs src tests
       - name: Run tests
-        run: pytest .
+        run: uv run pytest src tests
