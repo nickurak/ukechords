@@ -21,6 +21,6 @@ class InvalidCommandException(Exception):
 
 
 def error(return_code: int, message: Any) -> NoReturn:
-    """ "Display an error and exit with the given status"""
+    """Display an error and exit with the given status"""
     print(message, file=sys.stderr)
     sys.exit(return_code)
