@@ -102,8 +102,7 @@ def _get_parser() -> argparse.ArgumentParser:
 
 def _check_argument_errors(args: argparse.Namespace) -> None:
     def exactly_one(iterable: Iterable) -> bool:
-        i = iter(iterable)
-        return any(i) and not any(i)
+        return 1 == len(list(filter(None, iterable)))
 
     mutually_exclusive_groups = [
         args.render_cmd,
