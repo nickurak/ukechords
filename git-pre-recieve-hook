@@ -26,6 +26,9 @@ fi
 while read -r OLDREV NEWREV REFNAME; do
     echo "Handling request to move $REFNAME from $OLDREV -> $NEWREV"
 
+    if [ "$NEWREV" = "0000000000000000000000000000000000000000" ]; then
+        exit # Deleting branch, nothing to test here
+    fi
     if [ "$OLDREV" != "0000000000000000000000000000000000000000" ]; then
         BADCOMMITS="$(git log --pretty=%h --grep "fixup!" --grep "squash!" "$OLDREV..$NEWREV")"
         if [ -n "$BADCOMMITS" ]; then
