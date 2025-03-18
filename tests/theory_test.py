@@ -4,6 +4,7 @@ from __future__ import annotations
 from typing import Generator, Any, Callable
 
 import pytest
+from pytest_mock import MockFixture
 
 from pychord import Chord, QualityManager
 
@@ -81,6 +82,16 @@ def test_basic_scan(uke_config: UkeConfig) -> None:
     assert "Cmaj7" in chord_shapes
     with pytest.raises(KeyError):
         _ = chord_shapes["C9"]
+
+
+def test_threaded_scan_exception(uke_config: UkeConfig, mocker: MockFixture) -> None:
+    """Verify that an exception raised from a threaded scan triggers termination of the pool"""
+    mocker.patch("ukechords.theory._get_chord_shapes_map", side_effect=ValueError())
+    mocked_pool_terminate = mocker.patch("tests.fake_pool.FakePool.terminate")
+    chord_shapes = ChordCollection()
+    with pytest.raises(ValueError):
+        _scan_chords(uke_config, chord_shapes, max_fret=3)
+    mocked_pool_terminate.assert_called_once()
 
 
 def test_scale() -> None:
