@@ -10,21 +10,21 @@ license = {file = "LICENSE"}
 classifiers = ["License :: OSI Approved :: MIT License"]
 dynamic = ["version", "description"]
 dependencies = [
-    "pychord==1.2.2",
-    "pyxdg==0.28",
+    "pychord>=1.2.2",
+    "pyxdg",
 ]
 [dependency-groups]
 dev = [
-    "black==24.10.0",
-    "coverage==7.6.10",
-    "flake8==7.1.1",
-    "mypy==1.14.1",
-    "pyflakes==3.2.0",
-    "pylint==3.3.3",
-    "pylint-pytest==1.1.8",
-    "pytest==8.2.0",
-    "pytest-cov==6.0.0",
-    "pytest-mock==3.14.0",
+    "black",
+    "coverage",
+    "flake8",
+    "mypy",
+    "pyflakes",
+    "pylint",
+    "pylint-pytest",
+    "pytest",
+    "pytest-cov",
+    "pytest-mock",
 ]
 
 [project.urls]
