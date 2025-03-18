@@ -194,7 +194,6 @@ def get_missing_chord_params() -> Generator[Any, None, None]:
         yield chord
     for chord in builtin_chords:
         reason = f"we detected that pychord already has {chord}, as expected"
-        print(f"{type(pytest.param(chord, marks=pytest.mark.xfail(strict=True, reason=reason)))}")
         yield pytest.param(chord, marks=pytest.mark.xfail(strict=True, reason=reason))
 
 
