@@ -41,7 +41,7 @@ $ . ~/ukechords/bin/activate
 $ pip install flit
 $ cd ukechords
 $ flit install # (tip: include flit install's -s option to create symlinks while developing the source)
-$ ln -s ~/ukechords/bin/ident ~/.local/bin/ident # this will make the "ident" tool available
+$ ln -s ~/ukechords/bin/ident ~/.local/bin/ # this will make the "ident" tool available
 ```
 
 # Usage:
