@@ -37,9 +37,9 @@ def test_force_flat_bbsus2(uke_config: UkeConfig) -> None:
     resp = list(_get_chords_by_shape(uke_config, pshape))
     assert len(resp) == 1
     shape, chords, notes = resp[0]
-    assert shape == (3, 2, 1)
-    assert chords == ["Bb"]
-    assert notes == set(["Bb", "F", "D"])
+    assert shape == (3, 0, 1)
+    assert chords == ["Fsus4", "Bbsus2"]
+    assert notes == set(["Bb", "F", "C"])
 
 
 def test_force_flat_shape(uke_config: UkeConfig) -> None:
