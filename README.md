@@ -30,7 +30,7 @@ This started as a very basic tool/experiment, but has grown into a significant p
 Get it:
 
 ```
-$ git clone https://github.com/nickurak/ukechords.git
+$ git clone https://github.com/nickurak/ukechords.git ~/ukechords
 ```
 
 Install it with flit, ideally in a pyvenv:
