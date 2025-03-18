@@ -29,7 +29,6 @@ def test_sharpify() -> None:
     assert all(x == y for x, y in zip(_flatify(["Bb", "A#"]), ["Bb", "Bb"]))
 
 
-@pytest.mark.xfail(strict=True)
 def test_force_flat_bbsus2(uke_config: UkeConfig) -> None:
     uke_config.tuning = ("G", "C", "E")
     uke_config.force_flat = True
