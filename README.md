@@ -33,7 +33,14 @@ Get it:
 $ git clone https://github.com/nickurak/ukechords.git ~/ukechords
 ```
 
-Install it with flit, ideally in a pyvenv:
+With uv:
+```
+$ cd ukechords
+$ uv sync
+$ ln -s ~/ukechords/.venv/bin/ident ~/.local/bin # this will make the "ident" tool available
+```
+
+If uv is not available, use flit, ideally in a pyvenv:
 
 ```
 $ python -m venv ~/ukechords
