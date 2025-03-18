@@ -64,9 +64,10 @@ def _get_chords_from_notes(notes: List[str], force_flat: bool = False) -> List[s
         positions: tuple[int, ...] = tuple(notes_to_positions(seq, root))
         if (quality := _get_quality_map().get(positions)) is None:
             continue
-        chord = f"{root}{quality}"
         if force_flat:
-            chord = str(_flatify(chord))
+            chord = f"{_flatify(root)}{quality}"
+        else:
+            chord = f"{root}{quality}"
         chords.append(chord)
     return sorted(chords, key=_rank_chord_name)
 
