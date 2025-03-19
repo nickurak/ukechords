@@ -20,6 +20,10 @@ class InvalidCommandException(Exception):
     "Raised in case of an invalid command line invocation"
 
 
+class UnslidableEmptyShapeException(Exception):
+    "Raised in the event of an attempt to slide an empty shape"
+
+
 def error(return_code: int, message: Any) -> NoReturn:
     """Display an error and exit with the given status"""
     print(message, file=sys.stderr)

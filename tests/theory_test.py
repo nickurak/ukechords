@@ -15,6 +15,8 @@ from ukechords.theory import _weird_sharp_scale, _weird_flat_scale
 from ukechords.theory import add_no5_quality, add_7sus2_quality
 from ukechords.theory import show_key
 
+from ukechords.errors import UnslidableEmptyShapeException
+
 from ukechords.config import UkeConfig
 from .uketestconfig import uke_config
 
@@ -137,21 +139,9 @@ def test_barrable_unbarred(uke_config: UkeConfig) -> None:
     assert barre_data["shape"] == (0, 0, 2)
 
 
-@pytest.mark.parametrize(
-    "tuning,initial_shape",
-    [
-        (("C", "G"), (1, 2)),
-        pytest.param(
-            ("C", "G"),
-            (0, 0),
-            marks=pytest.mark.xfail(strict=True, reason="buggy handling of sliding empty shapes"),
-        ),
-    ],
-)
-def test_slide(
-    uke_config: UkeConfig, tuning: tuple[str, ...], initial_shape: tuple[int, ...]
-) -> None:
-    uke_config.tuning = tuning
+def test_slide(uke_config: UkeConfig) -> None:
+    initial_shape = (1, 2)
+    uke_config.tuning = ("C", "G")
     uke_config.slide = True
     slid_chords = list(_get_chords_by_shape(uke_config, initial_shape))
     slid_shapes = [c[0] for c in slid_chords]
@@ -160,6 +150,15 @@ def test_slide(
         unslid_shape = tuple(fret + 1 - min_fret if fret > 0 else fret for fret in slid_shape)
         assert unslid_shape == initial_shape
     assert len(slid_shapes) == 12
+
+
+@pytest.mark.xfail(strict=True)
+def test_empty_slide(uke_config: UkeConfig) -> None:
+    initial_shape = (0, 0)
+    uke_config.tuning = ("C", "G")
+    uke_config.slide = True
+    with pytest.raises(UnslidableEmptyShapeException):
+        list(_get_chords_by_shape(uke_config, initial_shape))
 
 
 def test_slide_mute(uke_config: UkeConfig) -> None:
