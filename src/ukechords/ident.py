@@ -218,6 +218,8 @@ def main() -> int:
         error(1, exc)
     except InvalidCommandException as exc:
         error(5, exc)
+    except ValueError as exc:
+        error(11, exc)
     except KeyboardInterrupt:
         error(128, "(aborted)")
     return 0
