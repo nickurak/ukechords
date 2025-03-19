@@ -12,6 +12,7 @@ from pychord import Chord, QualityManager
 
 from .cache import load_scanned_chords, save_scanned_chords
 from .errors import UnknownKeyException, ChordNotFoundException
+from .errors import UnslidableEmptyShapeException
 
 from .types import KeyInfo, ChordsByNotes, ChordsByShape, Shape
 from .types import BarreData, ChordShapes
@@ -499,6 +500,8 @@ def _get_chords_by_shape(
 ) -> Generator[tuple[tuple[int, ...], List[str], set[str]], None, None]:
     shapes = []
     if config.slide:
+        if not any(fret > 0 for fret in pshape):
+            raise UnslidableEmptyShapeException("Sliding an empty shape doesn't make sense")
         min_fret = min(fret for fret in pshape if fret > 0)
         unslid_shape = tuple(fret + 1 - min_fret if fret > 0 else fret for fret in pshape)
         for offset in range(0, 12):

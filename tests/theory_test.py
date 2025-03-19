@@ -152,7 +152,6 @@ def test_slide(uke_config: UkeConfig) -> None:
     assert len(slid_shapes) == 12
 
 
-@pytest.mark.xfail(strict=True)
 def test_empty_slide(uke_config: UkeConfig) -> None:
     initial_shape = (0, 0)
     uke_config.tuning = ("C", "G")
