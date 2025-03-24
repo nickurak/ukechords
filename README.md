@@ -34,6 +34,7 @@ $ git clone https://github.com/nickurak/ukechords.git ~/ukechords
 ```
 
 With uv:
+
 ```
 $ cd ukechords
 $ uv sync
