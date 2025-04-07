@@ -5,7 +5,7 @@ from __future__ import annotations
 from itertools import permutations, product
 from functools import cache
 import re
-from typing import Union, List, Any, Optional, Generator
+from typing import Union, List, Any, Generator
 
 from pychord.analyzer import notes_to_positions
 from pychord import Chord, QualityManager
@@ -135,10 +135,10 @@ def _barreless_shape_difficulty(shape: tuple) -> float:
 
 def _get_tuned_barre_details(
     shape: tuple[int, ...],
-    tuning: Optional[tuple[str, ...]],
+    tuning: tuple[str, ...] | None,
     barre_difficulty: float,
     unbarred_difficulty: float,
-) -> Optional[BarreData]:
+) -> BarreData | None:
     if not tuning:
         return None
     barre_shape = tuple(x - min(shape) for x in shape)
@@ -159,8 +159,8 @@ def _get_tuned_barre_details(
 
 
 def _barre_difficulty_details(
-    shape: tuple[int, ...], unbarred_difficulty: float, tuning: Optional[tuple[str, ...]]
-) -> tuple[float, Optional[BarreData]]:
+    shape: tuple[int, ...], unbarred_difficulty: float, tuning: tuple[str, ...] | None
+) -> tuple[float, BarreData | None]:
     """
     Return information on how using a barre to play the given shape
     (if possible) affects the shape's difficulty.
@@ -182,8 +182,8 @@ def _barre_difficulty_details(
 
 
 def _get_shape_difficulty(
-    shape: tuple[int, ...], tuning: Optional[tuple[str, ...]] = None
-) -> tuple[float, Optional[BarreData]]:
+    shape: tuple[int, ...], tuning: tuple[str, ...] | None = None
+) -> tuple[float, BarreData | None]:
     """
     Return a heuristic for how hard a shape is to play, including
     information on how barreing the shape affects that difficulty
@@ -538,12 +538,12 @@ def show_chords_by_shape(config: UkeConfig, input_shape: str) -> ChordsByShape:
     return {"shapes": shapes}
 
 
-def show_chords_by_notes(_: Optional[UkeConfig], notes: set) -> ChordsByNotes:
+def show_chords_by_notes(_: UkeConfig | None, notes: set) -> ChordsByNotes:
     """Return information on what chords are played by the specified notes"""
     return {"notes": tuple(notes), "chords": _get_chords_from_notes(tuple(notes))}
 
 
-def show_key(_: Optional[UkeConfig], key: str) -> KeyInfo:
+def show_key(_: UkeConfig | None, key: str) -> KeyInfo:
     """Return information on the specified key, including other names and the notes it includes"""
     notes = key.split(",")
     if len(notes) > 1:
