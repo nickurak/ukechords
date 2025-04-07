@@ -1,7 +1,7 @@
 """Rendering logic, chiefly for CLI usage of ukechords"""
 
 from __future__ import annotations
-from typing import Generator, Any, Optional, Iterable
+from typing import Generator, Any, Iterable
 import json
 import sys
 
@@ -39,13 +39,13 @@ def _get_shape_lines(shape: tuple, barre: int) -> Generator[str, None, None]:
     yield "╙" + "┴".join(lines) + "─"
 
 
-def _draw_shape(shape: tuple[int, ...], barre_data: Optional[BarreData]) -> None:
+def _draw_shape(shape: tuple[int, ...], barre_data: BarreData | None) -> None:
     barre = barre_data["fret"] if barre_data else 0
     for line in _get_shape_lines(shape, barre):
         print(line)
 
 
-def _diff_string(difficulty: float, barre_data: Optional[BarreData], diff_width: int = 0) -> str:
+def _diff_string(difficulty: float, barre_data: BarreData | None, diff_width: int = 0) -> str:
     padded_diff = f"{difficulty:{diff_width}.1f}"
     if not barre_data:
         return padded_diff
@@ -107,12 +107,12 @@ def render_chords_from_shape(config: UkeConfig, data: ChordsByShape) -> None:
         print(f"Difficulty: {_diff_string(data['difficulty'], data['barre_data'])}")
 
 
-def render_chords_from_notes(_: Optional[UkeConfig], data: ChordsByNotes) -> None:
+def render_chords_from_notes(_: UkeConfig | None, data: ChordsByNotes) -> None:
     """Render named chords, as identified by notes"""
     print(f"{_csv(data['notes'])}: {_csv(data['chords'])}")
 
 
-def render_key(_: Optional[UkeConfig], data: KeyInfo) -> None:
+def render_key(_: UkeConfig | None, data: KeyInfo) -> None:
     """Render information about a musical key"""
     if data["other_keys"]:
         other_str = f" ({_csv(data['other_keys'])})"
@@ -128,7 +128,7 @@ def render_key(_: Optional[UkeConfig], data: KeyInfo) -> None:
         print(f"{_csv(data['other_keys'])}")
 
 
-def render_json(_: Optional[UkeConfig], data: Any) -> None:
+def render_json(_: UkeConfig | None, data: Any) -> None:
     """Render arbitrary input data as json"""
     json.dump(data, sys.stdout, indent=2 if sys.stdout.isatty() else None)
     print()

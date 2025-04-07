@@ -1,7 +1,7 @@
 """Types defined by Ukechords, especially those returned from the
 theory module to the render module"""
 
-from typing import TypedDict, NotRequired, List, Optional
+from typing import TypedDict, NotRequired, List
 
 
 class KeyInfo(TypedDict):
@@ -33,7 +33,7 @@ class BarreData(TypedDict):
     fret: int
     barred: bool
     shape: tuple[int, ...]
-    chord: Optional[str]
+    chord: str | None
     unbarred_difficulty: NotRequired[float]
     barred_difficulty: NotRequired[float]
 
@@ -43,7 +43,7 @@ class ChordsByShape(TypedDict):
 
     shapes: List[Shape]
     difficulty: NotRequired[float]
-    barre_data: NotRequired[Optional[BarreData]]
+    barre_data: NotRequired[BarreData | None]
 
 
 class ChordShape(TypedDict):
@@ -51,7 +51,7 @@ class ChordShape(TypedDict):
 
     shape: tuple[int, ...]
     difficulty: float
-    barre_data: NotRequired[Optional[BarreData]]
+    barre_data: NotRequired[BarreData | None]
     chord_names: List[str]
 
 
