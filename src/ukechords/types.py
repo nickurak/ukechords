@@ -1,14 +1,14 @@
 """Types defined by Ukechords, especially those returned from the
 theory module to the render module"""
 
-from typing import TypedDict, NotRequired, List
+from typing import TypedDict, NotRequired
 
 
 class KeyInfo(TypedDict):
     "Return value of show_key"
 
     notes: tuple[str, ...]
-    other_keys: List[str]
+    other_keys: list[str]
     key: NotRequired[str]
 
 
@@ -16,14 +16,14 @@ class ChordsByNotes(TypedDict):
     "Return value of show_chords_by_notes"
 
     notes: tuple[str, ...]
-    chords: List[str]
+    chords: list[str]
 
 
 class Shape(TypedDict):
     "One instance of a shape as returned in get_chord_by_shape (which may be a slid shape)"
 
     shape: tuple[int, ...]
-    chords: List[str]
+    chords: list[str]
     notes: tuple[str, ...]
 
 
@@ -41,7 +41,7 @@ class BarreData(TypedDict):
 class ChordsByShape(TypedDict):
     "Return value of show_chords_by_shape"
 
-    shapes: List[Shape]
+    shapes: list[Shape]
     difficulty: NotRequired[float]
     barre_data: NotRequired[BarreData | None]
 
@@ -52,12 +52,12 @@ class ChordShape(TypedDict):
     shape: tuple[int, ...]
     difficulty: float
     barre_data: NotRequired[BarreData | None]
-    chord_names: List[str]
+    chord_names: list[str]
 
 
 class ChordShapes(TypedDict):
     "A list of shapes, as returned by show_all and show_chord"
 
-    shapes: List[ChordShape]
+    shapes: list[ChordShape]
     notes: NotRequired[tuple[str, ...]]
     chord: NotRequired[str]
