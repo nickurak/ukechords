@@ -6,7 +6,7 @@ import argparse
 import json
 import os
 import configparser
-from typing import Callable, Iterable, Any, Union
+from typing import Callable, Iterable, Any
 
 from xdg import BaseDirectory
 
@@ -176,7 +176,7 @@ def _get_renderfunc_from_name(name: str) -> Callable:
 def run_command(config: UkeConfig, args: argparse.Namespace) -> None:
     "Run a command specified by the argparsed options provided"
     renderer: Callable
-    data: Union[ChordShapes, ChordsByShape, ChordsByNotes, KeyInfo]
+    data: ChordShapes | ChordsByShape | ChordsByNotes | KeyInfo
     if args.chord:
         renderer = render_chord_list
         data = show_chord(config, args.chord)
