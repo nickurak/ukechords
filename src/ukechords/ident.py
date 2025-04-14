@@ -6,7 +6,7 @@ import argparse
 import json
 import os
 import configparser
-from typing import List, Callable, Iterable, Any, Union
+from typing import Callable, Iterable, Any, Union
 
 from xdg import BaseDirectory
 
@@ -158,7 +158,7 @@ def _get_config(args: argparse.Namespace) -> UkeConfig:
 
 
 def _get_renderfunc_from_name(name: str) -> Callable:
-    render_funcs: List[Callable] = [
+    render_funcs: list[Callable] = [
         render_chord_list,
         render_chords_from_shape,
         render_chords_from_notes,

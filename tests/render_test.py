@@ -1,7 +1,6 @@
 # pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
 
 from __future__ import annotations
-from typing import List
 
 import pytest
 
@@ -17,7 +16,7 @@ from ukechords.config import UkeConfig
 from .uketestconfig import uke_config
 
 
-def get_capsys_lines(capsys: pytest.CaptureFixture) -> List[str]:
+def get_capsys_lines(capsys: pytest.CaptureFixture) -> list[str]:
     out, err = capsys.readouterr()
     assert err == ""
     return out.strip("\n").split("\n")
