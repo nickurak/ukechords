@@ -55,7 +55,7 @@ $ ln -s ~/ukechords/bin/ident ~/.local/bin/ # this will make the "ident" tool av
 # Usage:
 
 ```
-usage: ident [-h] [-c CHORD] [--notes NOTES] [-s SHAPE] [--slide] [-t TUNING] [-1] [-v] [-a] [-m | --mute | --no-mute] [-n NUM] [-k KEY] [-q QUALITIES] [-p] [--no-cache] [--show-key KEY] [--show-notes] [-f] [-b] [-j] [-r RENDER_CMD] [--cache-dir CACHE_DIR] [-d MAX_DIFFICULTY] [-o ALLOWED_CHORDS]
+usage: ident [-h] [-c CHORD] [--notes NOTES] [-s SHAPE] [--slide] [-t TUNING] [-1] [-v] [-a] [-m | --mute | --no-mute] [-n NUM] [-k KEYS] [-q QUALITIES] [-p] [--no-cache] [--show-key KEY] [--show-notes] [-f] [-b] [-j] [-r RENDER_CMD] [--cache-dir CACHE_DIR] [-d MAX_DIFFICULTY] [-o ALLOWED_CHORDS]
 
 options:
   -h, --help            show this help message and exit
@@ -73,7 +73,7 @@ options:
   -m, --mute, --no-mute
                         Include shapes that require muting strings
   -n NUM, --num NUM     Show <NUM> shapes for the given chord
-  -k KEY, --key KEY     Limit chords to those playable in <KEY> (can be specified multiple times)
+  -k, --keys KEYS       Limit chords to those playable in <KEY> (can be specified multiple times)
   -q QUALITIES, --qualities QUALITIES
                         Limit chords to chords with the specified <QUALITIES>
   -p, --simple          Limit to chords with major, minor, and dim qualities
