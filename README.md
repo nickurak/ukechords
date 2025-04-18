@@ -59,22 +59,19 @@ usage: ident [-h] [-c CHORD] [--notes NOTES] [-s SHAPE] [--slide] [-t TUNING] [-
 
 options:
   -h, --help            show this help message and exit
-  -c CHORD, --chord CHORD
-                        Show how to play <CHORD>
+  -c, --chord CHORD     Show how to play <CHORD>
   --notes NOTES         Show what chord(s) these <NOTES> play
-  -s SHAPE, --shape SHAPE
-                        Show what chord(s) this <SHAPE> plays
+  -s, --shape SHAPE     Show what chord(s) this <SHAPE> plays
   --slide               Show what chord(s) this <SHAPE> could play when slid up or down
-  -t TUNING, --tuning TUNING
-                        comma-separated notes for string tuning
+  -t, --tuning TUNING   comma-separated notes for string tuning
   -1, --single          Show only 1 shape for each chord
   -v, --visualize       Visualize shapes with Unicode drawings
   -a, --all-chords      Show all matching chords, not just one selected one
   -m, --mute, --no-mute
                         Include shapes that require muting strings
-  -n NUM, --num NUM     Show <NUM> shapes for the given chord
+  -n, --num NUM         Show <NUM> shapes for the given chord
   -k, --keys KEYS       Limit chords to those playable in <KEY> (can be specified multiple times)
-  -q QUALITIES, --qualities QUALITIES
+  -q, --qualities QUALITIES
                         Limit chords to chords with the specified <QUALITIES>
   -p, --simple          Limit to chords with major, minor, and dim qualities
   --no-cache            Ignore any available cached chord/shape information
@@ -84,12 +81,12 @@ options:
   -b, --sort-by-position
                         Sort to minimize high-position instead of difficulty
   -j, --json            Output in json format if possible
-  -r RENDER_CMD, --render-cmd RENDER_CMD
+  -r, --render-cmd RENDER_CMD
                         Read stdin into a rendering command
   --cache-dir CACHE_DIR
                         Specify directory to use for cached shapes
-  -d MAX_DIFFICULTY, --max-difficulty MAX_DIFFICULTY
+  -d, --max-difficulty MAX_DIFFICULTY
                         Limit shape-scanning to the given <MAX_DIFFICULTY> or less
-  -o ALLOWED_CHORDS, --allowed-chords ALLOWED_CHORDS
+  -o, --allowed-chords ALLOWED_CHORDS
                         Limit to chords playable by the notes in <ALLOWED_CHORD> (specify multiple times)
 ```
