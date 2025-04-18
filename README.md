@@ -19,8 +19,8 @@ Other miscellaneous functionality:
 - Limiting lists of chords by musical key or quality
 - Finding chords from lists of notes
 - Accounting for muted/omitted strings
-- support for several/arbitrary tunings, with any number of strings
-- caching of calculated chord->shape mapping information (as this can be computationally intense)
+- Support for several/arbitrary tunings, with any number of strings
+- Caching of calculated chord->shape mapping information (as this can be computationally intense)
 - JSON output of all information for consumption in other tools
 
 This started as a very basic tool/experiment, but has grown into a significant part of my music hobby.
