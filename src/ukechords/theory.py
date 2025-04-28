@@ -5,7 +5,7 @@ from __future__ import annotations
 from itertools import permutations, product
 from functools import cache
 import re
-from typing import Any, Generator
+from typing import Any, Generator, TypeVar
 
 from pychord.analyzer import notes_to_positions
 from pychord import Chord, QualityManager
@@ -206,17 +206,20 @@ _note_intervals |= {note: index for index, note in enumerate(_weird_sharp_scale)
 _note_intervals |= {note: index for index, note in enumerate(_weird_flat_scale)}
 
 
-def _normalizer(arg: str | list[str], scale: list[str]) -> str | list[str]:
+Normalizable = TypeVar("Normalizable", str, list[str])
+
+
+def _normalizer(arg: Normalizable, scale: list[str]) -> Normalizable:
     if isinstance(arg, list):
         return [scale[_note_intervals[note]] for note in arg]
     return scale[_note_intervals[arg]]
 
 
-def _sharpify(arg: str | list[str]) -> str | list[str]:
+def _sharpify(arg: Normalizable) -> Normalizable:
     return _normalizer(arg, _chromatic_scale)
 
 
-def _flatify(arg: str | list[str]) -> str | list[str]:
+def _flatify(arg: Normalizable) -> Normalizable:
     return _normalizer(arg, _flat_scale)
 
 
