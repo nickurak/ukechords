@@ -2,8 +2,8 @@
 
 import pytest
 
-from ukechords.ident import error, _get_parser, _get_config
-from ukechords.errors import InvalidCommandException
+from ukechords.ident import _get_parser, _get_config
+from ukechords.errors import InvalidCommandException, error
 
 
 def test_error(capsys: pytest.CaptureFixture) -> None:
