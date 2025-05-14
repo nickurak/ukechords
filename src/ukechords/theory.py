@@ -73,7 +73,7 @@ def _get_chords_from_notes(notes: list[str], force_flat: bool = False) -> list[s
     return sorted(chords, key=_rank_chord_name)
 
 
-class _CircularList(list):
+class _CircularList(list[Any]):
     def __getitem__(self, index: Any) -> Any:
         return super().__getitem__(index % len(self))
 
@@ -89,7 +89,7 @@ def _normalize_chord(chord: str) -> str:
     return f"{_sharpify(root)}{quality}"
 
 
-class ChordCollection(dict):
+class ChordCollection(dict[str, Any]):
     """A specialization of a dictionary, which normalizes chord names
     to catch multiple names for the same chord. For example BbM and
     A#maj are different names for the same chord, and thus produce the
@@ -102,19 +102,15 @@ class ChordCollection(dict):
     def __contains__(self, chord: str, /) -> bool:  # type: ignore[override]
         return super().__contains__(_normalize_chord(str(chord)))
 
-    def __setitem__(
-        self, chord: str, /, *args: Any, **kwargs: Any
-    ) -> None:  # type: ignore[override]
+    def __setitem__(self, chord: str, /, *args: Any, **kwargs: Any) -> None:
         super().__setitem__(_normalize_chord(str(chord)), *args, **kwargs)
 
-    def __getitem__(
-        self, chord: str, /, *args: Any, **kwargs: Any
-    ) -> Any:  # type: ignore[override]
+    def __getitem__(self, chord: str, /, *args: Any, **kwargs: Any) -> Any:
         return super().__getitem__(_normalize_chord(str(chord)), *args, **kwargs)
 
 
-def _barreless_shape_difficulty(shape: tuple) -> float:
-    difficulty = 0.0 + max(shape) / 10.0
+def _barreless_shape_difficulty(shape: tuple[int, ...]) -> float:
+    difficulty: float = 0.0 + max(shape) / 10.0
     last_fretted_position = None
     for string, position in enumerate(shape):
         if position > 0:
@@ -359,12 +355,12 @@ def _scan_chords(config: UkeConfig, chord_shapes: ChordCollection, max_fret: int
     save_scanned_chords(config, max_fret=max_fret, chord_shapes=chord_shapes)
 
 
-def rank_shape_by_difficulty(shape: tuple[int, ...]) -> tuple:
+def rank_shape_by_difficulty(shape: tuple[int, ...]) -> tuple[float, tuple[int, ...]]:
     """Enable sorting a list of shapes by how hard they are to play"""
     return (_get_shape_difficulty(shape)[0], shape[::-1])
 
 
-def rank_shape_by_high_fret(shape: tuple) -> tuple:
+def rank_shape_by_high_fret(shape: tuple[int, ...]) -> tuple[int, ...]:
     '''Enable sorting a list of shapes by how high their fret usage.
     This accomplishes finding chord shapes by "first position"'''
     return tuple(sorted(shape, reverse=True))
@@ -541,7 +537,7 @@ def show_chords_by_shape(config: UkeConfig, input_shape: str) -> ChordsByShape:
     return {"shapes": shapes}
 
 
-def show_chords_by_notes(_: UkeConfig | None, notes: set) -> ChordsByNotes:
+def show_chords_by_notes(_: UkeConfig | None, notes: set[str]) -> ChordsByNotes:
     """Return information on what chords are played by the specified notes"""
     return {"notes": tuple(notes), "chords": _get_chords_from_notes(tuple(notes))}
 
