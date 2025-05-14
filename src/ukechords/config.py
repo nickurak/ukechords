@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Callable
+from typing import Callable, Any
 
 
 @dataclass(kw_only=True)
@@ -24,4 +24,5 @@ class UkeConfig:
     cache_dir: str = ""  # Directory in which to store cached chord->shape maps
     tuning: tuple[str, ...] = ()  # Notes that individual strings are tuned to
     mute: bool = False  # Whether or not to consider muted shapes
-    shape_ranker: Callable = sum  # Function to use to sort discovered shapes with
+    # Function to use to sort discovered shapes with
+    shape_ranker: Callable[[tuple[int, ...]], Any] = sum
