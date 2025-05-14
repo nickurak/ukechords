@@ -17,7 +17,7 @@ fail() {
 
 find "${SRC_DIRS[@]}" -name '*.py' | grep -v flycheck | xargs -d '\n' uv run pylint || fail $? pylint
 
-uv run mypy --disallow-untyped-calls --disallow-untyped-defs --disallow-incomplete-defs "${SRC_DIRS[@]}" || fail $? mypy
+uv run mypy --strict "${SRC_DIRS[@]}" || fail $? mypy
 
 export COVERAGE_CORE=sysmon
 uv run pytest "$@" "${SRC_DIRS[@]}" || fail $? pytest
