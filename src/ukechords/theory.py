@@ -415,7 +415,7 @@ def show_chord(config: UkeConfig, chord: str) -> ChordShapes:
     except ValueError as exc:
         raise ChordNotFoundException(f'Error looking up chord "{chord}"') from exc
     if config.show_notes:
-        notes = p_chord.components()
+        notes = tuple(p_chord.components())
         output["notes"] = notes
     chord_shapes = ChordCollection()
     _scan_chords(config, chord_shapes)
