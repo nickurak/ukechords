@@ -100,7 +100,7 @@ def render_chords_from_shape(config: UkeConfig, data: ChordsByShape) -> None:
             print(f"Notes: {_csv(shape['notes'], sep=', ')}")
         if config.visualize:
             barre_data = data.get("barre_data")
-            _draw_shape(tuple(-1 if pos == "x" else int(pos) for pos in shape["shape"]), barre_data)
+            _draw_shape(shape["shape"], barre_data)
         shape_string = _get_shape_string(shape["shape"])
         print(f'{shape_string}: {_csv(shape["chords"])}')
     if not config.slide:
