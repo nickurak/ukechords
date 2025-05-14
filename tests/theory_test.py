@@ -95,7 +95,7 @@ def test_show_chord(uke_config: UkeConfig) -> None:
     first_result = output["shapes"][0]
     assert first_result["chord_names"] == ["C#"]
     assert first_result["shape"] == (1, 1, 1)
-    assert output["notes"] == ["C#", "F", "G#"]
+    assert output["notes"] == ("C#", "F", "G#")
 
 
 def test_show_chordless_shape(uke_config: UkeConfig) -> None:
