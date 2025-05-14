@@ -45,7 +45,7 @@ def _get_config_from_preferences() -> UkeConfig:
     tuning = get_tuning(defaults["tuning"])
     mute = defaults["mute"].lower() in ("yes", "true", "t", "1")
     max_difficulty = float(defaults["max_difficulty"])
-    shape_ranker = rank_shape_by_difficulty
+    shape_ranker: Callable[[tuple[int, ...]], Any] = rank_shape_by_difficulty
     if defaults["sort_by_position"].lower() in ("yes", "true", "t", "1"):
         shape_ranker = rank_shape_by_high_fret
     return UkeConfig(
