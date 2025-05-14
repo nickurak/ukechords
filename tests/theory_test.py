@@ -202,7 +202,7 @@ def test_clean_missing_quality(chord: str) -> None:
 
 
 @pytest.mark.parametrize("chord,loader", extra_chords_and_loaders)
-def test_extra_quality(chord: str, loader: Callable) -> None:
+def test_extra_quality(chord: str, loader: Callable[[], None]) -> None:
     loader()
     Chord(chord)
 
