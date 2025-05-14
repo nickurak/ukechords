@@ -6,7 +6,7 @@ from ukechords.ident import _get_parser, _get_config
 from ukechords.errors import InvalidCommandException, error
 
 
-def test_error(capsys: pytest.CaptureFixture) -> None:
+def test_error(capsys: pytest.CaptureFixture[str]) -> None:
     with pytest.raises(SystemExit) as excinfo:
         error(5, "error!")
     assert excinfo.value.code == 5
