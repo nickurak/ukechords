@@ -15,7 +15,7 @@ def _csv(lst: Iterable[Any], sep: str = ",") -> str:
     return sep.join(map(str, lst))
 
 
-def _get_shape_lines(shape: tuple, barre: int) -> Generator[str, None, None]:
+def _get_shape_lines(shape: tuple[int, ...], barre: int) -> Generator[str, None, None]:
     marks = {
         3: " ╷╵ ",
         5: " ╷╵ ",
@@ -60,7 +60,7 @@ def _diff_string(difficulty: float, barre_data: BarreData | None, diff_width: in
     return f"{padded_diff} ({barre_string}, else {barre_data['unbarred_difficulty']:.1f})"
 
 
-def _get_shape_string(shape: Iterable) -> str:
+def _get_shape_string(shape: Iterable[int]) -> str:
     return _csv(["x" if x == -1 else str(x) for x in shape])
 
 
