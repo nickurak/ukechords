@@ -101,7 +101,7 @@ def _get_parser() -> argparse.ArgumentParser:
 
 
 def _check_argument_errors(args: argparse.Namespace) -> None:
-    def exactly_one(iterable: Iterable) -> bool:
+    def exactly_one(iterable: Iterable[Any]) -> bool:
         return 1 == len(list(filter(None, iterable)))
 
     mutually_exclusive_groups = [
@@ -157,8 +157,8 @@ def _get_config(args: argparse.Namespace) -> UkeConfig:
     return config
 
 
-def _get_renderfunc_from_name(name: str) -> Callable:
-    render_funcs: list[Callable] = [
+def _get_renderfunc_from_name(name: str) -> Callable[[UkeConfig, Any], None]:
+    render_funcs: list[Callable[[UkeConfig, Any], None]] = [
         render_chord_list,
         render_chords_from_shape,
         render_chords_from_notes,
@@ -175,7 +175,7 @@ def _get_renderfunc_from_name(name: str) -> Callable:
 
 def run_command(config: UkeConfig, args: argparse.Namespace) -> None:
     "Run a command specified by the argparsed options provided"
-    renderer: Callable
+    renderer: Callable[[UkeConfig, Any], None]
     data: ChordShapes | ChordsByShape | ChordsByNotes | KeyInfo
     if args.chord:
         renderer = render_chord_list
