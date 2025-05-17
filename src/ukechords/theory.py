@@ -284,7 +284,7 @@ def _get_dupe_scales_from_intervals(root: str, intervals: list[int]) -> set[str]
     return {val for _, val in dupes.items()}
 
 
-def _get_dupe_scales_from_notes(notes: list[str]) -> set[str]:
+def _get_dupe_scales_from_notes(notes: tuple[str, ...]) -> set[str]:
     root = notes[0]
     intervals = [0]
     root_interval = _note_intervals[root]
@@ -306,7 +306,7 @@ def _get_dupe_scales_from_key(key: str) -> set[str]:
     return _get_dupe_scales_from_intervals(root, intervals) - {key}
 
 
-def _get_key_notes(key: str) -> tuple[str]:
+def _get_key_notes(key: str) -> tuple[str, ...]:
     mods = _get_scales()
 
     match = re.match(f'^([A-G][b#]?)({"|".join(mods.keys())})$', key)
@@ -548,7 +548,7 @@ def show_key(_: UkeConfig | None, key: str) -> KeyInfo:
     if len(notes) > 1:
         output: KeyInfo = {
             "notes": tuple(notes),
-            "other_keys": list(_get_dupe_scales_from_notes(notes)),
+            "other_keys": list(_get_dupe_scales_from_notes(tuple(notes))),
         }
     else:
         output = {
