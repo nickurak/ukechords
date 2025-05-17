@@ -99,7 +99,7 @@ def test_show_chord(uke_config: UkeConfig) -> None:
 
 
 def test_show_chordless_shape(uke_config: UkeConfig) -> None:
-    chordless_shape = "x,x,x"
+    chordless_shape = ("x", "x", "x")
     output = show_chords_by_shape(uke_config, chordless_shape)
     shapes = output["shapes"]
     assert len(shapes) == 1
@@ -122,7 +122,7 @@ def test_list_all(uke_config: UkeConfig) -> None:
 
 
 def test_barrable_barred(uke_config: UkeConfig) -> None:
-    data = show_chords_by_shape(uke_config, "1,1,1")
+    data = show_chords_by_shape(uke_config, ("1", "1", "1"))
     barre_data = data["barre_data"]
     assert barre_data
     assert barre_data["barred"]
@@ -131,7 +131,7 @@ def test_barrable_barred(uke_config: UkeConfig) -> None:
 
 
 def test_barrable_unbarred(uke_config: UkeConfig) -> None:
-    data = show_chords_by_shape(uke_config, "1,1,3")
+    data = show_chords_by_shape(uke_config, ("1", "1", "3"))
     barre_data = data["barre_data"]
     assert barre_data
     assert not barre_data["barred"]
