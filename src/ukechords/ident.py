@@ -81,7 +81,8 @@ def _get_parser() -> argparse.ArgumentParser:
     pa("-n", "--num", type=int, help="Show <NUM> shapes for the given chord")
     keys_help = "Limit chords to those playable in <KEY> (can be specified multiple times)"
     pa("-k", "--keys", action="append", help=keys_help)
-    pa("-q", "--qualities", help="Limit chords to chords with the specified <QUALITIES>")
+    qualities_help = "Limit chords to chords with the specified <QUALITIES>"
+    pa("-q", "--qualities", help=qualities_help, type=lambda qs: set(qs.split(",")))
     simple_help = "Limit to chords with major, minor, and dim qualities"
     pa("-p", "--simple", action="store_true", help=simple_help)
     nocache_help = "Ignore any available cached chord/shape information"
@@ -140,7 +141,7 @@ def _get_config(args: argparse.Namespace) -> UkeConfig:
     if args.simple:
         config.qualities = ["", "m", "7", "dim", "maj", "m7"]
     if args.qualities is not None:
-        config.qualities = args.qualities.split(",")
+        config.qualities = args.qualities
     config.slide = args.slide
     config.num = args.num
     if args.single:
