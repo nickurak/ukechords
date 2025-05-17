@@ -87,7 +87,12 @@ def _get_parser() -> argparse.ArgumentParser:
     pa("-p", "--simple", action="store_true", help=simple_help)
     nocache_help = "Ignore any available cached chord/shape information"
     pa("--no-cache", action="store_true", help=nocache_help)
-    pa("--show-key", help="Show the notes in the specified <KEY>", metavar="KEY")
+    pa(
+        "--show-key",
+        help="Show the notes in the specified <KEY>",
+        metavar="KEY",
+        type=lambda key: tuple(key.split(",")) if "," in key else key,
+    )
     pa("--show-notes", action="store_true", help="Show the notes in chord")
     pa("-f", "--force-flat", action="store_true", help="Show flat-variations of chord roots")
     sort_by_pos_help = "Sort to minimize high-position instead of difficulty"

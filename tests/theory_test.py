@@ -208,7 +208,7 @@ def test_extra_quality(chord: str, loader: Callable[[], None]) -> None:
 
 
 def test_show_key_by_notes() -> None:
-    data = show_key(None, "C,D,E,F,G,A,B")
+    data = show_key(None, tuple("C,D,E,F,G,A,B".split(",")))
     assert "Am" in data["other_keys"]
 
 
