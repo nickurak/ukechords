@@ -544,19 +544,18 @@ def show_chords_by_notes(_: UkeConfig | None, notes: set[str]) -> ChordsByNotes:
     return {"notes": tuple(notes), "chords": _get_chords_from_notes(tuple(notes))}
 
 
-def show_key(_: UkeConfig | None, key: str) -> KeyInfo:
+def show_key(_: UkeConfig | None, key: str | tuple[str, ...]) -> KeyInfo:
     """Return information on the specified key, including other names and the notes it includes"""
-    notes = key.split(",")
-    if len(notes) > 1:
+    if isinstance(key, str):
         output: KeyInfo = {
-            "notes": tuple(notes),
-            "other_keys": list(_get_dupe_scales_from_notes(tuple(notes))),
-        }
-    else:
-        output = {
             "notes": _get_key_notes(key),
             "key": key,
             "other_keys": list(_get_dupe_scales_from_key(key)),
+        }
+    else:
+        output = {
+            "notes": tuple(key),
+            "other_keys": list(_get_dupe_scales_from_notes(key)),
         }
     output["other_keys"].sort(key=_rank_chord_name)
     return output
