@@ -70,7 +70,7 @@ def _get_parser() -> argparse.ArgumentParser:
     pa("-s", "--shape", help="Show what chord(s) this <SHAPE> plays")
     slide_help = "Show what chord(s) this <SHAPE> could play when slid up or down"
     pa("--slide", action="store_true", help=slide_help)
-    pa("-t", "--tuning", help="comma-separated notes for string tuning")
+    pa("-t", "--tuning", help="comma-separated notes for string tuning", type=get_tuning)
     pa("-1", "--single", action="store_true", help="Show only 1 shape for each chord")
     pa("-v", "--visualize", action="store_true", help="Visualize shapes with Unicode drawings")
     all_help = "Show all matching chords, not just one selected one"
@@ -131,7 +131,7 @@ def _get_config(args: argparse.Namespace) -> UkeConfig:
     if args.mute is not None:
         config.mute = args.mute
     if args.tuning:
-        config.tuning = get_tuning(args.tuning)
+        config.tuning = args.tuning
     if args.sort_by_position:
         config.shape_ranker = rank_shape_by_high_fret
     if args.max_difficulty:
