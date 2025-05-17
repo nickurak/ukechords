@@ -67,7 +67,8 @@ def _get_parser() -> argparse.ArgumentParser:
     pa("-c", "--chord", help="Show how to play <CHORD>")
     notes_help = "Show what chord(s) these <NOTES> play"
     pa("--notes", help=notes_help, type=lambda notes: set(notes.split(",")))
-    pa("-s", "--shape", help="Show what chord(s) this <SHAPE> plays")
+    shape_help = "Show what chord(s) this <SHAPE> plays"
+    pa("-s", "--shape", help=shape_help, type=lambda shape: tuple(shape.split(",")))
     slide_help = "Show what chord(s) this <SHAPE> could play when slid up or down"
     pa("--slide", action="store_true", help=slide_help)
     pa("-t", "--tuning", help="comma-separated notes for string tuning", type=get_tuning)
