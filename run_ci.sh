@@ -20,7 +20,7 @@ find "${SRC_DIRS[@]}" -name '*.py' | grep -v flycheck | xargs -d '\n' uv run pyl
 uv run mypy --strict "${SRC_DIRS[@]}" || fail $? mypy
 
 export COVERAGE_CORE=sysmon
-uv run pytest "$@" "${SRC_DIRS[@]}" || fail $? pytest
+uv run pytest --no-header "$@" "${SRC_DIRS[@]}" || fail $? pytest
 
 [ "$FIRST_RC" -eq 0 ] && exit
 
