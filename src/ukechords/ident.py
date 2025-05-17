@@ -12,7 +12,7 @@ from xdg import BaseDirectory
 
 from ukechords.theory import add_no5_quality, add_7sus2_quality
 from ukechords.errors import UnknownKeyException, ChordNotFoundException, ShapeNotFoundException
-from ukechords.errors import error, InvalidCommandException
+from ukechords.errors import error, InvalidCommandException, UnknownTuningException
 from ukechords.config import UkeConfig
 
 from ukechords.theory import show_chord, show_all, show_chords_by_shape
@@ -212,6 +212,8 @@ def main() -> int:
         run_command(config, args)
     except UnknownKeyException as exc:
         error(10, exc)
+    except UnknownTuningException as exc:
+        error(11, exc)
     except ChordNotFoundException as exc:
         error(2, exc)
     except ShapeNotFoundException as exc:

@@ -8,6 +8,10 @@ class UnknownKeyException(Exception):
     """Returned in the event of a request for an unrecognized musical key"""
 
 
+class UnknownTuningException(Exception):
+    """Returned in the event of a request for an unrecognized tuning"""
+
+
 class ChordNotFoundException(ValueError):
     """Returned in the event of a request for an unrecognized musical chord"""
 
