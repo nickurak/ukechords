@@ -12,7 +12,7 @@ from pychord import Chord, QualityManager
 
 from .cache import load_scanned_chords, save_scanned_chords
 from .errors import UnknownKeyException, ChordNotFoundException
-from .errors import UnslidableEmptyShapeException
+from .errors import UnslidableEmptyShapeException, UnknownTuningException
 
 from .types import KeyInfo, ChordsByNotes, ChordsByShape, Shape
 from .types import BarreData, ChordShapes
@@ -386,7 +386,7 @@ def get_tuning(tuning_spec: str) -> tuple[str, ...]:
         return tuple("EADGBE")
     if tuning_spec == "mandolin":
         return tuple("GDAE")
-    return tuple(tuning_spec.split(","))
+    raise UnknownTuningException(f"Unknown tuning: {tuning_spec}")
 
 
 def _get_other_names(
