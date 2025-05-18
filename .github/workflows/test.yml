@@ -20,6 +20,6 @@ jobs:
       - name: Run pylint
         run: uv run pylint src tests --recursive=yes
       - name: Run mypy
-        run: uv run mypy --disallow-untyped-calls --disallow-untyped-defs --disallow-incomplete-defs src tests
+        run: uv run mypy --strict src tests
       - name: Run tests
         run: uv run pytest src tests
