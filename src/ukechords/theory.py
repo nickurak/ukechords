@@ -5,7 +5,7 @@ from __future__ import annotations
 from itertools import permutations, product
 from functools import cache
 import re
-from typing import Any, Generator, TypeVar
+from typing import Any, Generator, TypeVar, Iterable
 
 from pychord.analyzer import notes_to_positions
 from pychord import Chord, QualityManager
@@ -51,7 +51,7 @@ def _get_quality_map() -> dict[tuple[int, ...], str]:
 
 
 @cache
-def _get_chords_from_notes(notes: list[str], force_flat: bool = False) -> list[str]:
+def _get_chords_from_notes(notes: Iterable[str], force_flat: bool = False) -> list[str]:
     """
     Return a list of chords the specified notes will generate, with no
     consideration to the order of those notes. Returns flat versions
