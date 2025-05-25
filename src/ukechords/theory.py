@@ -219,7 +219,6 @@ def _flatify(arg: Normalizable) -> Normalizable:
     return _normalizer(arg, _flat_scale)
 
 
-@cache
 def _get_shape_notes(
     shape: tuple[int, ...], tuning: tuple[str, ...], force_flat: bool = False
 ) -> tuple[str, ...]:
