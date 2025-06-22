@@ -1,4 +1,6 @@
-# pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
+"""Test the render module"""
+
+# pylint: disable=missing-function-docstring
 
 from __future__ import annotations
 

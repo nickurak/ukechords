@@ -1,4 +1,6 @@
-# pylint: disable=missing-function-docstring,missing-class-docstring,missing-module-docstring
+"""Pytest fixture to provide a UkeConfig object"""
+
+# pylint: disable=missing-function-docstring
 
 from typing import Generator
 import pathlib
