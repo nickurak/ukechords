@@ -1,7 +1,5 @@
 """Test the theory module"""
 
-# pylint: disable=missing-function-docstring
-
 from __future__ import annotations
 from typing import Generator, Any, Callable
 
@@ -24,6 +22,7 @@ from .uketestconfig import uke_config
 
 
 def test_sharpify_flatify() -> None:
+    """Verify that sharp/flat conversion works"""
     assert _sharpify("Bb") == "A#"
     assert _sharpify("A#") == "A#"
     assert _flatify("A#") == "Bb"
@@ -34,6 +33,7 @@ def test_sharpify_flatify() -> None:
 
 
 def test_force_flat_asharpsus2(uke_config: UkeConfig) -> None:
+    """Regression test, confirm that forcing A#sus2 can be  forced into a flat"""
     uke_config.tuning = ("G", "C", "E")
     uke_config.force_flat = True
     pshape = (3, 0, 1)
@@ -46,6 +46,7 @@ def test_force_flat_asharpsus2(uke_config: UkeConfig) -> None:
 
 
 def test_force_flat_shape(uke_config: UkeConfig) -> None:
+    """Verify that forcing a flat on chords discovered by a specifid shape works"""
     uke_config.tuning = ("G", "C", "E")
     uke_config.force_flat = True
     pshape = (3, 2, 1)
@@ -58,6 +59,7 @@ def test_force_flat_shape(uke_config: UkeConfig) -> None:
 
 
 def test_no_force_flat_shape(uke_config: UkeConfig) -> None:
+    """Verify that returning chords from a shape returns a sharp option"""
     uke_config.tuning = ("G", "C", "E")
     pshape = (3, 2, 1)
     resp = list(_get_chords_by_shape(uke_config, pshape))
@@ -69,6 +71,7 @@ def test_no_force_flat_shape(uke_config: UkeConfig) -> None:
 
 
 def test_basic_scan(uke_config: UkeConfig) -> None:
+    """Verify the ability to scan for shapes"""
     uke_config.tuning = ("G", "C", "E", "A")
     chord_shapes = ChordCollection()
     _scan_chords(uke_config, chord_shapes, max_fret=3)
@@ -79,6 +82,7 @@ def test_basic_scan(uke_config: UkeConfig) -> None:
 
 
 def test_scale() -> None:
+    """Verify that 2 keys with the same notes are identified as related"""
     key1 = "C"
     key2 = "Am"
 
@@ -90,6 +94,7 @@ def test_scale() -> None:
 
 
 def test_show_chord(uke_config: UkeConfig) -> None:
+    """Verify that looking up a chord by its name works"""
     uke_config.show_notes = True
     output = show_chord(uke_config, "C#")
     assert {frozenset(shape["chord_names"]) for shape in output["shapes"]} == {frozenset(["C#"])}
@@ -101,6 +106,7 @@ def test_show_chord(uke_config: UkeConfig) -> None:
 
 
 def test_show_chordless_shape(uke_config: UkeConfig) -> None:
+    """Verify that an empty shape returns an empty result without crashing"""
     chordless_shape = ("x", "x", "x")
     output = show_chords_by_shape(uke_config, chordless_shape)
     shapes = output["shapes"]
@@ -111,6 +117,7 @@ def test_show_chordless_shape(uke_config: UkeConfig) -> None:
 
 
 def test_list_all(uke_config: UkeConfig) -> None:
+    """Verify that listing all chordsmatching a set of qualities works"""
     uke_config.qualities = ["", "m", "7", "dim", "maj", "m7"]
     uke_config.keys = ["C"]
     uke_config.allowed_chords = None
@@ -124,6 +131,7 @@ def test_list_all(uke_config: UkeConfig) -> None:
 
 
 def test_barrable_barred(uke_config: UkeConfig) -> None:
+    """Verify that barred chords are detected and suggested"""
     data = show_chords_by_shape(uke_config, ("1", "1", "1"))
     barre_data = data["barre_data"]
     assert barre_data
@@ -133,6 +141,7 @@ def test_barrable_barred(uke_config: UkeConfig) -> None:
 
 
 def test_barrable_unbarred(uke_config: UkeConfig) -> None:
+    """Verify barred options are avaiable even when possible but not recommended"""
     data = show_chords_by_shape(uke_config, ("1", "1", "3"))
     barre_data = data["barre_data"]
     assert barre_data
@@ -142,6 +151,7 @@ def test_barrable_unbarred(uke_config: UkeConfig) -> None:
 
 
 def test_slide(uke_config: UkeConfig) -> None:
+    """Verify that sliding a shape works correctly"""
     initial_shape = (1, 2)
     uke_config.tuning = ("C", "G")
     uke_config.slide = True
@@ -155,6 +165,7 @@ def test_slide(uke_config: UkeConfig) -> None:
 
 
 def test_empty_slide(uke_config: UkeConfig) -> None:
+    """Regression test: verify that sliding an empty shape is prevented"""
     initial_shape = (0, 0)
     uke_config.tuning = ("C", "G")
     uke_config.slide = True
@@ -163,6 +174,7 @@ def test_empty_slide(uke_config: UkeConfig) -> None:
 
 
 def test_slide_mute(uke_config: UkeConfig) -> None:
+    """Verify that sliding a shape with a mute works"""
     uke_config.tuning = ("C", "G", "E")
     uke_config.slide = True
     initial_shape = (1, 2, -1)
@@ -177,6 +189,7 @@ def test_slide_mute(uke_config: UkeConfig) -> None:
 
 
 def test_weird_flat_sharps() -> None:
+    """Test that B#/Cb/E#/Fb notes are correctly identified"""
     assert _weird_sharp_scale == ["B#", "C#", "D", "D#", "E", "E#", "F#", "G", "G#", "A", "A#", "B"]
     assert _weird_flat_scale == ["C", "Db", "D", "Eb", "Fb", "F", "Gb", "G", "Ab", "A", "Bb", "Cb"]
 
@@ -189,6 +202,7 @@ builtin_chords = ["C7"]
 
 
 def get_missing_chord_params() -> Generator[Any, None, None]:
+    """Generate inputs for tests that detect missing chords in pychord"""
     for chord, _ in extra_chords_and_loaders:
         yield chord
     for chord in builtin_chords:
@@ -198,6 +212,15 @@ def get_missing_chord_params() -> Generator[Any, None, None]:
 
 @pytest.mark.parametrize("chord", list(get_missing_chord_params()))
 def test_clean_missing_quality(chord: str) -> None:
+    """
+    Verify that chords we don't expect pychord to handle are in
+    fact missing.
+
+    This will allow us to detect if pychord learns how to handle
+    these, in which case we can remove our custom implementation of
+    them.
+
+    """
     QualityManager().load_default_qualities()
     with pytest.raises(ValueError):
         Chord(chord)
@@ -205,15 +228,18 @@ def test_clean_missing_quality(chord: str) -> None:
 
 @pytest.mark.parametrize("chord,loader", extra_chords_and_loaders)
 def test_extra_quality(chord: str, loader: Callable[[], None]) -> None:
+    """Verify that our new chord qualities can be added to pychord"""
     loader()
     Chord(chord)
 
 
 def test_show_key_by_notes() -> None:
+    """Verify that looking up a key by notes works"""
     data = show_key(None, tuple("C,D,E,F,G,A,B".split(",")))
     assert "Am" in data["other_keys"]
 
 
 def test_show_key_aliases() -> None:
+    """Verify that detecting keys with the same notes works"""
     data = show_key(None, "C")
     assert "Am" in data["other_keys"]
