@@ -9,8 +9,8 @@ from ukechords.config import UkeConfig
 from .uketestconfig import uke_config
 
 
-if TYPE_CHECKING: # pragma: no cover
-    from ukechords.theory import ChordCollection # pragma: no cover
+if TYPE_CHECKING:  # pragma: no cover
+    from ukechords.theory import ChordCollection  # pragma: no cover
 
 
 def test_load_save_cache(uke_config: UkeConfig) -> None:
