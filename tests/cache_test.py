@@ -15,7 +15,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from ukechords.theory import ChordCollection  # pragma: no cover
 
 
-def test_load_save_cache(uke_config: UkeConfig) -> None:
+def test_save_load_cache(uke_config: UkeConfig) -> None:
     shapes: ChordCollection = {"hello": "world"}  # type: ignore
     save_scanned_chords(uke_config, shapes, max_fret=4)
     shapes = {}  # type: ignore
