@@ -18,7 +18,7 @@ from ukechords.config import UkeConfig
 from .uketestconfig import uke_config
 
 
-def get_capsys_lines(capsys: pytest.CaptureFixture[str]) -> list[str]:
+def _get_capsys_lines(capsys: pytest.CaptureFixture[str]) -> list[str]:
     out, err = capsys.readouterr()
     assert err == ""
     return out.strip("\n").split("\n")
@@ -58,7 +58,7 @@ def test_render_chord_list(capsys: pytest.CaptureFixture[str], uke_config: UkeCo
         ]
     }
     render_chord_list(uke_config, sl_data)
-    lines = get_capsys_lines(capsys)
+    lines = _get_capsys_lines(capsys)
     assert len(lines) == len(sl_data["shapes"])
     for shape, line in zip(sl_data["shapes"], lines):
         (chords_c, shape_str, _, diff_desc) = line.split(maxsplit=3)
@@ -88,7 +88,7 @@ def test_render_chords_from_shape(
         },
     }
     render_chords_from_shape(uke_config, sl_data)
-    lines = get_capsys_lines(capsys)
+    lines = _get_capsys_lines(capsys)
     assert len(lines) == 2
     expected_shapestr = ",".join(map(str, sl_data["shapes"][0]["shape"]))
     expected_chordstr = ",".join(sl_data["shapes"][0]["chords"])
@@ -107,7 +107,7 @@ def test_render_shape_with_mute(capsys: pytest.CaptureFixture[str], uke_config: 
         "barre_data": None,
     }
     render_chords_from_shape(uke_config, data)
-    lines = get_capsys_lines(capsys)
+    lines = _get_capsys_lines(capsys)
     shapes_str = lines[0].split(":")[0]
     assert shapes_str == "0,x"
 
@@ -119,7 +119,7 @@ def test_render_key(capsys: pytest.CaptureFixture[str]) -> None:
         "notes": tuple(f"n{x}" for x in range(0, 10)),
     }
     render_key(None, data)
-    lines = get_capsys_lines(capsys)
+    lines = _get_capsys_lines(capsys)
     (header, note_str) = lines
     assert header == f"{data['key']} ({','.join(data['other_keys'])}):"
     assert note_str == ",".join(data["notes"])
@@ -131,7 +131,7 @@ def test_render_key_from_notes(capsys: pytest.CaptureFixture[str]) -> None:
         "notes": tuple(f"n{x}" for x in range(0, 10)),
     }
     render_key(None, data)
-    lines = get_capsys_lines(capsys)
+    lines = _get_capsys_lines(capsys)
     (output,) = lines
     assert output == ",".join(data["other_keys"])
 
@@ -142,7 +142,7 @@ def test_render_unknown_key_from_notes(capsys: pytest.CaptureFixture[str]) -> No
         "notes": tuple(f"n{x}" for x in range(0, 10)),
     }
     render_key(None, data)
-    lines = get_capsys_lines(capsys)
+    lines = _get_capsys_lines(capsys)
     (err_msg,) = lines
     assert err_msg == "No key found"
 
@@ -164,7 +164,7 @@ def test_render_chords_from_shape_with_vis_and_notes(
         "barre_data": None,
     }
     render_chords_from_shape(uke_config, data)
-    lines = get_capsys_lines(capsys)
+    lines = _get_capsys_lines(capsys)
     notes_line = lines.pop(0)
     difficulty_line = lines.pop()
     shape_chord_line = lines.pop()
@@ -197,6 +197,6 @@ def test_missing_chord(uke_config: UkeConfig) -> None:
 def test_empty_chord_list(capsys: pytest.CaptureFixture[str], uke_config: UkeConfig) -> None:
     data: ChordShapes = {"shapes": []}
     render_chord_list(uke_config, data)
-    lines = get_capsys_lines(capsys)
+    lines = _get_capsys_lines(capsys)
     assert len(lines) == 1
     assert lines[0] == "No matching chords found"
