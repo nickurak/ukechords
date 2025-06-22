@@ -1,7 +1,5 @@
 """Test the cache module"""
 
-# pylint: disable=missing-function-docstring
-
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
@@ -16,6 +14,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 def test_save_load_cache(uke_config: UkeConfig) -> None:
+    """Verify our ability to save and load chord information to disk"""
     shapes: ChordCollection = {"hello": "world"}  # type: ignore
     save_scanned_chords(uke_config, shapes, max_fret=4)
     shapes = {}  # type: ignore
@@ -25,6 +24,7 @@ def test_save_load_cache(uke_config: UkeConfig) -> None:
 
 
 def test_load_empty_cache(uke_config: UkeConfig) -> None:
+    """Verify behavior of loading an empty cache"""
     shapes: ChordCollection = {}  # type: ignore
     res = load_scanned_chords(uke_config, shapes, max_fret=4)
     assert res is False
@@ -32,6 +32,7 @@ def test_load_empty_cache(uke_config: UkeConfig) -> None:
 
 
 def test_cached_filename(uke_config: UkeConfig) -> None:
+    """Verify generation of a cached filename"""
     uke_config.mute = True
     uke_config.tuning = ("A",)
     fn_str = _cached_filename(uke_config, 4, 50)
