@@ -23,7 +23,7 @@ from ukechords.config import UkeConfig
 from .uketestconfig import uke_config
 
 
-def test_sharpify() -> None:
+def test_sharpify_flatify() -> None:
     assert _sharpify("Bb") == "A#"
     assert _sharpify("A#") == "A#"
     assert _flatify("A#") == "Bb"
@@ -33,7 +33,7 @@ def test_sharpify() -> None:
     assert all(x == y for x, y in zip(_flatify(["Bb", "A#"]), ["Bb", "Bb"]))
 
 
-def test_force_flat_bbsus2(uke_config: UkeConfig) -> None:
+def test_force_flat_asharpsus2(uke_config: UkeConfig) -> None:
     uke_config.tuning = ("G", "C", "E")
     uke_config.force_flat = True
     pshape = (3, 0, 1)
