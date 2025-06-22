@@ -1,7 +1,5 @@
 """Test the render module"""
 
-# pylint: disable=missing-function-docstring
-
 from __future__ import annotations
 
 import pytest
@@ -25,6 +23,7 @@ def _get_capsys_lines(capsys: pytest.CaptureFixture[str]) -> list[str]:
 
 
 def test_get_shape_lines() -> None:
+    """Verify that rendering a shape as a unicode box drawing works"""
     lines = list(_get_shape_lines((-1, 0, 1), 0))
     expected = """
 ╓─┬─┬─┬──
@@ -40,6 +39,7 @@ def test_get_shape_lines() -> None:
 
 
 def test_render_chord_list(capsys: pytest.CaptureFixture[str], uke_config: UkeConfig) -> None:
+    """Verify rendering a list of chords"""
     sl_data: ChordShapes = {
         "shapes": [
             {
@@ -76,6 +76,7 @@ def test_render_chord_list(capsys: pytest.CaptureFixture[str], uke_config: UkeCo
 def test_render_chords_from_shape(
     capsys: pytest.CaptureFixture[str], uke_config: UkeConfig
 ) -> None:
+    """Verify rendering a list of chords by a requested shape"""
     sl_data: ChordsByShape = {
         "shapes": [{"shape": (1,), "chords": ["c1", "c2"], "notes": ("n1", "n2")}],
         "difficulty": 15.0,
@@ -99,6 +100,7 @@ def test_render_chords_from_shape(
 
 
 def test_render_shape_with_mute(capsys: pytest.CaptureFixture[str], uke_config: UkeConfig) -> None:
+    """Verify rendering a shape that includes a muted string works"""
     data: ChordsByShape = {
         "shapes": [
             {"shape": (0, -1), "chords": [], "notes": ("G",)},
@@ -113,6 +115,7 @@ def test_render_shape_with_mute(capsys: pytest.CaptureFixture[str], uke_config: 
 
 
 def test_render_key(capsys: pytest.CaptureFixture[str]) -> None:
+    """Verify rendering a key"""
     data: KeyInfo = {
         "key": "test_key",
         "other_keys": ["alias1", "alias2"],
@@ -126,6 +129,7 @@ def test_render_key(capsys: pytest.CaptureFixture[str]) -> None:
 
 
 def test_render_key_from_notes(capsys: pytest.CaptureFixture[str]) -> None:
+    """Verify rendering a key from a specified set of notes"""
     data: KeyInfo = {
         "other_keys": ["test_key1", "test_key2"],
         "notes": tuple(f"n{x}" for x in range(0, 10)),
@@ -137,6 +141,7 @@ def test_render_key_from_notes(capsys: pytest.CaptureFixture[str]) -> None:
 
 
 def test_render_unknown_key_from_notes(capsys: pytest.CaptureFixture[str]) -> None:
+    """Verify correct handling of a list  of notes that doesn't match a known key"""
     data: KeyInfo = {
         "other_keys": [],
         "notes": tuple(f"n{x}" for x in range(0, 10)),
@@ -150,6 +155,7 @@ def test_render_unknown_key_from_notes(capsys: pytest.CaptureFixture[str]) -> No
 def test_render_chords_from_shape_with_vis_and_notes(
     capsys: pytest.CaptureFixture[str], uke_config: UkeConfig
 ) -> None:
+    """Verify rendering a shape including its visualization and notes"""
     uke_config.visualize = True
     uke_config.show_notes = True
     data: ChordsByShape = {
@@ -189,12 +195,14 @@ def test_render_chords_from_shape_with_vis_and_notes(
 
 
 def test_missing_chord(uke_config: UkeConfig) -> None:
+    """Verify behavior when attempting to render a chord with no known shape"""
     data: ChordShapes = {"chord": "C9", "shapes": []}
     with pytest.raises(ShapeNotFoundException):
         render_chord_list(uke_config, data)
 
 
 def test_empty_chord_list(capsys: pytest.CaptureFixture[str], uke_config: UkeConfig) -> None:
+    """Verify rendering a empty chord list"""
     data: ChordShapes = {"shapes": []}
     render_chord_list(uke_config, data)
     lines = _get_capsys_lines(capsys)
