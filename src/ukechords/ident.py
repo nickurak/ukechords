@@ -210,7 +210,7 @@ def run_command(config: UkeConfig, args: argparse.Namespace) -> None:
 
 
 def main() -> int:
-    # pylint: disable=missing-function-docstring
+    """Main function for the "ident" ukechords cli client"""
     add_no5_quality()
     add_7sus2_quality()
     try:
