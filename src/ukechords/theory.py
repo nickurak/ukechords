@@ -383,6 +383,8 @@ def lookup_tuning(tuning_spec: str) -> tuple[str, ...]:
         return tuple("EADGBE")
     if tuning_spec == "mandolin":
         return tuple("GDAE")
+    if tuning_spec == "bass":
+        return tuple("EADG")
     raise UnknownTuningException(f"Unknown tuning: {tuning_spec}")
 
 
