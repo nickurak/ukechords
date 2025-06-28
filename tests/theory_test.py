@@ -13,7 +13,7 @@ from ukechords.theory import _get_key_notes, _get_dupe_scales_from_key
 from ukechords.theory import show_chord, show_chords_by_shape, show_all
 from ukechords.theory import _weird_sharp_scale, _weird_flat_scale
 from ukechords.theory import add_no5_quality, add_7sus2_quality
-from ukechords.theory import show_key
+from ukechords.theory import show_key, lookup_tuning
 
 from ukechords.errors import UnslidableEmptyShapeException
 
@@ -243,3 +243,9 @@ def test_show_key_aliases() -> None:
     """Verify that detecting keys with the same notes works"""
     data = show_key(None, "C")
     assert "Am" in data["other_keys"]
+
+
+def test_get_named_tuning() -> None:
+    "Confirm that we can look up a tuning by name"
+    tuning = lookup_tuning("ukulele")
+    assert tuning == ("G", "C", "E", "A")

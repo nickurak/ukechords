@@ -373,12 +373,8 @@ def _rank_chord_name(name: str) -> tuple[bool, bool, int, str]:
     return ("no" in name, has_symbol, len(name), name)
 
 
-def get_tuning(tuning_spec: str | tuple[str, ...]) -> tuple[str, ...]:
-    """For a given tuning (by name or comma-separated notes), return
-    the notes in order
-    """
-    if not isinstance(tuning_spec, str):
-        return tuple(tuning_spec)
+def lookup_tuning(tuning_spec: str) -> tuple[str, ...]:
+    """For a given named tunting, return the notes in order"""
     if tuning_spec in ("ukulele", "ukulele-c6", "uke", "u"):
         return tuple("GCEA")
     if tuning_spec in ("ukulele-g6", "baritone"):
