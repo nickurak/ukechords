@@ -17,7 +17,7 @@ from ukechords.config import UkeConfig
 
 from ukechords.theory import show_chord, show_all, show_chords_by_shape
 from ukechords.theory import show_chords_by_notes, show_key
-from ukechords.theory import get_tuning, rank_shape_by_high_fret, rank_shape_by_difficulty
+from ukechords.theory import lookup_tuning, rank_shape_by_high_fret, rank_shape_by_difficulty
 
 from ukechords.render import render_chord_list, render_chords_from_shape
 from ukechords.render import render_chords_from_notes, render_key, render_json
@@ -42,7 +42,7 @@ def _get_config_from_preferences() -> UkeConfig:
     defaults = config["ukechords"]
 
     cache_dir = defaults["cache_dir"]
-    tuning = get_tuning(defaults["tuning"])
+    tuning = lookup_tuning(defaults["tuning"])
     mute = defaults["mute"].lower() in ("yes", "true", "t", "1")
     max_difficulty = float(defaults["max_difficulty"])
     shape_ranker: Callable[[tuple[int, ...]], Any] = rank_shape_by_difficulty
@@ -71,7 +71,7 @@ def _get_parser() -> argparse.ArgumentParser:
     pa("-s", "--shape", help=shape_help, type=lambda shape: tuple(shape.split(",")))
     slide_help = "Show what chord(s) this <SHAPE> could play when slid up or down"
     pa("--slide", action="store_true", help=slide_help)
-    pa("-t", "--tuning", help="comma-separated notes for string tuning", type=get_tuning)
+    pa("-t", "--tuning", help="comma-separated notes for string tuning", type=lookup_tuning)
     pa("-1", "--single", action="store_true", help="Show only 1 shape for each chord")
     pa("-v", "--visualize", action="store_true", help="Visualize shapes with Unicode drawings")
     all_help = "Show all matching chords, not just one selected one"
