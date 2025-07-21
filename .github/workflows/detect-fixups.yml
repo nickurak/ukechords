@@ -1,4 +1,4 @@
-name: Ukechords fixup detections
+name: ukechords fixup detections
 
 on: [pull_request]
 
