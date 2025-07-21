@@ -23,6 +23,6 @@ class UkeConfig:
     max_difficulty: float = 100.0  # A maximum difficulty of shapes to scan and report
     cache_dir: str = ""  # Directory in which to store cached chord->shape maps
     tuning: tuple[str, ...] = ()  # Notes that individual strings are tuned to
-    mute: bool = False  # Whether or not to consider muted shapes
+    mute: bool = False  # Whether to consider muted shapes
     # Function to use to sort discovered shapes with
     shape_ranker: Callable[[tuple[int, ...]], Any] = sum
