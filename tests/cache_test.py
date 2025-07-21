@@ -15,12 +15,12 @@ if TYPE_CHECKING:  # pragma: no cover
 
 def test_save_load_cache(uke_config: UkeConfig) -> None:
     """Verify our ability to save and load chord information to disk"""
-    shapes: ChordCollection = {"hello": "world"}  # type: ignore
+    shapes: ChordCollection = {"SomeChord": [(1, 2, 3)]}  # type: ignore
     save_scanned_chords(uke_config, shapes, max_fret=4)
     shapes = {}  # type: ignore
     res = load_scanned_chords(uke_config, shapes, max_fret=4)
     assert res
-    assert shapes["hello"] == "world"
+    assert shapes["SomeChord"] == [(1, 2, 3)]
 
 
 def test_load_empty_cache(uke_config: UkeConfig) -> None:
