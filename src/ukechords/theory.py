@@ -105,8 +105,11 @@ class ChordCollection(dict[str, Any]):
     def __setitem__(self, chord: str, /, *args: Any, **kwargs: Any) -> None:
         super().__setitem__(_normalize_chord(str(chord)), *args, **kwargs)
 
-    def __getitem__(self, chord: str, /, *args: Any, **kwargs: Any) -> Any:
-        return super().__getitem__(_normalize_chord(str(chord)), *args, **kwargs)
+    def __getitem__(self, chord: str, /, *args: Any, **kwargs: Any) -> list[tuple[int, ...]]:
+        shapes: list[tuple[int, ...]] = super().__getitem__(
+            _normalize_chord(str(chord)), *args, **kwargs
+        )
+        return shapes
 
 
 def _barreless_shape_difficulty(shape: tuple[int, ...]) -> float:
