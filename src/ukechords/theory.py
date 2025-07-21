@@ -522,14 +522,11 @@ def show_chords_by_shape(config: UkeConfig, input_shape: tuple[str, ...]) -> Cho
     pshape = tuple(-1 if pos == "x" else int(pos) for pos in input_shape)
     shapes: list[Shape] = []
 
-    def append_shape(shape: tuple[int, ...], chords: list[str], notes: set[str]) -> None:
-        shapes.append({"shape": shape, "chords": chords, "notes": tuple(notes)})
-
     for shape, chords, notes in _get_chords_by_shape(config, pshape):
-        append_shape(shape, chords, notes)
+        shapes.append({"shape": shape, "chords": chords, "notes": tuple(notes)})
     if not shapes:
         notes = set(_get_shape_notes(pshape, tuning=config.tuning, force_flat=config.force_flat))
-        append_shape(pshape, [], notes)
+        shapes.append({"shape": pshape, "chords": [], "notes": tuple(notes)})
 
     if not config.slide:
         difficulty, barre_data = _get_shape_difficulty(pshape, config.tuning)
