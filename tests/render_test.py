@@ -202,7 +202,7 @@ def test_missing_chord(uke_config: UkeConfig) -> None:
 
 
 def test_empty_chord_list(capsys: pytest.CaptureFixture[str], uke_config: UkeConfig) -> None:
-    """Verify rendering a empty chord list"""
+    """Verify rendering an empty chord list"""
     data: ChordShapes = {"shapes": []}
     render_chord_list(uke_config, data)
     lines = _get_capsys_lines(capsys)
