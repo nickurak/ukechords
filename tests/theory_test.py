@@ -246,6 +246,6 @@ def test_show_key_aliases() -> None:
 
 
 def test_get_named_tuning() -> None:
-    "Confirm that we can look up a tuning by name"
+    """Confirm that we can look up a tuning by name"""
     tuning = lookup_tuning("ukulele")
     assert tuning == ("G", "C", "E", "A")

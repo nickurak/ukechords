@@ -26,7 +26,7 @@ from ukechords.types import ChordsByNotes, ChordsByShape, ChordShapes, KeyInfo
 
 
 def _get_config_from_preferences() -> UkeConfig:
-    "Create a UkeConfig object based on on-disk preferences"
+    """Create a UkeConfig object based on on-disk preferences"""
     config = configparser.ConfigParser()
 
     config_path = BaseDirectory.load_first_config("ukechords.ini")
@@ -64,7 +64,7 @@ def _get_tuning(tuning_spec: str) -> tuple[str, ...]:
 
 
 def _get_parser() -> argparse.ArgumentParser:
-    "Construct and return an argparse parser for use with ukechords on the command line"
+    """Construct and return an argparse parser for use with ukechords on the command line"""
     parser = argparse.ArgumentParser()
 
     def pa(*args: Any, **kwargs: Any) -> None:
@@ -138,7 +138,7 @@ def _check_argument_errors(args: argparse.Namespace) -> None:
 
 
 def _get_config(args: argparse.Namespace) -> UkeConfig:
-    "Unpack argparse options into a new UkeConfig"
+    """Unpack argparse options into a new UkeConfig"""
     _check_argument_errors(args)
     config = _get_config_from_preferences()
     if args.mute is not None:
@@ -187,7 +187,7 @@ def _get_renderfunc_from_name(name: str) -> Callable[[UkeConfig, Any], None]:
 
 
 def run_command(config: UkeConfig, args: argparse.Namespace) -> None:
-    "Run a command specified by the argparsed options provided"
+    """Run a command specified by the argparsed options provided"""
     renderer: Callable[[UkeConfig, Any], None]
     data: ChordShapes | ChordsByShape | ChordsByNotes | KeyInfo
     if args.chord:
