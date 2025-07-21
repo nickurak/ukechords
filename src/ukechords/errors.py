@@ -21,11 +21,11 @@ class ShapeNotFoundException(ValueError):
 
 
 class InvalidCommandException(Exception):
-    "Raised in case of an invalid command line invocation"
+    """Raised in case of an invalid command line invocation"""
 
 
 class UnslidableEmptyShapeException(Exception):
-    "Raised in the event of an attempt to slide an empty shape"
+    """Raised in the event of an attempt to slide an empty shape"""
 
 
 def error(return_code: int, message: Any) -> NoReturn:
