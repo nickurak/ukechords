@@ -356,7 +356,7 @@ def _scan_chords(config: UkeConfig, chord_shapes: ChordCollection, max_fret: int
 
 def rank_shape_by_difficulty(shape: tuple[int, ...]) -> tuple[float, tuple[int, ...]]:
     """Enable sorting a list of shapes by how hard they are to play"""
-    return (_get_shape_difficulty(shape)[0], shape[::-1])
+    return _get_shape_difficulty(shape)[0], shape[::-1]
 
 
 def rank_shape_by_high_fret(shape: tuple[int, ...]) -> tuple[int, ...]:
@@ -370,7 +370,7 @@ def _rank_chord_name(name: str) -> tuple[bool, bool, int, str]:
     for char in ["+", "-", "(", ")"]:
         if char in name:
             has_symbol = True
-    return ("no" in name, has_symbol, len(name), name)
+    return "no" in name, has_symbol, len(name), name
 
 
 def lookup_tuning(tuning_spec: str) -> tuple[str, ...]:
