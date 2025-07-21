@@ -42,7 +42,7 @@ def test_force_flat_asharpsus2(uke_config: UkeConfig) -> None:
     shape, chords, notes = resp[0]
     assert shape == (3, 0, 1)
     assert chords == ["Fsus4", "Bbsus2"]
-    assert notes == set(["Bb", "F", "C"])
+    assert notes == {"Bb", "F", "C"}
 
 
 def test_force_flat_shape(uke_config: UkeConfig) -> None:
@@ -55,7 +55,7 @@ def test_force_flat_shape(uke_config: UkeConfig) -> None:
     shape, chords, notes = resp[0]
     assert shape == (3, 2, 1)
     assert chords == ["Bb"]
-    assert notes == set(["Bb", "F", "D"])
+    assert notes == {"Bb", "F", "D"}
 
 
 def test_no_force_flat_shape(uke_config: UkeConfig) -> None:
@@ -67,7 +67,7 @@ def test_no_force_flat_shape(uke_config: UkeConfig) -> None:
     shape, chords, notes = resp[0]
     assert shape == (3, 2, 1)
     assert chords == ["A#"]
-    assert notes == set(["A#", "F", "D"])
+    assert notes == {"A#", "F", "D"}
 
 
 def test_basic_scan(uke_config: UkeConfig) -> None:
