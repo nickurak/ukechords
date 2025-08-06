@@ -12,14 +12,14 @@ fail() {
     FAILURES+=("$* returned error: $RC")
 }
 
-(uv run flake8 "${SRC_DIRS[@]}" && echo 'flake8 passed') || fail $? flake8
-
-find "${SRC_DIRS[@]}" -name '*.py' | grep -v flycheck | xargs -d '\n' uv run pylint || fail $? pylint
-
-uv run mypy --strict "${SRC_DIRS[@]}" || fail $? mypy
+get_files() { find "${SRC_DIRS[@]}" -name '*.py' | grep -v flycheck; }
+xargs_uv() { xargs -d '\n' uv run "$@"; }
 
 export COVERAGE_CORE=sysmon
-uv run pytest --no-header "$@" "${SRC_DIRS[@]}" || fail $? pytest
+get_files | (xargs_uv flake8 && echo 'flake8 passed') || fail $? flake8
+get_files | xargs_uv pylint || fail $? pylint
+get_files | xargs_uv mypy --strict || fail $? mypy
+get_files | xargs_uv pytest "$@" || fail $? pytest
 
 [ "$FIRST_RC" -eq 0 ] && exit
 
