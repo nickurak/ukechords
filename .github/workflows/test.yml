@@ -22,4 +22,4 @@ jobs:
       - name: Run mypy
         run: uv run mypy --strict src tests
       - name: Run tests
-        run: uv run pytest src tests
+        run: uv run pytest tests
