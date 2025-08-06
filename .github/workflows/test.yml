@@ -18,7 +18,7 @@ jobs:
       - name: Run flake8
         run: uv run flake8 src tests
       - name: Run pylint
-        run: uv run pylint src tests --recursive=yes
+        run: uv run pylint src tests
       - name: Run mypy
         run: uv run mypy --strict src tests
       - name: Run tests
