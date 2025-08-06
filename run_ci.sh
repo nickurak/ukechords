@@ -2,11 +2,10 @@
 
 set -Eeuo pipefail
 
-FAILURES=()
-
 SRC_DIRS=(src tests)
 
 FIRST_RC=0
+FAILURES=()
 fail() {
     RC=$1 && shift
     [ "$FIRST_RC" -eq 0 ] && FIRST_RC=$RC
