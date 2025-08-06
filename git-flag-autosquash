@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -e
+
+if [ $# -ne 2 ]; then
+    echo "Pass BASE and HEAD as parameters"
+    exit 1
+fi
+
+BASE="$1"
+HEAD="$2"
+
+BADCOMMITS="$(git log --pretty=%h --grep "fixup!" --grep "squash!" "$1..$2")"
+
+if [ -n "$BADCOMMITS" ]; then
+    echo "{$(echo $BADCOMMITS | sed 's/ /, /g')} are uncaught fixup/squash commits."
+    exit 1
+fi
