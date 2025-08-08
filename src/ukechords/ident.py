@@ -20,9 +20,9 @@ from ukechords.theory import show_chords_by_notes, show_key
 from ukechords.theory import lookup_tuning, rank_shape_by_high_fret, rank_shape_by_difficulty
 
 from ukechords.render import render_chord_list, render_chords_from_shape
-from ukechords.render import render_chords_from_notes, render_key, render_json
+from ukechords.render import render_key, render_json
 
-from ukechords.types import ChordsByNotes, ChordsByShape, ChordShapes, KeyInfo
+from ukechords.types import ChordsByShape, ChordShapes, KeyInfo
 
 
 def _get_config_from_preferences() -> UkeConfig:
@@ -174,7 +174,6 @@ def _get_renderfunc_from_name(name: str) -> Callable[[UkeConfig, Any], None]:
     render_funcs: list[Callable[[UkeConfig, Any], None]] = [
         render_chord_list,
         render_chords_from_shape,
-        render_chords_from_notes,
         render_key,
     ]
     render_func_map = {f.__name__: f for f in render_funcs}
@@ -189,7 +188,7 @@ def _get_renderfunc_from_name(name: str) -> Callable[[UkeConfig, Any], None]:
 def run_command(config: UkeConfig, args: argparse.Namespace) -> None:
     """Run a command specified by the argparsed options provided"""
     renderer: Callable[[UkeConfig, Any], None]
-    data: ChordShapes | ChordsByShape | ChordsByNotes | KeyInfo
+    data: ChordShapes | ChordsByShape | KeyInfo
     if args.chord:
         renderer = render_chord_list
         data = show_chord(config, args.chord)
@@ -200,7 +199,7 @@ def run_command(config: UkeConfig, args: argparse.Namespace) -> None:
         renderer = render_chords_from_shape
         data = show_chords_by_shape(config, args.shape)
     elif args.notes:
-        renderer = render_chords_from_notes
+        renderer = render_chord_list
         data = show_chords_by_notes(config, args.notes)
     elif args.show_key:
         renderer = render_key

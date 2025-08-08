@@ -14,7 +14,7 @@ from .cache import load_scanned_chords, save_scanned_chords
 from .errors import UnknownKeyException, ChordNotFoundException
 from .errors import UnslidableEmptyShapeException, UnknownTuningException
 
-from .types import KeyInfo, ChordsByNotes, ChordsByShape, Shape
+from .types import KeyInfo, ChordsByShape, Shape
 from .types import BarreData, ChordShapes
 from .config import UkeConfig
 
@@ -559,9 +559,30 @@ def show_chords_by_shape(config: UkeConfig, input_shape: tuple[str, ...]) -> Cho
     return {"shapes": shapes}
 
 
-def show_chords_by_notes(_: UkeConfig | None, notes: set[str]) -> ChordsByNotes:
+def show_chords_by_notes(config: UkeConfig, notes: set[str]) -> ChordShapes:
     """Return information on what chords are played by the specified notes"""
-    return {"notes": tuple(notes), "chords": _get_chords_from_notes(tuple(notes))}
+    output: ChordShapes = {"notes": tuple(notes), "shapes": []}
+    shapes = []
+    for shape in _get_shapes(config, 12, notes=tuple(notes)):
+        shape_notes = set(_get_shape_notes(shape, tuning=config.tuning))
+        if shape_notes == notes:
+            shapes.append(shape)
+    shapes.sort(key=config.shape_ranker)
+    chords = _get_chords_from_notes(frozenset(notes))
+    for shape in shapes[: config.num or len(shapes)]:
+        difficulty, barre_data = _get_shape_difficulty(shape, tuning=config.tuning)
+        if difficulty > config.max_difficulty:
+            continue
+        output["shapes"].append(
+            {
+                "shape": shape,
+                "difficulty": difficulty,
+                "barre_data": barre_data,
+                "chord_names": chords,
+            }
+        )
+
+    return output
 
 
 def show_key(_: UkeConfig | None, key: str | tuple[str, ...]) -> KeyInfo:
