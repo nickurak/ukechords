@@ -12,13 +12,6 @@ class KeyInfo(TypedDict):
     key: NotRequired[str]
 
 
-class ChordsByNotes(TypedDict):
-    """Return value of show_chords_by_notes"""
-
-    notes: tuple[str, ...]
-    chords: list[str]
-
-
 class Shape(TypedDict):
     """One instance of a shape as returned in get_chord_by_shape (which may be a slid shape)"""
 

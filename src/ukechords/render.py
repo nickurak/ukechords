@@ -8,7 +8,7 @@ import sys
 from .errors import ShapeNotFoundException
 
 from .config import UkeConfig
-from .types import ChordShapes, ChordsByShape, ChordsByNotes, KeyInfo, BarreData
+from .types import ChordShapes, ChordsByShape, KeyInfo, BarreData
 
 
 def _csv(lst: Iterable[Any], sep: str = ",") -> str:
@@ -87,7 +87,10 @@ def render_chord_list(config: UkeConfig, data: ChordShapes) -> None:
     for shape in data["shapes"]:
         shape_string = _get_shape_string(shape["shape"])
         d_string = _diff_string(shape["difficulty"], shape["barre_data"], diff_width=diff_width)
-        chord_names = _csv(shape["chord_names"]) + ":"
+        if shape["chord_names"]:
+            chord_names = _csv(shape["chord_names"]) + ":"
+        else:
+            chord_names = f"Notes: {','.join(sorted(data['notes']))}:"
         print(f"{chord_names:{name_width}} {shape_string:{shape_width}} difficulty:{d_string:}")
         if config.visualize:
             _draw_shape(shape["shape"], shape["barre_data"])
@@ -105,11 +108,6 @@ def render_chords_from_shape(config: UkeConfig, data: ChordsByShape) -> None:
         print(f'{shape_string}: {_csv(shape["chords"])}')
     if not config.slide:
         print(f"Difficulty: {_diff_string(data['difficulty'], data['barre_data'])}")
-
-
-def render_chords_from_notes(_: UkeConfig | None, data: ChordsByNotes) -> None:
-    """Render named chords, as identified by notes"""
-    print(f"{_csv(data['notes'])}: {_csv(data['chords'])}")
 
 
 def render_key(_: UkeConfig | None, data: KeyInfo) -> None:
