@@ -16,10 +16,6 @@ class ChordNotFoundException(ValueError):
     """Returned in the event of a request for an unrecognized musical chord"""
 
 
-class ShapeNotFoundException(ValueError):
-    """Returned in the event of a request for a known chord with no known way to play it"""
-
-
 class InvalidCommandException(Exception):
     """Raised in case of an invalid command line invocation"""
 
