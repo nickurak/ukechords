@@ -5,8 +5,6 @@ from typing import Generator, Any, Iterable
 import json
 import sys
 
-from .errors import ShapeNotFoundException
-
 from .config import UkeConfig
 from .types import ChordShapes, ChordsByShape, KeyInfo, BarreData
 
@@ -75,9 +73,10 @@ def render_chord_list(config: UkeConfig, data: ChordShapes) -> None:
     shape_width = 0
     diff_width = 0
     if not data["shapes"]:
+        msg = "No matching shapes found"
         if "chord" in data:
-            raise ShapeNotFoundException(f'No shape for "{data["chord"]}" found')
-        print("No matching chords found")
+            msg = f'No shape for "{data["chord"]}" found'
+        print(msg)
     for shape in data["shapes"]:
         name_width = max(name_width, len(_csv(shape["chord_names"])))
         shape_string = _get_shape_string(shape["shape"])

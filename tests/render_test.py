@@ -7,7 +7,6 @@ import pytest
 from ukechords.render import _get_shape_lines, render_chord_list
 from ukechords.render import render_chords_from_shape, render_key
 from ukechords.render import _diff_string
-from ukechords.errors import ShapeNotFoundException
 
 from ukechords.render import _csv
 
@@ -194,17 +193,10 @@ def test_render_chords_from_shape_with_vis_and_notes(
     assert vis_lines == lines
 
 
-def test_missing_chord(uke_config: UkeConfig) -> None:
-    """Verify behavior when attempting to render a chord with no known shape"""
-    data: ChordShapes = {"chord": "C9", "shapes": []}
-    with pytest.raises(ShapeNotFoundException):
-        render_chord_list(uke_config, data)
-
-
-def test_empty_chord_list(capsys: pytest.CaptureFixture[str], uke_config: UkeConfig) -> None:
+def test_empty_shape_list(capsys: pytest.CaptureFixture[str], uke_config: UkeConfig) -> None:
     """Verify rendering an empty chord list"""
     data: ChordShapes = {"shapes": []}
     render_chord_list(uke_config, data)
     lines = _get_capsys_lines(capsys)
     assert len(lines) == 1
-    assert lines[0] == "No matching chords found"
+    assert lines[0] == "No matching shapes found"
