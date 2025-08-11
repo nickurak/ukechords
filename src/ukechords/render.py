@@ -76,6 +76,8 @@ def render_chord_list(config: UkeConfig, data: ChordShapes) -> None:
         msg = "No matching shapes found"
         if "chord" in data:
             msg = f'No shape for "{data["chord"]}" found'
+        elif "notes" in data:
+            msg = f'No shape for notes {_csv(sorted(data["notes"]))} found'
         print(msg)
     for shape in data["shapes"]:
         name_width = max(name_width, len(_csv(shape["chord_names"])))
