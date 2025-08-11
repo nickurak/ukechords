@@ -200,3 +200,27 @@ def test_empty_shape_list(capsys: pytest.CaptureFixture[str], uke_config: UkeCon
     lines = _get_capsys_lines(capsys)
     assert len(lines) == 1
     assert lines[0] == "No matching shapes found"
+
+
+def test_empty_shape_list_with_chord(
+    capsys: pytest.CaptureFixture[str], uke_config: UkeConfig
+) -> None:
+    """Verify rendering an empty chord list, in a case where a chord was identified"""
+    fake_chord = "SomeChord"
+    data: ChordShapes = {"shapes": [], "chord": fake_chord}
+    render_chord_list(uke_config, data)
+    lines = _get_capsys_lines(capsys)
+    assert len(lines) == 1
+    assert lines[0] == f'No shape for "{fake_chord}" found'
+
+
+def test_empty_shape_list_with_notes(
+    capsys: pytest.CaptureFixture[str], uke_config: UkeConfig
+) -> None:
+    """Verify rendering an empty chord list, in a case where notes were specified"""
+    notes_str = "A,B,C"
+    data: ChordShapes = {"shapes": [], "notes": tuple(notes_str.split(","))}
+    render_chord_list(uke_config, data)
+    lines = _get_capsys_lines(capsys)
+    assert len(lines) == 1
+    assert lines[0] == f"No shape for notes {notes_str} found"
