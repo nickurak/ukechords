@@ -399,7 +399,7 @@ def _scan_chords(
             chord_shapes[chord].extend(shapes)
 
     partitions = cpu_count * 2 if (cpu_count := os.cpu_count()) is not None else 1
-    with mp.Pool() as pool:
+    with mp.get_context("fork").Pool() as pool:
 
         def mp_error(e: BaseException) -> NoReturn:
             pool.terminate()
