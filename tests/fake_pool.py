@@ -11,7 +11,17 @@ from pytest_mock import MockFixture
 @pytest.fixture(autouse=True)
 def fake_pool(mocker: MockFixture) -> None:
     """Fixture to patch in FakePool as an alternative for multiprocessing.Pool"""
-    mocker.patch("multiprocessing.Pool", return_value=FakePool())
+    mocker.patch("multiprocessing.get_context", return_value=FakeContext())
+
+
+class FakeContext:
+    """
+    Dummy context for multiprocessing to return our FakePool
+    """
+
+    # pylint: disable=too-few-public-methods,invalid-name,missing-function-docstring
+    def Pool(self) -> FakePool:
+        return FakePool()
 
 
 class FakePool:
