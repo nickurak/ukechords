@@ -20,4 +20,4 @@ jobs:
         env:
           BASE: origin/${{ github['base_ref'] }}
           HEAD: origin/${{ github['head_ref'] }}
-        run: ./git-flag-autosquash "$BASE" "$HEAD"
+        run: util/git-flag-autosquash "$BASE" "$HEAD"
