@@ -302,3 +302,10 @@ def test_show_unknown_chord(uke_config: UkeConfig) -> None:
     """Verify that looking up an unknown chord raises an appropriate error"""
     with pytest.raises(ChordNotFoundException):
         _ = show_chord(uke_config, "C49")
+
+
+def test_show_unplayable_chord(uke_config: UkeConfig) -> None:
+    """Verify that looking up an unknown chord yields no results"""
+    assert len(uke_config.tuning) < 4
+    data = show_chord(uke_config, "C9")
+    assert not data["shapes"]
