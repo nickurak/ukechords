@@ -309,3 +309,23 @@ def test_show_unplayable_chord(uke_config: UkeConfig) -> None:
     assert len(uke_config.tuning) < 4
     data = show_chord(uke_config, "C9")
     assert not data["shapes"]
+
+
+def test_allowed_chords(uke_config: UkeConfig) -> None:
+    """Verify that listing chords by allowed-chords can add new chords"""
+    uke_config.tuning = ("G", "C")
+
+    uke_config.allowed_chords = ["C"]
+    c_data = show_all(uke_config)
+
+    uke_config.allowed_chords = ["C"]
+    g_data = show_all(uke_config)
+
+    uke_config.allowed_chords = ["C", "G"]
+    both_data = show_all(uke_config)
+
+    extra_chord = "E5"
+
+    assert not [shape for shape in c_data["shapes"] if extra_chord in shape["chord_names"]]
+    assert not [shape for shape in g_data["shapes"] if extra_chord in shape["chord_names"]]
+    assert [shape for shape in both_data["shapes"] if extra_chord in shape["chord_names"]]
