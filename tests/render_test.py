@@ -10,7 +10,7 @@ from ukechords.render import _diff_string
 
 from ukechords.render import _csv
 
-from ukechords.types import ChordShapes, ChordsByShape, KeyInfo
+from ukechords.types import ChordShapes, ChordsByShape, KeyInfo, BarreData
 from ukechords.config import UkeConfig
 from .uketestconfig import uke_config
 
@@ -224,3 +224,30 @@ def test_empty_shape_list_with_notes(
     lines = _get_capsys_lines(capsys)
     assert len(lines) == 1
     assert lines[0] == f"No shape for notes {notes_str} found"
+
+
+def test_plain_barred_shape(uke_config: UkeConfig) -> None:
+    """Test that a fully barred shape has no shape on top of the barre"""
+    barre_data: BarreData = {
+        "fret": 1,
+        "barred": True,
+        "shape": (0, 0, 0),
+        "unbarred_difficulty": 1.0,
+        "chord": "C",
+    }
+    diff_string = _diff_string(0.0, barre_data)
+    assert "(barre " in diff_string
+    assert ":" not in diff_string
+
+
+def test_plain_unbarred_option_shape(uke_config: UkeConfig) -> None:
+    """Test that a fully shape which could be barred bun isn't recommended is rendered right"""
+    barre_data: BarreData = {
+        "fret": 1,
+        "barred": False,
+        "shape": (0, 0, 0),
+        "barred_difficulty": 1.0,
+        "chord": "Csus4",
+    }
+    diff_string = _diff_string(0.0, barre_data)
+    assert "(else " in diff_string
