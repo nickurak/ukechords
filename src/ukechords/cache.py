@@ -10,8 +10,8 @@ from pathlib import Path
 
 from .config import UkeConfig
 
-if TYPE_CHECKING:
-    from .theory import ChordCollection
+if TYPE_CHECKING:  # pragma: no cover
+    from .theory import ChordCollection  # pragma: no cover
 
 
 def _cached_filename(config: UkeConfig, max_fret: int, max_difficulty: float) -> str:
