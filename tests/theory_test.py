@@ -288,3 +288,11 @@ def test_invalid_chord_root() -> None:
     c = ChordCollection()
     with pytest.raises(ChordNotFoundException):
         c["H"] = None
+
+
+def test_show_chord_aliases(uke_config: UkeConfig) -> None:
+    """Verify that looking up a chord also shows other names with the same notes"""
+    output = show_chord(uke_config, "Csus4")
+    names = output["shapes"][0]["chord_names"]
+    assert "Csus4" in names
+    assert "Fsus2" in names
