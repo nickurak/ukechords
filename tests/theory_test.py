@@ -17,7 +17,7 @@ from ukechords.theory import _weird_sharp_scale, _weird_flat_scale
 from ukechords.theory import add_no5_quality, add_7sus2_quality
 from ukechords.theory import show_key, lookup_tuning
 
-from ukechords.errors import UnslidableEmptyShapeException
+from ukechords.errors import UnslidableEmptyShapeException, ChordNotFoundException
 
 from ukechords.config import UkeConfig
 from .uketestconfig import uke_config
@@ -280,3 +280,11 @@ def test_get_named_tuning() -> None:
     """Confirm that we can look up a tuning by name"""
     tuning = lookup_tuning("ukulele")
     assert tuning == ("G", "C", "E", "A")
+
+
+def test_invalid_chord_root() -> None:
+    """Confirm that normalizing an invalid chord with a
+    ChordCollection raises an error"""
+    c = ChordCollection()
+    with pytest.raises(ChordNotFoundException):
+        c["H"] = None
