@@ -296,3 +296,9 @@ def test_show_chord_aliases(uke_config: UkeConfig) -> None:
     names = output["shapes"][0]["chord_names"]
     assert "Csus4" in names
     assert "Fsus2" in names
+
+
+def test_show_unknown_chord(uke_config: UkeConfig) -> None:
+    """Verify that looking up an unknown chord raises an appropriate error"""
+    with pytest.raises(ChordNotFoundException):
+        _ = show_chord(uke_config, "C49")
