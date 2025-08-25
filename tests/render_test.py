@@ -23,12 +23,12 @@ def _get_capsys_lines(capsys: pytest.CaptureFixture[str]) -> list[str]:
 
 def test_get_shape_lines() -> None:
     """Verify that rendering a shape as a unicode box drawing works"""
-    lines = list(_get_shape_lines((-1, 0, 1), 0))
+    lines = list(_get_shape_lines((-1, 0, 1), 2))
     expected = """
 ╓─┬─┬─┬──
-║●│ │╷│ 
-║ │ │╵│ 
-║⃠ │ │ │ 
+║●│▒│╷│ 
+║ │▒│╵│ 
+║⃠ │▒│ │ 
 ╙─┴─┴─┴──
 """  # noqa
     expected_lines = expected.split("\n")
