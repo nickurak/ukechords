@@ -127,7 +127,6 @@ def test_show_chord_by_sharp_notes(uke_config: UkeConfig) -> None:
     assert set(output["notes"]) == {"C#", "F", "G#"}
 
 
-@pytest.mark.xfail(strict=True)
 def test_show_chord_by_flat_notes(uke_config: UkeConfig) -> None:
     """Verify that looking up a chord by sharp notes works"""
     output = show_chords_by_notes(uke_config, {"Db", "F", "Ab"})

@@ -604,11 +604,14 @@ def show_chords_by_shape(config: UkeConfig, input_shape: tuple[str, ...]) -> Cho
 
 def show_chords_by_notes(config: UkeConfig, notes: set[str]) -> ChordShapes:
     """Return information on what chords are played by the specified notes"""
-    output: ChordShapes = {"notes": tuple(notes), "shapes": []}
+    normalizer = _sharpify
+    if config.force_flat or any(note[-1] == "b" for note in notes):
+        normalizer = _flatify
+    output: ChordShapes = {"notes": normalizer(tuple(notes)), "shapes": []}
     shapes = []
     for shape in _get_shapes(config, 12, notes=tuple(notes)):
-        shape_notes = set(_get_shape_notes(shape, tuning=config.tuning))
-        if shape_notes == notes:
+        shape_notes = set(normalizer(_get_shape_notes(shape, tuning=config.tuning)))
+        if shape_notes == normalizer(notes):
             shapes.append(shape)
     shapes.sort(key=config.shape_ranker)
     chords = _get_chords_from_notes(frozenset(notes))
