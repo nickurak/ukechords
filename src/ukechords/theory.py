@@ -205,12 +205,16 @@ _note_intervals |= {note: index for index, note in enumerate(_weird_sharp_scale)
 _note_intervals |= {note: index for index, note in enumerate(_weird_flat_scale)}
 
 
-Normalizable = TypeVar("Normalizable", str, list[str])
+Normalizable = TypeVar("Normalizable", str, list[str], tuple[str, ...], set[str])
 
 
 def _normalizer(arg: Normalizable, scale: list[str]) -> Normalizable:
     if isinstance(arg, list):
         return [scale[_note_intervals[note]] for note in arg]
+    if isinstance(arg, tuple):
+        return tuple(scale[_note_intervals[note]] for note in arg)
+    if isinstance(arg, set):
+        return {scale[_note_intervals[note]] for note in arg}
     return scale[_note_intervals[arg]]
 
 
