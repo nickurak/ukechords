@@ -28,9 +28,9 @@ xargs_uv() { xargs -d '\n' uv run "$@"; }
 
 export COVERAGE_CORE=sysmon
 
-run_flake8() { get_files | (xargs_uv flake8 && echo 'flake8 passed') || fail $? flake8; }
-run_pylint() { get_files | xargs_uv pylint || fail $? pylint; }
-run_mypy() { get_files | xargs_uv mypy --strict || fail $? mypy; }
+run_flake8() { get_files | (xargs_uv flake8 "$@" && echo 'flake8 passed') || fail $? flake8; }
+run_pylint() { get_files | xargs_uv pylint "$@" || fail $? pylint; }
+run_mypy() { get_files | xargs_uv mypy --strict "$@" || fail $? mypy; }
 run_pytest() {
     # For coverage, add: --cov --cov-report=html --cov-branch
     get_test_files | xargs_uv pytest "$@" || fail $? pytest
