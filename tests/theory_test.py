@@ -10,7 +10,7 @@ from pychord import Chord, QualityManager
 
 from ukechords.theory import _sharpify, _flatify
 from ukechords.theory import _get_chords_by_shape
-from ukechords.theory import ChordCollection, _scan_chords
+from ukechords.theory import ChordCollection, _scan_chords, show_chords_by_notes
 from ukechords.theory import _get_key_notes, _get_dupe_scales_from_key
 from ukechords.theory import show_chord, show_chords_by_shape, show_all
 from ukechords.theory import _weird_sharp_scale, _weird_flat_scale
@@ -116,6 +116,25 @@ def test_show_chord(uke_config: UkeConfig) -> None:
     assert first_result["chord_names"] == ["C#"]
     assert first_result["shape"] == (1, 1, 1)
     assert output["notes"] == ("C#", "F", "G#")
+
+
+def test_show_chord_by_sharp_notes(uke_config: UkeConfig) -> None:
+    """Verify that looking up a chord by sharp notes works"""
+    output = show_chords_by_notes(uke_config, {"C#", "F", "G#"})
+    first_result = output["shapes"][0]
+    assert first_result["chord_names"] == ["C#"]
+    assert first_result["shape"] == (1, 1, 1)
+    assert set(output["notes"]) == {"C#", "F", "G#"}
+
+
+@pytest.mark.xfail(strict=True)
+def test_show_chord_by_flat_notes(uke_config: UkeConfig) -> None:
+    """Verify that looking up a chord by sharp notes works"""
+    output = show_chords_by_notes(uke_config, {"Db", "F", "Ab"})
+    first_result = output["shapes"][0]
+    assert first_result["chord_names"] == ["Db"]
+    assert first_result["shape"] == (1, 1, 1)
+    assert set(output["notes"]) == {"Db", "F", "Ab"}
 
 
 def test_show_chordless_shape(uke_config: UkeConfig) -> None:
