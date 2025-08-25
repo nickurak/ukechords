@@ -13,8 +13,8 @@ fail() {
     FAILURES+=("$* returned error: $RC")
 }
 
-get_files() { find "${SRC_DIRS[@]}" -name '*.py' | grep -v flycheck; }
-get_test_files() { find "${TEST_DIRS[@]}" -name '*.py' | grep -v flycheck; }
+get_files() { find "${SRC_DIRS[@]}" -name '*.py' | grep -vE 'flycheck|/[.]'; }
+get_test_files() { find "${TEST_DIRS[@]}" -name '*.py' | grep -vE 'flycheck|/[.]'; }
 xargs_uv() { xargs -d '\n' uv run "$@"; }
 
 export COVERAGE_CORE=sysmon
