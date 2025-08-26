@@ -27,8 +27,6 @@ get_files() { find "${SRC_DIRS[@]}" -name '*.py' | grep -vE 'flycheck|/[.]'; }
 get_test_files() { find "${TEST_DIRS[@]}" -name '*.py' | grep -vE 'flycheck|/[.]'; }
 xargs_uv() { xargs -d '\n' uv run "$@"; }
 
-export COVERAGE_CORE=sysmon
-
 run_flake8() { get_files | (xargs_uv flake8 "$@" && echo 'flake8 passed') || fail $? flake8; }
 run_pylint() { get_files | xargs_uv pylint "$@" || fail $? pylint; }
 run_mypy() { get_files | xargs_uv mypy --strict "$@" || fail $? mypy; }
