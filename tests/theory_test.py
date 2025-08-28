@@ -9,7 +9,6 @@ from pytest_mock import MockFixture
 from pychord import Chord, QualityManager
 
 from ukechords.theory import _sharpify, _flatify
-from ukechords.theory import _get_chords_by_shape
 from ukechords.theory import ChordCollection, _scan_chords, show_chords_by_notes
 from ukechords.theory import _get_key_notes, _get_dupe_scales_from_key
 from ukechords.theory import show_chord, show_chords_by_shape, show_all
@@ -39,10 +38,12 @@ def test_force_flat_asharpsus2(uke_config: UkeConfig) -> None:
     """Regression test, confirm that forcing A#sus2 can be  forced into a flat"""
     uke_config.tuning = ("G", "C", "E")
     uke_config.force_flat = True
-    pshape = (3, 0, 1)
-    resp = list(_get_chords_by_shape(uke_config, pshape))
-    assert len(resp) == 1
-    shape, chords, notes = resp[0]
+    pshape = ("3", "0", "1")
+    shapes = show_chords_by_shape(uke_config, pshape)["shapes"]
+    assert len(shapes) == 1
+    shape = shapes[0]["shape"]
+    chords = shapes[0]["chords"]
+    notes = set(shapes[0]["notes"])
     assert shape == (3, 0, 1)
     assert chords == ["Fsus4", "Bbsus2"]
     assert notes == {"Bb", "F", "C"}
@@ -52,10 +53,11 @@ def test_force_flat_shape(uke_config: UkeConfig) -> None:
     """Verify that forcing a flat on chords discovered by a specifid shape works"""
     uke_config.tuning = ("G", "C", "E")
     uke_config.force_flat = True
-    pshape = (3, 2, 1)
-    resp = list(_get_chords_by_shape(uke_config, pshape))
-    assert len(resp) == 1
-    shape, chords, notes = resp[0]
+    pshape = ("3", "2", "1")
+    shapes = show_chords_by_shape(uke_config, pshape)["shapes"]
+    shape = shapes[0]["shape"]
+    chords = shapes[0]["chords"]
+    notes = set(shapes[0]["notes"])
     assert shape == (3, 2, 1)
     assert chords == ["Bb"]
     assert notes == {"Bb", "F", "D"}
@@ -64,10 +66,12 @@ def test_force_flat_shape(uke_config: UkeConfig) -> None:
 def test_no_force_flat_shape(uke_config: UkeConfig) -> None:
     """Verify that returning chords from a shape returns a sharp option"""
     uke_config.tuning = ("G", "C", "E")
-    pshape = (3, 2, 1)
-    resp = list(_get_chords_by_shape(uke_config, pshape))
-    assert len(resp) == 1
-    shape, chords, notes = resp[0]
+    pshape = ("3", "2", "1")
+    shapes = show_chords_by_shape(uke_config, pshape)["shapes"]
+    assert len(shapes) == 1
+    shape = shapes[0]["shape"]
+    chords = shapes[0]["chords"]
+    notes = set(shapes[0]["notes"])
     assert shape == (3, 2, 1)
     assert chords == ["A#"]
     assert notes == {"A#", "F", "D"}
@@ -183,39 +187,39 @@ def test_barrable_unbarred(uke_config: UkeConfig) -> None:
 
 def test_slide(uke_config: UkeConfig) -> None:
     """Verify that sliding a shape works correctly"""
-    initial_shape = (1, 2)
+    initial_shape = ("1", "2")
     uke_config.tuning = ("C", "G")
     uke_config.slide = True
-    slid_chords = list(_get_chords_by_shape(uke_config, initial_shape))
-    slid_shapes = [c[0] for c in slid_chords]
+    shapes = show_chords_by_shape(uke_config, initial_shape)["shapes"]
+    slid_shapes = [c["shape"] for c in shapes]
     for slid_shape in slid_shapes:
         min_fret = min(slid_shape)
         unslid_shape = tuple(fret + 1 - min_fret if fret > 0 else fret for fret in slid_shape)
-        assert unslid_shape == initial_shape
+        assert tuple(str(fret) for fret in unslid_shape) == initial_shape
     assert len(slid_shapes) == 12
 
 
 def test_empty_slide(uke_config: UkeConfig) -> None:
     """Regression test: verify that sliding an empty shape is prevented"""
-    initial_shape = (0, 0)
+    initial_shape = ("0", "0")
     uke_config.tuning = ("C", "G")
     uke_config.slide = True
     with pytest.raises(UnslidableEmptyShapeException):
-        list(_get_chords_by_shape(uke_config, initial_shape))
+        list(show_chords_by_shape(uke_config, initial_shape))
 
 
 def test_slide_mute(uke_config: UkeConfig) -> None:
     """Verify that sliding a shape with a mute works"""
     uke_config.tuning = ("C", "G", "E")
     uke_config.slide = True
-    initial_shape = (1, 2, -1)
-    slid_chords = list(_get_chords_by_shape(uke_config, initial_shape))
-    slid_shapes = [c[0] for c in slid_chords]
+    initial_shape = ("1", "2", "x")
+    shapes = show_chords_by_shape(uke_config, initial_shape)["shapes"]
+    slid_shapes = [c["shape"] for c in shapes]
     for slid_shape in slid_shapes:
         assert slid_shape[2] == -1
         min_fret = min(fret for fret in slid_shape if fret > 0)
         unslid_shape = tuple(fret + 1 - min_fret if fret > 0 else fret for fret in slid_shape)
-        assert unslid_shape == initial_shape
+        assert tuple("x" if fret < 0 else str(fret) for fret in unslid_shape) == initial_shape
     assert len(slid_shapes) == 12
 
 
