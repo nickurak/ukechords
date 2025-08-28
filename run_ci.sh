@@ -23,14 +23,14 @@ get_files() { find "${SRC_DIRS[@]}" -name '*.py' | grep -vE 'flycheck|/[.]'; }
 get_test_files() { find "${TEST_DIRS[@]}" -name '*.py' | grep -vE 'flycheck|/[.]'; }
 xargs_uv() { xargs -d '\n' uv run "$@"; }
 
-run_flake8() { get_files | (xargs_uv flake8 "$@" && echo 'flake8 passed') || fail $? flake8; }
-run_pylint() { get_files | xargs_uv pylint "$@" || fail $? pylint; }
-run_mypy() { get_files | xargs_uv mypy --strict "$@" || fail $? mypy; }
-run_pytest() { get_test_files | xargs_uv pytest "$@" || fail $? pytest; }
+run_flake8() { get_files | (xargs_uv flake8 "$@" && echo 'flake8 passed'); }
+run_pylint() { get_files | xargs_uv pylint "$@"; }
+run_mypy() { get_files | xargs_uv mypy --strict "$@"; }
+run_pytest() { get_test_files | xargs_uv pytest "$@"; }
 run_pytest-cov() { run_pytest --cov --cov-report=html --cov-branch "$@"; }
 
 for RUNNER in "${RUNNERS[@]}"; do
-    "$RUNNER" "$@"
+    "$RUNNER" "$@" || fail $? "$RUNNER"
 done
 [ "$FIRST_RC" -eq 0 ] && exit
 
