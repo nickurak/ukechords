@@ -493,8 +493,6 @@ def show_chord(config: UkeConfig, chord: str) -> ChordShapes:
         if not other_names:
             other_names = list(_get_other_names(shape, chord, config.tuning))
         difficulty, barre_data = _get_shape_difficulty(shape, tuning=config.tuning)
-        if difficulty > config.max_difficulty:
-            continue
         output["shapes"].append(
             {
                 "shape": shape,
@@ -617,8 +615,6 @@ def show_chords_by_notes(config: UkeConfig, notes: set[str]) -> ChordShapes:
     chords = _get_chords_from_notes(frozenset(notes))
     for shape in shapes[: config.num or len(shapes)]:
         difficulty, barre_data = _get_shape_difficulty(shape, tuning=config.tuning)
-        if difficulty > config.max_difficulty:
-            continue
         output["shapes"].append(
             {
                 "shape": shape,
