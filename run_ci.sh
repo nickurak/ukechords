@@ -5,14 +5,10 @@ set -Eeuo pipefail
 TEST_DIRS=(tests)
 SRC_DIRS=(src "${TEST_DIRS[@]}")
 
-RUNNERS=()
-if [ "$#" -eq 0 ]; then
-    RUNNERS=(run_flake8 run_pylint run_mypy run_pytest)
-fi
-[ "$#" -gt 0 ] && RUNNERS+=("run_$1") && shift
+RUNNERS=(run_flake8 run_pylint run_mypy run_pytest)
+[ "$#" -gt 0 ] && RUNNERS=("run_$1") && shift
 
-FIRST_RC=0
-FAILURES=()
+FIRST_RC=0 && FAILURES=()
 fail() {
     RC=$1 && shift
     [ "$FIRST_RC" -eq 0 ] && FIRST_RC=$RC
@@ -35,8 +31,6 @@ done
 [ "$FIRST_RC" -eq 0 ] && exit
 
 echo "Error summary:"
-for FAILURE in "${FAILURES[@]}"; do
-    echo "$FAILURE"
-done
+(IFS=$'\n' && echo "${FAILURES[*]}")
 
 exit "$FIRST_RC"
