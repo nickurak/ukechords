@@ -9,11 +9,7 @@ RUNNERS=()
 if [ "$#" -eq 0 ]; then
     RUNNERS=(run_flake8 run_pylint run_mypy run_pytest)
 fi
-[ "$#" -gt 0 ] && [ "$1" == flake8 ] && RUNNERS+=(run_flake8) && shift
-[ "$#" -gt 0 ] && [ "$1" == pylint ] && RUNNERS+=(run_pylint) && shift
-[ "$#" -gt 0 ] && [ "$1" == mypy ] && RUNNERS+=(run_mypy) && shift
-[ "$#" -gt 0 ] && [ "$1" == pytest ] && RUNNERS+=(run_pytest) && shift
-[ "$#" -gt 0 ] && [ "$1" == pytest-cov ] && RUNNERS+=(run_pytest_cov) && shift
+[ "$#" -gt 0 ] && RUNNERS+=("run_$1") && shift
 
 FIRST_RC=0
 FAILURES=()
