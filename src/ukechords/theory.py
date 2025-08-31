@@ -286,23 +286,26 @@ def _get_all_keys() -> dict[str, set[str]]:
                     continue
 
                 dupes |= {frozenset(notes)}
-                yield (f"{root}{name}", notes)
+                yield f"{root}{name}", notes
 
     return dict(_get_all_key_pairs())
 
 
-def _get_dupe_scales_from_notes(notes: tuple[str, ...]) -> set[str]:
+def _get_dupe_scales_from_notes(notes: tuple[str, ...]) -> tuple[set[str], set[str]]:
     matching_keys: list[str] = []
+    partial_keys: list[str] = []
     for key, key_notes in _get_all_keys().items():
         if "chromatic" in key:
             continue
-        if set(notes) == set(key_notes):
+        if set(_sharpify(notes)) == set(_sharpify(key_notes)):
             matching_keys.append(key)
-    return set(matching_keys)
+        if set(_sharpify(notes)) < _sharpify(key_notes):
+            partial_keys.append(key)
+    return set(matching_keys), set(partial_keys)
 
 
 def _get_dupe_scales_from_key(key: str) -> set[str]:
-    dupe_scales = _get_dupe_scales_from_notes(_get_key_notes(key))
+    dupe_scales, _ = _get_dupe_scales_from_notes(_get_key_notes(key))
     return dupe_scales
 
 
@@ -630,10 +633,11 @@ def show_key(_: UkeConfig | None, key: str | tuple[str, ...]) -> KeyInfo:
             "other_keys": list(_get_dupe_scales_from_key(key)),
         }
     else:
-        keys = _get_dupe_scales_from_notes(key)
+        keys, partial_keys = _get_dupe_scales_from_notes(key)
         output = {
             "notes": tuple(key),
             "other_keys": list(keys),
+            "partial_keys": sorted(partial_keys, key=_rank_chord_name),
         }
     output["other_keys"].sort(key=_rank_chord_name)
     return output

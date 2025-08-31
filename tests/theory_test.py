@@ -274,6 +274,12 @@ def test_show_key_by_notes() -> None:
     assert "Am" in data["other_keys"]
 
 
+def test_show_key_by_notes_with_partial_match() -> None:
+    """Verify that looking up a key by notes works"""
+    data = show_key(None, tuple("C,D,E,F,G,A".split(",")))
+    assert "Dm" in data["partial_keys"]
+
+
 def test_show_key_aliases() -> None:
     """Verify that detecting keys with the same notes works"""
     data = show_key(None, "C")
