@@ -9,6 +9,7 @@ class KeyInfo(TypedDict):
 
     notes: tuple[str, ...]
     other_keys: list[str]
+    partial_keys: NotRequired[list[str]]
     key: NotRequired[str]
 
 

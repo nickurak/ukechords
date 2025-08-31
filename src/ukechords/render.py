@@ -123,8 +123,11 @@ def render_key(_: UkeConfig | None, data: KeyInfo) -> None:
     else:
         if not data["other_keys"]:
             print("No key found")
-            return
-        print(f"{_csv(data['other_keys'])}")
+        else:
+            print(f"{_csv(data['other_keys'])}")
+
+    if "partial_keys" in data and data["partial_keys"]:
+        print(f"Partial match for: {_csv(data['partial_keys'])}")
 
 
 def render_json(_: UkeConfig | None, data: Any) -> None:

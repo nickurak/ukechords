@@ -132,11 +132,13 @@ def test_render_key_from_notes(capsys: pytest.CaptureFixture[str]) -> None:
     data: KeyInfo = {
         "other_keys": ["test_key1", "test_key2"],
         "notes": tuple(f"n{x}" for x in range(0, 10)),
+        "partial_keys": ["partial1", "partial2"],
     }
     render_key(None, data)
     lines = _get_capsys_lines(capsys)
-    (output,) = lines
-    assert output == ",".join(data["other_keys"])
+    (keys_str, partial_str) = lines
+    assert keys_str == ",".join(data["other_keys"])
+    assert partial_str == f"Partial match for: {",".join(data["partial_keys"])}"
 
 
 def test_render_unknown_key_from_notes(capsys: pytest.CaptureFixture[str]) -> None:
@@ -144,11 +146,13 @@ def test_render_unknown_key_from_notes(capsys: pytest.CaptureFixture[str]) -> No
     data: KeyInfo = {
         "other_keys": [],
         "notes": tuple(f"n{x}" for x in range(0, 10)),
+        "partial_keys": ["partial1", "partial2"],
     }
     render_key(None, data)
     lines = _get_capsys_lines(capsys)
-    (err_msg,) = lines
+    (err_msg, partial_str) = lines
     assert err_msg == "No key found"
+    assert partial_str == f"Partial match for: {",".join(data["partial_keys"])}"
 
 
 def test_render_chords_from_shape_with_vis_and_notes(
