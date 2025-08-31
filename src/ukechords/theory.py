@@ -275,41 +275,35 @@ def _get_scales() -> dict[str, list[int]]:
     return mods
 
 
-def _get_dupe_scales_from_intervals(root: str, intervals: list[int]) -> set[str]:
-    mods = _get_scales()
-    dupes = {}
-    for inc in range(0, 12):
-        for name, candidate_intervals in mods.items():
-            transposed_intervals = [(x + inc) % 12 for x in candidate_intervals]
-            if set(intervals) == set(transposed_intervals):
-                transposed_root = _chromatic_scale[(_note_intervals[root] + inc) % 12]
-                if inc in dupes:
+def _get_all_keys() -> dict[str, set[str]]:
+    def _get_all_key_pairs() -> Generator[tuple[str, set[str]]]:
+        for root_index in range(0, 12):
+            root = _chromatic_scale[root_index]
+            dupes: set[frozenset[str]] = set()
+            for name, intervals in _get_scales().items():
+                notes = set(_chromatic_scale[root_index + interval] for interval in intervals)
+                if frozenset(notes) in dupes:
                     continue
-                dupes[inc] = f"{transposed_root}{name}"
 
-    return {val for _, val in dupes.items()}
+                dupes |= {frozenset(notes)}
+                yield (f"{root}{name}", notes)
+
+    return dict(_get_all_key_pairs())
 
 
 def _get_dupe_scales_from_notes(notes: tuple[str, ...]) -> set[str]:
-    root = notes[0]
-    intervals = [0]
-    root_interval = _note_intervals[root]
-    for note in notes[1:]:
-        interval = (_note_intervals[note] - root_interval) % 12
-        intervals.append(interval)
-    return _get_dupe_scales_from_intervals(root, intervals)
+    matching_keys: list[str] = []
+    for key, key_notes in _get_all_keys().items():
+        if "chromatic" in key:
+            continue
+        if set(notes) == set(key_notes):
+            matching_keys.append(key)
+    return set(matching_keys)
 
 
 def _get_dupe_scales_from_key(key: str) -> set[str]:
-    mods = _get_scales()
-
-    match = re.match(f'^([A-G][b#]?)({"|".join(mods.keys())})$', key)
-    if not match:
-        raise UnknownKeyException(f'Unknown key "{key}"')
-    (root, extra) = match.groups()
-    intervals = mods[extra]
-
-    return _get_dupe_scales_from_intervals(root, intervals) - {key}
+    dupe_scales = _get_dupe_scales_from_notes(_get_key_notes(key))
+    return dupe_scales
 
 
 def _get_key_notes(key: str) -> tuple[str, ...]:
@@ -636,9 +630,10 @@ def show_key(_: UkeConfig | None, key: str | tuple[str, ...]) -> KeyInfo:
             "other_keys": list(_get_dupe_scales_from_key(key)),
         }
     else:
+        keys = _get_dupe_scales_from_notes(key)
         output = {
             "notes": tuple(key),
-            "other_keys": list(_get_dupe_scales_from_notes(key)),
+            "other_keys": list(keys),
         }
     output["other_keys"].sort(key=_rank_chord_name)
     return output
