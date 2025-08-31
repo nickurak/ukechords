@@ -1,4 +1,4 @@
-"Fake implementation of multiprocessing.Pool for test purposes"
+"""Fake implementation of multiprocessing.Pool for test purposes"""
 
 from __future__ import annotations
 from typing import Callable, NoReturn, Any
@@ -50,7 +50,7 @@ class FakePool:
             error_callback(e)
 
     def terminate(self) -> None:
-        "Dummmy terminate method"
+        """Dummmy terminate method"""
 
     def close(self) -> None:
         """Dummy close method"""
