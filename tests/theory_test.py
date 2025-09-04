@@ -255,6 +255,9 @@ def test_clean_missing_quality(chord: str) -> None:
     these, in which case we can remove our custom implementation of
     them.
 
+    Parameters provided by get_missing_chord_params also let us
+    confirm that this test correctly does fail (with an xfail) when a
+    chord is built-in unexpectedly.
     """
     QualityManager().load_default_qualities()
     with pytest.raises(ValueError):
