@@ -18,8 +18,6 @@ fail() {
 mapfile -d '' FILES < <(find "${SRC_DIRS[@]}" ! -name '*flycheck*' ! -name '.*' -name '*.py' -print0)
 mapfile -d '' TEST_FILES < <(find "${TEST_DIRS[@]}" ! -name '*flycheck*' ! -name '.*' -name '*.py' -name '*.py' -print0)
 
-xargs_uv() { xargs -d '\n' uv run "$@"; }
-
 run_flake8() { uv run flake8 "$@" "${FILES[@]}" && echo 'flake8 passed'; }
 run_pylint() { uv run pylint "$@" "${FILES[@]}"; }
 run_mypy() { uv run mypy --strict "$@" "${FILES[@]}"; }
