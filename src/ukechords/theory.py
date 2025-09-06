@@ -627,10 +627,13 @@ def show_chords_by_notes(config: UkeConfig, notes: set[str]) -> ChordShapes:
 def show_key(_: UkeConfig | None, key: str | tuple[str, ...]) -> KeyInfo:
     """Return information on the specified key, including other names and the notes it includes"""
     if isinstance(key, str):
+        notes = _get_key_notes(key)
+        other_keys, partial_keys = _get_dupe_scales_from_notes(notes)
         output: KeyInfo = {
-            "notes": _get_key_notes(key),
+            "notes": notes,
             "key": key,
-            "other_keys": list(_get_dupe_scales_from_key(key)),
+            "other_keys": list(other_keys),
+            "partial_keys": sorted(partial_keys, key=_rank_chord_name),
         }
     else:
         keys, partial_keys = _get_dupe_scales_from_notes(key)
