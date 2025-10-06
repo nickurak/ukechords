@@ -5,7 +5,7 @@ set -Eeuo pipefail
 TEST_DIRS=(tests)
 SRC_DIRS=(src "${TEST_DIRS[@]}")
 
-RUNNERS=(ruff ty mypy pytest pyrefly shellcheck pylint)
+RUNNERS=(version ruff ty mypy pytest pyrefly shellcheck pylint)
 [ "$#" -gt 0 ] && readarray -t RUNNERS < <(printf "%s" "$1" | xargs -d ',' -n1) && shift
 
 FIRST_RC=0 && FAILURES=()
@@ -49,6 +49,7 @@ find_sh0() {
     }
     run_pyrefly() { uv run pyrefly "$@" check "${FILES[@]}"; }
     run_shellcheck() { find_sh0 | xargs -0 shellcheck; }
+    run_version() { uv run python -VV; }
 }
 
 for RUNNER in "${RUNNERS[@]}"; do
