@@ -1,7 +1,7 @@
 """Fake implementation of multiprocessing.Pool for test purposes"""
 
 from __future__ import annotations
-from typing import Callable, NoReturn, Any
+from typing import Callable, NoReturn, Any, Self
 from types import TracebackType
 
 import pytest
@@ -58,7 +58,7 @@ class FakePool:
     def join(self) -> None:
         """Dummy join method"""
 
-    def __enter__(self) -> FakePool:
+    def __enter__(self) -> Self:
         return self
 
     def __exit__(
