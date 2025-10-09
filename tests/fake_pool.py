@@ -14,16 +14,6 @@ def fake_pool(mocker: MockFixture) -> None:
     mocker.patch("multiprocessing.get_context", return_value=FakeContext())
 
 
-class FakeContext:
-    """
-    Dummy context for multiprocessing to return our FakePool
-    """
-
-    # pylint: disable=too-few-public-methods,invalid-name,missing-function-docstring
-    def Pool(self) -> FakePool:
-        return FakePool()
-
-
 class FakePool:
     """
     This is a dummy variation on multiprocessing.Pool, which simply
@@ -65,3 +55,13 @@ class FakePool:
         self, _: type[BaseException], __: BaseException | None, ___: TracebackType | None
     ) -> None:
         pass
+
+
+class FakeContext:
+    """
+    Dummy context for multiprocessing to return our FakePool
+    """
+
+    # pylint: disable=too-few-public-methods,invalid-name,missing-function-docstring
+    def Pool(self) -> FakePool:
+        return FakePool()
