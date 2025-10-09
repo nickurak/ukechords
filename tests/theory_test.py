@@ -8,30 +8,18 @@ from pytest_mock import MockFixture
 
 from pychord import Chord, QualityManager
 
-from ukechords.theory import _sharpify, _flatify
-from ukechords.theory import ChordCollection, _scan_chords, show_chords_by_notes
-from ukechords.theory import _get_key_notes, _get_dupe_scales_from_key
+from ukechords.theory import _scan_chords, show_chords_by_notes
 from ukechords.theory import show_chord, show_chords_by_shape, show_all
-from ukechords.theory import _weird_sharp_scale, _weird_flat_scale
 from ukechords.theory import add_no5_quality, add_7sus2_quality
 from ukechords.theory import show_key, lookup_tuning
+
+from ukechords.theory_basic import ChordCollection
 
 from ukechords.errors import UnslidableEmptyShapeException, ChordNotFoundException
 
 from ukechords.config import UkeConfig
 from .uketestconfig import uke_config
 from .fake_pool import fake_pool  # pylint: disable=unused-import
-
-
-def test_sharpify_flatify() -> None:
-    """Verify that sharp/flat conversion works"""
-    assert _sharpify("Bb") == "A#"
-    assert _sharpify("A#") == "A#"
-    assert _flatify("A#") == "Bb"
-    assert _flatify("Bb") == "Bb"
-
-    assert all(x == y for x, y in zip(_sharpify(["Bb", "A#"]), ["A#", "A#"]))
-    assert all(x == y for x, y in zip(_flatify(["Bb", "A#"]), ["Bb", "Bb"]))
 
 
 def test_force_flat_asharpsus2(uke_config: UkeConfig) -> None:
@@ -96,18 +84,6 @@ def test_threaded_scan_exception(uke_config: UkeConfig, mocker: MockFixture) -> 
     with pytest.raises(ValueError):
         _scan_chords(uke_config, chord_shapes, max_fret=3)
     mocked_pool_terminate.assert_called_once()
-
-
-def test_scale() -> None:
-    """Verify that 2 keys with the same notes are identified as related"""
-    key1 = "C"
-    key2 = "Am"
-
-    notes1 = set(_get_key_notes(key1))
-    notes2 = set(_get_key_notes(key2))
-    assert notes1 == notes2
-    dupes = _get_dupe_scales_from_key(key1)
-    assert "Am" in dupes
 
 
 def test_show_chord(uke_config: UkeConfig) -> None:
@@ -221,12 +197,6 @@ def test_slide_mute(uke_config: UkeConfig) -> None:
         unslid_shape = tuple(fret + 1 - min_fret if fret > 0 else fret for fret in slid_shape)
         assert tuple("x" if fret < 0 else str(fret) for fret in unslid_shape) == initial_shape
     assert len(slid_shapes) == 12
-
-
-def test_weird_flat_sharps() -> None:
-    """Test that B#/Cb/E#/Fb notes are correctly identified"""
-    assert _weird_sharp_scale == ["B#", "C#", "D", "D#", "E", "E#", "F#", "G", "G#", "A", "A#", "B"]
-    assert _weird_flat_scale == ["C", "Db", "D", "Eb", "Fb", "F", "Gb", "G", "Ab", "A", "Bb", "Cb"]
 
 
 extra_chords_and_loaders = [

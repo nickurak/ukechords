@@ -1,16 +1,13 @@
 """Test the cache module"""
 
 from __future__ import annotations
-from typing import TYPE_CHECKING
 
 from ukechords.cache import _cached_filename, save_scanned_chords, load_scanned_chords
 
 from ukechords.config import UkeConfig
+from ukechords.theory_basic import ChordCollection
+
 from .uketestconfig import uke_config
-
-
-if TYPE_CHECKING:  # pragma: no cover
-    from ukechords.theory import ChordCollection  # pragma: no cover
 
 
 def test_save_load_cache(uke_config: UkeConfig) -> None:
