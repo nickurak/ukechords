@@ -1,7 +1,6 @@
 """Tools to load and save cached ukechords data"""
 
 from __future__ import annotations
-from typing import TYPE_CHECKING
 import os
 import pickle
 
@@ -9,9 +8,7 @@ from math import ceil
 from pathlib import Path
 
 from .config import UkeConfig
-
-if TYPE_CHECKING:  # pragma: no cover
-    from .theory import ChordCollection  # pragma: no cover
+from .theory_basic import ChordCollection
 
 
 def _cached_filename(config: UkeConfig, max_fret: int, max_difficulty: float) -> str:
