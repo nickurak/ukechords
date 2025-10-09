@@ -1,7 +1,5 @@
 """Logic related to music-theory, mostly for stringed instruments"""
 
-from __future__ import annotations
-
 from itertools import permutations, product
 from functools import cache
 import multiprocessing as mp

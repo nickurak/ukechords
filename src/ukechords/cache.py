@@ -1,6 +1,5 @@
 """Tools to load and save cached ukechords data"""
 
-from __future__ import annotations
 import os
 import pickle
 

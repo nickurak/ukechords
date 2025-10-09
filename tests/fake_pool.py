@@ -1,6 +1,5 @@
 """Fake implementation of multiprocessing.Pool for test purposes"""
 
-from __future__ import annotations
 from typing import Callable, NoReturn, Any, Self
 from types import TracebackType
 

@@ -1,6 +1,5 @@
 """Test the theory module"""
 
-from __future__ import annotations
 from typing import Generator, Any, Callable
 
 import pytest

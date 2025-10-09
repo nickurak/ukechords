@@ -1,6 +1,5 @@
 """Rendering logic, chiefly for CLI usage of ukechords"""
 
-from __future__ import annotations
 from typing import Generator, Any, Iterable
 import json
 import sys
