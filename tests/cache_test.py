@@ -1,7 +1,5 @@
 """Test the cache module"""
 
-from __future__ import annotations
-
 from ukechords.cache import _cached_filename, save_scanned_chords, load_scanned_chords
 
 from ukechords.config import UkeConfig

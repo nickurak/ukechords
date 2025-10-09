@@ -1,7 +1,5 @@
 """Test the render module"""
 
-from __future__ import annotations
-
 import pytest
 
 from ukechords.render import _get_shape_lines, render_chord_list
