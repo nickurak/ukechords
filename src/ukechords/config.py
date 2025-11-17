@@ -1,7 +1,8 @@
 """Logic related to configuring ukechords"""
 
 from dataclasses import dataclass
-from typing import Callable, Any
+from typing import Any
+from collections.abc import Callable
 
 
 @dataclass(kw_only=True)

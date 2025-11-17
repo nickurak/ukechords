@@ -6,7 +6,8 @@ import argparse
 import json
 import os
 import configparser
-from typing import Callable, Iterable, Any
+from typing import Any
+from collections.abc import Callable, Iterable
 
 from xdg import BaseDirectory
 

@@ -1,7 +1,8 @@
 """Basic music theory elements, not neccesarily including stringed instruments or chord qualities"""
 
 import re
-from typing import TypeVar, Any, Generator
+from typing import TypeVar, Any
+from collections.abc import Iterable
 
 from .errors import ChordNotFoundException, UnknownKeyException
 
@@ -107,7 +108,7 @@ def _get_scales() -> dict[str, list[int]]:
 
 
 def _get_all_keys() -> dict[str, set[str]]:
-    def _get_all_key_pairs() -> Generator[tuple[str, set[str]], None, None]:
+    def _get_all_key_pairs() -> Iterable[tuple[str, set[str]]]:
         for root_index in range(0, 12):
             root = chromatic_scale[root_index]
             dupes: set[frozenset[str]] = set()

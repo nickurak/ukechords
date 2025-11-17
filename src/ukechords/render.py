@@ -1,6 +1,7 @@
 """Rendering logic, chiefly for CLI usage of ukechords"""
 
-from typing import Generator, Any, Iterable
+from typing import Any
+from collections.abc import Iterable
 import json
 import sys
 
@@ -12,7 +13,7 @@ def _csv(lst: Iterable[Any], sep: str = ",") -> str:
     return sep.join(map(str, lst))
 
 
-def _get_shape_lines(shape: tuple[int, ...], barre: int) -> Generator[str, None, None]:
+def _get_shape_lines(shape: tuple[int, ...], barre: int) -> Iterable[str]:
     marks = {
         3: " ╷╵ ",
         5: " ╷╵ ",

@@ -4,7 +4,8 @@ from itertools import permutations, product
 from functools import cache
 import multiprocessing as mp
 import os
-from typing import Generator, Iterable, NoReturn
+from typing import NoReturn
+from collections.abc import Iterable
 
 from pychord.analyzer import notes_to_positions
 from pychord import Chord, QualityManager
@@ -185,7 +186,7 @@ def _get_shapes(
     notes: tuple[str, ...] | None = None,
     partition: int = 0,
     partitions: int = 1,
-) -> Generator[tuple[int, ...], None, None]:
+) -> Iterable[tuple[int, ...]]:
     """
     Yield shapes playable on the fretboard, (optionally including
     muted strings) up to the specified fret.
@@ -308,7 +309,7 @@ def lookup_tuning(tuning_spec: str) -> tuple[str, ...]:
 
 def _get_other_names(
     shape: tuple[int, ...], chord_name: str, tuning: tuple[str, ...]
-) -> Generator[str, None, None]:
+) -> Iterable[str]:
     for chord in _get_chords_from_notes(_get_shape_notes(shape, tuning)):
         if normalize_chord(chord) != normalize_chord(chord_name):
             yield chord
@@ -412,7 +413,7 @@ def show_all(config: UkeConfig) -> ChordShapes:
 
 def _get_chords_by_shape(
     config: UkeConfig, pshape: tuple[int, ...]
-) -> Generator[tuple[tuple[int, ...], list[str], set[str]], None, None]:
+) -> Iterable[tuple[tuple[int, ...], list[str], set[str]]]:
     shapes = []
     if config.slide:
         if not any(fret > 0 for fret in pshape):
