@@ -1,6 +1,7 @@
 """Test the theory module"""
 
-from typing import Generator, Any, Callable
+from typing import Any
+from collections.abc import Callable, Iterable
 
 import pytest
 from pytest_mock import MockFixture
@@ -205,7 +206,7 @@ extra_chords_and_loaders = [
 builtin_chords = ["C7"]
 
 
-def get_missing_chord_params() -> Generator[Any, None, None]:
+def get_missing_chord_params() -> Iterable[Any]:
     """Generate inputs for tests that detect missing chords in pychord"""
     for chord, _ in extra_chords_and_loaders:
         yield chord
