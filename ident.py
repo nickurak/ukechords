@@ -8,6 +8,7 @@ import argparse
 import re
 import os
 import pickle
+import itertools
 
 from pychord import find_chords_from_notes
 from pychord import Chord, QualityManager
@@ -42,19 +43,8 @@ def add_b5_quality():
     for name, new in new_qs:
         QualityManager().set_quality(name, new)
 
-def get_orders(vals):
-    for index, value in enumerate(vals):
-        list2 = list(vals)
-        del list2[index]
-        if len(list2) > 0:
-            for vals2 in get_orders(list2):
-                yield [value, *vals2]
-        else:
-            yield [value]
-
 def get_chords(notes):
-
-    for seq in get_orders(notes):
+    for seq in itertools.permutations(notes):
         yield from [c.chord for c in find_chords_from_notes(seq) if not "/" in c.chord]
 
 class CircularList(list):
