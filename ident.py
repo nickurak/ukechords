@@ -320,7 +320,7 @@ def main():
         if not args.num:
             args.num = 1 if args.latex or args.visualize else len(shapes)
         if not args.ignore_difficulty:
-            shapes.sort(key=lambda x: get_shape_difficulty(x, tuning=args.tuning.split(','))[0])
+            shapes.sort(key=lambda x: get_shape_difficulty(x)[0])
         for shape in shapes[:args.num]:
             difficulty, desc = get_shape_difficulty(shape, tuning=args.tuning.split(','))
             if difficulty > max_difficulty:
@@ -357,7 +357,7 @@ def main():
             if notes and not all(note in sharpify(notes) for note in sharpify(Chord(chord).components())):
                 continue
             if not args.ignore_difficulty:
-                chord_shapes[chord].sort(key=lambda x: get_shape_difficulty(x, tuning=args.tuning.split(','))[0])
+                chord_shapes[chord].sort(key=lambda x: get_shape_difficulty(x)[0])
             shape = chord_shapes[chord][0]
             difficulty, desc = get_shape_difficulty(shape, tuning=args.tuning.split(','))
             if difficulty > max_difficulty:
