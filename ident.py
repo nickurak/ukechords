@@ -10,29 +10,33 @@ import os
 import json
 import pickle
 
-from pychord import note_to_chord
-from pychord import Chord
+from pychord import find_chords_from_notes
+from pychord import Chord, QualityManager
 from pychord.utils import note_to_val
 
-from pychord.constants import QUALITY_DICT
-
 def add_no5_quality():
-    # Hack -- we shouldn't be editting constants, but we can, and do. LOL.
-    for name, items in list(QUALITY_DICT.items()):
+    new_qs = []
+    # Hack -- get list of existing qualities
+    for name, quality in QualityManager()._qualities.items():
         no5name = name + 'no5'
-        if '/' in name or not 7 in items:
+        if '/' in name or not 7 in quality.components:
             continue
-        new = tuple(filter(lambda x: x != 7, items))
-        QUALITY_DICT[no5name] = new
+        new = tuple(filter(lambda x: x != 7, quality.components))
+        new_qs.append((no5name, new))
+    for name, new in new_qs:
+        QualityManager().set_quality(name, new)
 
 def add_b5_quality():
-    # Hack -- we shouldn't be editting constants, but we can, and do. LOL.
-    for name, items in list(QUALITY_DICT.items()):
+    new_qs = []
+    # Hack -- get list of existing qualities
+    for name, quality in QualityManager()._qualities.items():
         b5name = name + '-5'
-        if '/' in name or not 7 in items:
+        if '/' in name or not 7 in quality.components:
             continue
-        new = tuple(map(lambda x: x if x != 7 else x - 1, items))
-        QUALITY_DICT[b5name] = new
+        new = tuple(map(lambda x: x if x != 7 else x - 1, quality.components))
+        new_qs.append((b5name, new))
+    for name, new in new_qs:
+        QualityManager().set_quality(name, new)
 
 def get_orders(vals):
     for index, value in enumerate(vals):
@@ -47,7 +51,7 @@ def get_orders(vals):
 def get_chords(notes):
 
     for seq in get_orders(notes):
-        yield from [c.chord for c in note_to_chord(seq) if not "/" in c.chord]
+        yield from [c.chord for c in find_chords_from_notes(seq) if not "/" in c.chord]
 
 class CircularList(list):
     def __getitem__(self, index):
