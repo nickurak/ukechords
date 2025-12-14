@@ -362,7 +362,10 @@ def main():
             force_flat = True
         scan_chords(base=base, max_fret=7, tuning=args.tuning.split(','), chord_shapes=chord_shapes, no_cache=args.no_cache, max_difficulty=max_difficulty)
         ichords = list(chord_shapes.keys())
-        ichords.sort(key=lambda x: (note_intervals[Chord(x).root], x))
+        sort_offset = 0
+        if args.key:
+            sort_offset = note_intervals[get_key_notes(args.key[0])[0]]
+        ichords.sort(key=lambda x: ((note_intervals[Chord(x).root] - sort_offset) % len(chromatic_scale), x))
         for chord in ichords:
             if force_flat:
                 chord = flatify(Chord(chord).root) + Chord(chord).quality.quality
