@@ -102,13 +102,6 @@ def get_shapes(strings=4, min_fret=0, max_fret=1, base=0, max_difficulty=29):
         if not increment(position, max_fret, base=base):
             return
 
-def round_result(f):
-    def round_func(shape, tuning=None):
-        res, desc = f(shape, tuning)
-        return round(res, 1), desc
-    return round_func
-
-@round_result
 def get_shape_difficulty(shape, tuning=None):
     difficulty = 0.0
     last_pos = None
@@ -231,7 +224,7 @@ def scan_chords(allowed_notes=None, base=0, max_fret=12, tuning=None, chord_shap
     save_scanned_chords(allowed_notes=allowed_notes, base=base, max_fret=max_fret, tuning=tuning, chord_shapes=chord_shapes, max_difficulty=max_difficulty)
 
 def diff_string(difficulty, desc):
-    return f"{difficulty} ({desc})" if desc else str(difficulty)
+    return f"{difficulty:.1f} ({desc})" if desc else f"{difficulty:.1f}"
 
 marks = {
     3: ' ╷╵ ',
