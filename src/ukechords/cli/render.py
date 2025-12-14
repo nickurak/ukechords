@@ -5,8 +5,8 @@ from collections.abc import Iterable
 import json
 import sys
 
-from .config import UkeConfig
-from .types import ChordShapes, ChordsByShape, KeyInfo, BarreData
+from ukechords.config import UkeConfig
+from ukechords.types import ChordShapes, ChordsByShape, KeyInfo, BarreData
 
 
 def _csv(lst: Iterable[Any], sep: str = ",") -> str:

@@ -2,15 +2,15 @@
 
 import pytest
 
-from ukechords.render import _get_shape_lines, render_chord_list
-from ukechords.render import render_chords_from_shape, render_key
-from ukechords.render import _diff_string
+from ukechords.cli.render import _get_shape_lines, render_chord_list
+from ukechords.cli.render import render_chords_from_shape, render_key
+from ukechords.cli.render import _diff_string
 
-from ukechords.render import _csv
+from ukechords.cli.render import _csv
 
 from ukechords.types import ChordShapes, ChordsByShape, KeyInfo, BarreData
 from ukechords.config import UkeConfig
-from .uketestconfig import uke_config
+from ..uketestconfig import uke_config
 
 
 def _get_capsys_lines(capsys: pytest.CaptureFixture[str]) -> list[str]:

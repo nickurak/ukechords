@@ -20,8 +20,8 @@ from ukechords.theory import show_chord, show_all, show_chords_by_shape
 from ukechords.theory import show_chords_by_notes, show_key
 from ukechords.theory import lookup_tuning, rank_shape_by_high_fret, rank_shape_by_difficulty
 
-from ukechords.render import render_chord_list, render_chords_from_shape
-from ukechords.render import render_key, render_json
+from ukechords.cli.render import render_chord_list, render_chords_from_shape
+from ukechords.cli.render import render_key, render_json
 
 from ukechords.types import ChordsByShape, ChordShapes, KeyInfo
 

@@ -2,7 +2,7 @@
 
 import pytest
 
-from ukechords.ident import _get_parser, _get_config
+from ukechords.cli.ident import _get_parser, _get_config
 from ukechords.errors import InvalidCommandException, error
 
 

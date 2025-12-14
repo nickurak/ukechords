@@ -31,7 +31,7 @@ dev = [
 Home = "https://nickurak.ca/ukechords/"
 
 [project.scripts]
-ident = "ukechords.ident:main"
+ident = "ukechords.cli.ident:main"
 
 [tool.black]
 line-length = 100
