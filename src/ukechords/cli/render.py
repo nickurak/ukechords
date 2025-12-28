@@ -1,4 +1,4 @@
-"""Rendering logic, chiefly for CLI usage of ukechords"""
+"""rendering utilities for ukechords' cli"""
 
 from typing import Any
 from collections.abc import Iterable

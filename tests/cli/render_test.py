@@ -1,4 +1,4 @@
-"""Test the render module"""
+"""Test the cli's render module"""
 
 import pytest
 
