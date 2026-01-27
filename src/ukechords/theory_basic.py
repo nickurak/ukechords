@@ -51,7 +51,7 @@ def normalize_chord(chord: str) -> str:
     convention."""
     if not (match := re.match("^([A-G][b#]?)(.*)$", chord)):
         raise ChordNotFoundException(f'Couldn\'t find a valid root in "{chord}"')
-    (root, quality) = match.groups()
+    root, quality = match.groups()
     quality = quality.replace("maj", "M")
     return f"{sharpify(root)}{quality}"
 
@@ -149,7 +149,7 @@ def get_key_notes(key: str) -> tuple[str, ...]:
     match = re.match(f'^([A-G][b#]?)({"|".join(mods.keys())})$', key)
     if not match:
         raise UnknownKeyException(f'Unknown key "{key}"')
-    (root, extra) = match.groups()
+    root, extra = match.groups()
     intervals = mods[extra]
     if is_flat(root):
         return tuple(flat_scale[interval + note_intervals[root]] for interval in intervals)

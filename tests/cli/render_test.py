@@ -58,7 +58,7 @@ def test_render_chord_list(capsys: pytest.CaptureFixture[str], uke_config: UkeCo
     lines = _get_capsys_lines(capsys)
     assert len(lines) == len(sl_data["shapes"])
     for shape, line in zip(sl_data["shapes"], lines):
-        (chords_c, shape_str, _, diff_desc) = line.split(maxsplit=3)
+        chords_c, shape_str, _, diff_desc = line.split(maxsplit=3)
         assert chords_c.rstrip(":") == _csv(shape["chord_names"])
         assert shape_str == ",".join(map(str, shape["shape"]))
         diff_parts = diff_desc.strip().split(maxsplit=1)
@@ -120,7 +120,7 @@ def test_render_key(capsys: pytest.CaptureFixture[str]) -> None:
     }
     render_key(None, data)
     lines = _get_capsys_lines(capsys)
-    (header, note_str) = lines
+    header, note_str = lines
     assert header == f"{data['key']} ({','.join(data['other_keys'])}):"
     assert note_str == ",".join(data["notes"])
 
@@ -134,7 +134,7 @@ def test_render_key_from_notes(capsys: pytest.CaptureFixture[str]) -> None:
     }
     render_key(None, data)
     lines = _get_capsys_lines(capsys)
-    (keys_str, partial_str) = lines
+    keys_str, partial_str = lines
     assert keys_str == ",".join(data["other_keys"])
     assert partial_str == f"Partial match for: {",".join(data["partial_keys"])}"
 
@@ -148,7 +148,7 @@ def test_render_unknown_key_from_notes(capsys: pytest.CaptureFixture[str]) -> No
     }
     render_key(None, data)
     lines = _get_capsys_lines(capsys)
-    (err_msg, partial_str) = lines
+    err_msg, partial_str = lines
     assert err_msg == "No key found"
     assert partial_str == f"Partial match for: {",".join(data["partial_keys"])}"
 
@@ -177,7 +177,7 @@ def test_render_chords_from_shape_with_vis_and_notes(
     shape_chord_line = lines.pop()
     assert notes_line == f"Notes: {', '.join(data['shapes'][0]['notes'])}"
     assert difficulty_line == f"Difficulty: {data['difficulty']}"
-    (shape_str, chord_str) = shape_chord_line.split(": ")
+    shape_str, chord_str = shape_chord_line.split(": ")
     expected_pos_list = ["x" if pos < 0 else str(pos) for pos in data["shapes"][0]["shape"]]
     assert shape_str == ",".join(expected_pos_list)
     assert chord_str == ",".join(data["shapes"][0]["chords"])
