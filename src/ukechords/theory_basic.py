@@ -1,4 +1,4 @@
-"""Basic music theory elements, not neccesarily including stringed instruments or chord qualities"""
+"""Basic music theory elements, not necessarily including stringed instruments or chord qualities"""
 
 import re
 from typing import TypeVar, Any
@@ -70,12 +70,12 @@ def _normalizer(arg: Normalizable, scale: list[str]) -> Normalizable:
 
 
 def sharpify(arg: Normalizable) -> Normalizable:
-    """Return the sharp equivelant version of the note/chord or list/tuple/set of chords"""
+    """Return the sharp equivalent version of the note/chord or list/tuple/set of chords"""
     return _normalizer(arg, chromatic_scale)
 
 
 def flatify(arg: Normalizable) -> Normalizable:
-    """Return the flat equivelant version of the note/chord or list/tuple/set of chords"""
+    """Return the flat equivalent version of the note/chord or list/tuple/set of chords"""
     return _normalizer(arg, flat_scale)
 
 
