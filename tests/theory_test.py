@@ -38,7 +38,7 @@ def test_force_flat_asharpsus2(uke_config: UkeConfig) -> None:
 
 
 def test_force_flat_shape(uke_config: UkeConfig) -> None:
-    """Verify that forcing a flat on chords discovered by a specifid shape works"""
+    """Verify that forcing a flat on chords discovered by a specified shape works"""
     uke_config.tuning = ("G", "C", "E")
     uke_config.force_flat = True
     pshape = ("3", "2", "1")
@@ -128,7 +128,7 @@ def test_show_chordless_shape(uke_config: UkeConfig) -> None:
 
 
 def test_list_all(uke_config: UkeConfig) -> None:
-    """Verify that listing all chordsmatching a set of qualities works"""
+    """Verify that listing all chords matching a set of qualities works"""
     uke_config.qualities = ["", "m", "7", "dim", "maj", "m7"]
     uke_config.keys = ["C"]
     uke_config.allowed_chords = None
@@ -152,7 +152,7 @@ def test_barrable_barred(uke_config: UkeConfig) -> None:
 
 
 def test_barrable_unbarred(uke_config: UkeConfig) -> None:
-    """Verify barred options are avaiable even when possible but not recommended"""
+    """Verify barred options are available even when possible but not recommended"""
     data = show_chords_by_shape(uke_config, ("1", "1", "3"))
     barre_data = data["barre_data"]
     assert barre_data

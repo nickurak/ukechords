@@ -40,7 +40,7 @@ class FakePool:
             error_callback(e)
 
     def terminate(self) -> None:
-        """Dummmy terminate method"""
+        """Dummy terminate method"""
 
     def close(self) -> None:
         """Dummy close method"""
