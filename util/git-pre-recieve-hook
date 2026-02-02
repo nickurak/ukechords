@@ -32,12 +32,12 @@ while read -r OLDREV NEWREV REFNAME; do
     if [ "$OLDREV" != "0000000000000000000000000000000000000000" ]; then
         BADCOMMITS="$(git log --pretty=%h --grep "fixup!" --grep "squash!" "$OLDREV..$NEWREV")"
         if [ -n "$BADCOMMITS" ]; then
-            fail "{$(echo $BADCOMMITS | sed 's/ /, /g')} are uncaught fixup/squash commits."
+            fail "{$(echo "$BADCOMMITS" | sed 's/ /, /g')} are uncaught fixup/squash commits."
         fi
     fi
 
-    export SRC_DIR="$(mktemp -d -p /tmp tmp_ukechords_src_XXXX)"
-
+    SRC_DIR="$(mktemp -d -p /tmp tmp_ukechords_src_XXXX)"
+    export SRC_DIR
     git archive "$NEWREV" | tar -x -C "$SRC_DIR"
 
     cd "$SRC_DIR" && uv sync --dev --link-mode=symlink
