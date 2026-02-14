@@ -132,6 +132,7 @@ def test_list_all(uke_config: UkeConfig) -> None:
     uke_config.qualities = ["", "m", "7", "dim", "maj", "m7"]
     uke_config.keys = ["C"]
     uke_config.allowed_chords = None
+    uke_config.num = 1
     output = show_all(uke_config)
 
     c_shapes = [shape for shape in output["shapes"] if "C" in shape["chord_names"]]

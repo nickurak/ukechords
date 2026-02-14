@@ -158,8 +158,9 @@ def _get_config(args: argparse.Namespace) -> UkeConfig:
     config.num = args.num
     if args.single:
         config.num = 1
-    if not config.num and args.visualize:
-        config.num = 1
+    if not config.num:
+        if args.visualize or args.all_chords or args.keys or args.allowed_chords:
+            config.num = 1
     config.show_notes = args.show_notes
     config.no_cache = args.no_cache
     config.visualize = args.visualize
