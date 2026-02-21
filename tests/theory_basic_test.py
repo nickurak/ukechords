@@ -1,7 +1,9 @@
 """Test the theory_basic module"""
 
+import pytest
+
 from ukechords.theory_basic import get_key_notes, _get_dupe_scales_from_key
-from ukechords.theory_basic import _weird_sharp_scale, _weird_flat_scale, sharpify, flatify
+from ukechords.theory_basic import note_intervals, sharpify, flatify
 
 
 def test_sharpify_flatify() -> None:
@@ -27,7 +29,28 @@ def test_scale() -> None:
     assert "Am" in dupes
 
 
-def test_weird_flat_sharps() -> None:
+def get_weird_offset(note: str) -> int:
+    """Determine the interval offset caused by a weird note"""
+    match note[1:]:
+        case "#":
+            return 1
+        case "b":
+            return -1
+        case "##":
+            return 2
+        case "bb":
+            return -2
+    assert not "invalid weird note"
+    return 0
+
+
+weird_notes = ["B#", "Cb", "E#", "Fb"]
+weird_notes += ["A##", "C##", "D##", "F##", "G##"]
+weird_notes += ["Abb", "Bbb", "Cbb", "Dbb", "Ebb", "Fbb", "Gbb"]
+
+
+@pytest.mark.parametrize("weird_note", weird_notes)
+def test_weird_flat_sharps(weird_note: str) -> None:
     """Test that B#/Cb/E#/Fb notes are correctly identified"""
-    assert _weird_sharp_scale == ["B#", "C#", "D", "D#", "E", "E#", "F#", "G", "G#", "A", "A#", "B"]
-    assert _weird_flat_scale == ["C", "Db", "D", "Eb", "Fb", "F", "Gb", "G", "Ab", "A", "Bb", "Cb"]
+    diff = get_weird_offset(weird_note)
+    assert note_intervals[weird_note] == (note_intervals[weird_note[0]] + diff) % 12
