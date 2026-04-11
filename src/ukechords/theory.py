@@ -396,7 +396,7 @@ def show_all(config: UkeConfig) -> ChordShapes:
             continue
         if notes and not _chord_built_from_notes(chord, tuple(notes)):
             continue
-        for shape in chord_shapes[chord][0:config.num]:
+        for shape in chord_shapes[chord][0 : config.num]:
             difficulty, barre_data = _get_shape_difficulty(shape, tuning=config.tuning)
             if difficulty > config.max_difficulty:
                 continue
