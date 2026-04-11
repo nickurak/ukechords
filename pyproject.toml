@@ -41,4 +41,4 @@ line-length = 100
 strict = true
 
 [tool.flake8]
-ignore = ['E501', 'F401', 'F811']
+ignore = ['E203', 'E501', 'F401', 'F811']
