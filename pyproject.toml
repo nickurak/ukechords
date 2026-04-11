@@ -22,7 +22,7 @@ dev = [
     "pyflakes",
     "pylint",
     "pylint-pytest",
-    "pytest",
+    "pytest>=9.0.0",
     "pytest-cov",
     "pytest-mock",
 ]
@@ -35,3 +35,6 @@ ident = "ukechords.cli.ident:main"
 
 [tool.black]
 line-length = 100
+
+[tool.pytest]
+strict = true

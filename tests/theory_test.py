@@ -213,7 +213,7 @@ def get_missing_chord_params() -> Iterable[Any]:
         yield chord
     for chord in builtin_chords:
         reason = f"we detected that pychord already has {chord}, as expected"
-        yield pytest.param(chord, marks=pytest.mark.xfail(strict=True, reason=reason))
+        yield pytest.param(chord, marks=pytest.mark.xfail(reason=reason))
 
 
 @pytest.mark.parametrize("chord", list(get_missing_chord_params()))
