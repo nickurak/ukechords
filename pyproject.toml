@@ -17,15 +17,13 @@ dependencies = [
 dev = [
     "black",
     "coverage",
-    "flake8",
-    "flake8-pyproject",
     "mypy",
-    "pyflakes",
     "pylint",
     "pylint-pytest",
     "pytest>=9.0.0",
     "pytest-cov",
     "pytest-mock",
+    "ruff",
 ]
 
 [project.urls]
@@ -47,5 +45,6 @@ target-version = "py312"
 [tool.ruff.format]
 nested-string-quote-style = "preferred"
 
-[tool.flake8]
-ignore = ['E203', 'E501', 'F401', 'F811']
+[tool.ruff.lint.extend-per-file-ignores]
+"tests/**/*.py" = ["F811", "F401"]
+

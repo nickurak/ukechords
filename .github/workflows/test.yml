@@ -15,8 +15,8 @@ jobs:
         run: pip install uv
       - name: install ukechords
         run:  uv sync --dev --link-mode=symlink
-      - name: Run flake8
-        run: uv run flake8 src tests
+      - name: Run ruff
+        run: uv run ruff check src tests
       - name: Run pylint
         run: uv run pylint src tests
       - name: Run mypy
