@@ -63,7 +63,7 @@ options:
   --notes NOTES         Show what chord(s) these <NOTES> play
   -s, --shape SHAPE     Show what chord(s) this <SHAPE> plays
   --slide               Show what chord(s) this <SHAPE> could play when slid up or down
-  -t, --tuning TUNING   comma-separated notes for string tuning
+  -t, --tuning TUNING   comma-separated notes for string tuning, or "ukulele" or "guitar" etc
   -1, --single          Show only 1 shape for each chord
   -v, --visualize       Visualize shapes with Unicode drawings
   -a, --all-chords      Show all matching chords, not just one selected one

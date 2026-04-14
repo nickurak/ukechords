@@ -78,7 +78,12 @@ def _get_parser() -> argparse.ArgumentParser:
     pa("-s", "--shape", help=shape_help, type=lambda shape: tuple(shape.split(",")))
     slide_help = "Show what chord(s) this <SHAPE> could play when slid up or down"
     pa("--slide", action="store_true", help=slide_help)
-    pa("-t", "--tuning", help="comma-separated notes for string tuning", type=_get_tuning)
+    pa(
+        "-t",
+        "--tuning",
+        help='comma-separated notes for string tuning, or "ukulele" or "guitar", etc',
+        type=_get_tuning,
+    )
     pa("-1", "--single", action="store_true", help="Show only 1 shape for each chord")
     pa("-v", "--visualize", action="store_true", help="Visualize shapes with Unicode drawings")
     all_help = "Show all matching chords, not just one selected one"
