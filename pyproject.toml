@@ -42,6 +42,10 @@ strict = true
 
 [tool.ruff]
 line-length = 100
+target-version = "py312"
+
+[tool.ruff.format]
+nested-string-quote-style = "preferred"
 
 [tool.flake8]
 ignore = ['E203', 'E501', 'F401', 'F811']
