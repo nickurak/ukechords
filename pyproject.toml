@@ -40,5 +40,8 @@ line-length = 100
 [tool.pytest]
 strict = true
 
+[tool.ruff]
+line-length = 100
+
 [tool.flake8]
 ignore = ['E203', 'E501', 'F401', 'F811']
