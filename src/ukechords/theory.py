@@ -411,20 +411,22 @@ def show_all(config: UkeConfig) -> ChordShapes:
     return output
 
 
+def _slide_shape(shape: tuple[int, ...]) -> Iterable[tuple[int, ...]]:
+    if not any(fret > 0 for fret in shape):
+        raise UnslidableEmptyShapeException("Sliding an empty shape doesn't make sense")
+    min_fret = min(fret for fret in shape if fret > 0)
+    unslid_shape = tuple(fret + 1 - min_fret if fret > 0 else fret for fret in shape)
+    for offset in range(1, 12):
+        cshape = tuple(pos + offset if pos > 0 else pos for pos in unslid_shape)
+        yield cshape
+
+
 def _get_chords_by_shape(
     config: UkeConfig, pshape: tuple[int, ...]
 ) -> Iterable[tuple[tuple[int, ...], list[str], set[str]]]:
-    shapes = []
+    shapes = [pshape]
     if config.slide:
-        if not any(fret > 0 for fret in pshape):
-            raise UnslidableEmptyShapeException("Sliding an empty shape doesn't make sense")
-        min_fret = min(fret for fret in pshape if fret > 0)
-        unslid_shape = tuple(fret + 1 - min_fret if fret > 0 else fret for fret in pshape)
-        for offset in range(0, 12):
-            cshape = tuple(pos + offset if pos > 0 else pos for pos in unslid_shape)
-            shapes.append(cshape)
-    else:
-        shapes.append(pshape)
+        shapes.extend(_slide_shape(pshape))
     for shape in shapes:
         notes = _get_shape_notes(shape, tuning=config.tuning, force_flat=config.force_flat)
         chords = _get_chords_from_notes(frozenset(notes), config.force_flat)
