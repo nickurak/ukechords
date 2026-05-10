@@ -121,7 +121,7 @@ def test_render_key(capsys: pytest.CaptureFixture[str]) -> None:
     render_key(None, data)
     lines = _get_capsys_lines(capsys)
     header, note_str = lines
-    assert header == f"{data['key']} ({','.join(data['other_keys'])}):"
+    assert header == f"{data["key"]} ({",".join(data["other_keys"])}):"
     assert note_str == ",".join(data["notes"])
 
 
@@ -175,8 +175,8 @@ def test_render_chords_from_shape_with_vis_and_notes(
     notes_line = lines.pop(0)
     difficulty_line = lines.pop()
     shape_chord_line = lines.pop()
-    assert notes_line == f"Notes: {', '.join(data['shapes'][0]['notes'])}"
-    assert difficulty_line == f"Difficulty: {data['difficulty']}"
+    assert notes_line == f"Notes: {", ".join(data["shapes"][0]["notes"])}"
+    assert difficulty_line == f"Difficulty: {data["difficulty"]}"
     shape_str, chord_str = shape_chord_line.split(": ")
     expected_pos_list = ["x" if pos < 0 else str(pos) for pos in data["shapes"][0]["shape"]]
     assert shape_str == ",".join(expected_pos_list)

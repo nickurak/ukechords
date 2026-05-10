@@ -48,14 +48,14 @@ def _diff_string(difficulty: float, barre_data: BarreData | None, diff_width: in
     if not barre_data:
         return padded_diff
 
-    barre_string = f"barre {barre_data['fret']}"
+    barre_string = f"barre {barre_data["fret"]}"
     if not all(fret == 0 for fret in barre_data["shape"]):
-        barre_string = f"{barre_string} + {_csv(barre_data['shape'])}:{barre_data['chord']}"
+        barre_string = f"{barre_string} + {_csv(barre_data["shape"])}:{barre_data["chord"]}"
 
     if not barre_data["barred"]:
-        return f"{padded_diff} (else {barre_data['barred_difficulty']:.1f}: {barre_string})"
+        return f"{padded_diff} (else {barre_data["barred_difficulty"]:.1f}: {barre_string})"
 
-    return f"{padded_diff} ({barre_string}, else {barre_data['unbarred_difficulty']:.1f})"
+    return f"{padded_diff} ({barre_string}, else {barre_data["unbarred_difficulty"]:.1f})"
 
 
 def _get_shape_string(shape: Iterable[int]) -> str:
@@ -68,7 +68,7 @@ def render_chord_list(config: UkeConfig, data: ChordShapes) -> None:
     unicode visualization of how to play it
     """
     if config.show_notes:
-        print(f"Notes: {', '.join(data['notes'])}")
+        print(f"Notes: {", ".join(data["notes"])}")
     name_width = 0
     shape_width = 0
     diff_width = 0
@@ -77,13 +77,13 @@ def render_chord_list(config: UkeConfig, data: ChordShapes) -> None:
         if "chord" in data:
             msg = f'No shape for "{data["chord"]}" found'
         elif "notes" in data:
-            msg = f'No shape for notes {_csv(sorted(data["notes"]))} found'
+            msg = f"No shape for notes {_csv(sorted(data["notes"]))} found"
         print(msg)
     for shape in data["shapes"]:
         name_width = max(name_width, len(_csv(shape["chord_names"])))
         shape_string = _get_shape_string(shape["shape"])
         shape_width = max(shape_width, len(shape_string))
-        diff_width = max(diff_width, len(f"{shape['difficulty']:.1}"))
+        diff_width = max(diff_width, len(f"{shape["difficulty"]:.1}"))
     name_width += 1
     for shape in data["shapes"]:
         shape_string = _get_shape_string(shape["shape"])
@@ -91,7 +91,7 @@ def render_chord_list(config: UkeConfig, data: ChordShapes) -> None:
         if shape["chord_names"]:
             chord_names = _csv(shape["chord_names"]) + ":"
         else:
-            chord_names = f"Notes: {','.join(sorted(data['notes']))}:"
+            chord_names = f"Notes: {",".join(sorted(data["notes"]))}:"
         print(f"{chord_names:{name_width}} {shape_string:{shape_width}} difficulty:{d_string:}")
         if config.visualize:
             _draw_shape(shape["shape"], shape["barre_data"])
@@ -101,33 +101,33 @@ def render_chords_from_shape(config: UkeConfig, data: ChordsByShape) -> None:
     """Render named chords, as identified by shapes played on frets"""
     for shape in data["shapes"]:
         if config.show_notes:
-            print(f"Notes: {_csv(shape['notes'], sep=', ')}")
+            print(f"Notes: {_csv(shape["notes"], sep=", ")}")
         if config.visualize:
             barre_data = data.get("barre_data")
             _draw_shape(shape["shape"], barre_data)
         shape_string = _get_shape_string(shape["shape"])
-        print(f'{shape_string}: {_csv(shape["chords"])}')
+        print(f"{shape_string}: {_csv(shape["chords"])}")
     if not config.slide:
-        print(f"Difficulty: {_diff_string(data['difficulty'], data['barre_data'])}")
+        print(f"Difficulty: {_diff_string(data["difficulty"], data["barre_data"])}")
 
 
 def render_key(_: UkeConfig | None, data: KeyInfo) -> None:
     """Render information about a musical key"""
     if data["other_keys"]:
-        other_str = f" ({_csv(data['other_keys'])})"
+        other_str = f" ({_csv(data["other_keys"])})"
     else:
         other_str = ""
     if "key" in data:
-        print(f"{data['key']}{other_str}:")
-        print(f"{_csv(data['notes'])}")
+        print(f"{data["key"]}{other_str}:")
+        print(f"{_csv(data["notes"])}")
     else:
         if not data["other_keys"]:
             print("No key found")
         else:
-            print(f"{_csv(data['other_keys'])}")
+            print(f"{_csv(data["other_keys"])}")
 
     if "partial_keys" in data and data["partial_keys"]:
-        print(f"Partial match for: {_csv(data['partial_keys'])}")
+        print(f"Partial match for: {_csv(data["partial_keys"])}")
 
 
 def render_json(_: UkeConfig | None, data: Any) -> None:

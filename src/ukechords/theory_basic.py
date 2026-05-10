@@ -149,7 +149,7 @@ def get_key_notes(key: str) -> tuple[str, ...]:
     """Given a key, return the notes in that key"""
     mods = _get_scales()
 
-    match = re.match(f'^([A-G][b#]?)({"|".join(mods.keys())})$', key)
+    match = re.match(f"^([A-G][b#]?)({"|".join(mods.keys())})$", key)
     if not match:
         raise UnknownKeyException(f'Unknown key "{key}"')
     root, extra = match.groups()
