@@ -1,8 +1,8 @@
 """Fake implementation of multiprocessing.Pool for test purposes"""
 
-from typing import NoReturn, Any, Self
 from collections.abc import Callable
 from types import TracebackType
+from typing import Any, NoReturn, Self
 
 import pytest
 from pytest_mock import MockFixture

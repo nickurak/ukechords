@@ -1,7 +1,7 @@
 """Our defined errors/exceptions and error handling logic"""
 
 import sys
-from typing import NoReturn, Any
+from typing import Any, NoReturn
 
 
 class UnknownKeyException(Exception):

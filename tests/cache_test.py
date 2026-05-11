@@ -1,7 +1,6 @@
 """Test the cache module"""
 
-from ukechords.cache import _cached_filename, save_scanned_chords, load_scanned_chords
-
+from ukechords.cache import _cached_filename, load_scanned_chords, save_scanned_chords
 from ukechords.config import UkeConfig
 from ukechords.theory_basic import ChordCollection
 

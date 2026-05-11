@@ -2,8 +2,13 @@
 
 import pytest
 
-from ukechords.theory_basic import get_key_notes, _get_dupe_scales_from_key
-from ukechords.theory_basic import note_intervals, sharpify, flatify
+from ukechords.theory_basic import (
+    _get_dupe_scales_from_key,
+    flatify,
+    get_key_notes,
+    note_intervals,
+    sharpify,
+)
 
 
 def test_sharpify_flatify() -> None:

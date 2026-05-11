@@ -1,7 +1,7 @@
 """Pytest fixture to provide a UkeConfig object"""
 
-from collections.abc import Iterable
 import pathlib
+from collections.abc import Iterable
 
 import pytest
 

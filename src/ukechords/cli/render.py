@@ -1,12 +1,12 @@
 """rendering utilities for ukechords' cli"""
 
-from typing import Any
-from collections.abc import Iterable
 import json
 import sys
+from collections.abc import Iterable
+from typing import Any
 
 from ukechords.config import UkeConfig
-from ukechords.types import ChordShapes, ChordsByShape, KeyInfo, BarreData
+from ukechords.types import BarreData, ChordsByShape, ChordShapes, KeyInfo
 
 
 def _csv(lst: Iterable[Any], sep: str = ",") -> str:

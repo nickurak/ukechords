@@ -2,14 +2,17 @@
 
 import pytest
 
-from ukechords.cli.render import _get_shape_lines, render_chord_list
-from ukechords.cli.render import render_chords_from_shape, render_key
-from ukechords.cli.render import _diff_string
-
-from ukechords.cli.render import _csv
-
-from ukechords.types import ChordShapes, ChordsByShape, KeyInfo, BarreData
+from ukechords.cli.render import (
+    _csv,
+    _diff_string,
+    _get_shape_lines,
+    render_chord_list,
+    render_chords_from_shape,
+    render_key,
+)
 from ukechords.config import UkeConfig
+from ukechords.types import BarreData, ChordsByShape, ChordShapes, KeyInfo
+
 from ..uketestconfig import uke_config
 
 

@@ -1,7 +1,7 @@
 """Types defined by Ukechords, especially those returned from the
 theory module to the render module"""
 
-from typing import TypedDict, NotRequired
+from typing import NotRequired, TypedDict
 
 
 class KeyInfo(TypedDict):

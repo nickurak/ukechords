@@ -1,8 +1,8 @@
 """Basic music theory elements, not necessarily including stringed instruments or chord qualities"""
 
 import re
-from typing import TypeVar, Any
 from collections.abc import Iterable
+from typing import Any, TypeVar
 
 from .errors import ChordNotFoundException, UnknownKeyException
 

@@ -1,25 +1,29 @@
 """Test the theory module"""
 
-from typing import Any
 from collections.abc import Callable, Iterable
+from typing import Any
 
 import pytest
+from pychord import Chord, QualityManager
 from pytest_mock import MockFixture
 
-from pychord import Chord, QualityManager
-
-from ukechords.theory import _scan_chords, show_chords_by_notes
-from ukechords.theory import show_chord, show_chords_by_shape, show_all
-from ukechords.theory import add_no5_quality, add_7sus2_quality
-from ukechords.theory import show_key, lookup_tuning
-
+from ukechords.config import UkeConfig
+from ukechords.errors import ChordNotFoundException, UnslidableEmptyShapeException
+from ukechords.theory import (
+    _scan_chords,
+    add_7sus2_quality,
+    add_no5_quality,
+    lookup_tuning,
+    show_all,
+    show_chord,
+    show_chords_by_notes,
+    show_chords_by_shape,
+    show_key,
+)
 from ukechords.theory_basic import ChordCollection
 
-from ukechords.errors import UnslidableEmptyShapeException, ChordNotFoundException
-
-from ukechords.config import UkeConfig
-from .uketestconfig import uke_config
 from .fake_pool import fake_pool  # pylint: disable=unused-import
+from .uketestconfig import uke_config
 
 
 def test_force_flat_asharpsus2(uke_config: UkeConfig) -> None:

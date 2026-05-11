@@ -1,24 +1,20 @@
 """Logic related to music-theory, mostly for stringed instruments"""
 
-from itertools import permutations, product
-from functools import cache
 import multiprocessing as mp
 import os
-from typing import NoReturn
 from collections.abc import Iterable
+from functools import cache
+from itertools import permutations, product
+from typing import NoReturn
 
-from pychord.analyzer import notes_to_positions
 from pychord import Chord, QualityManager
+from pychord.analyzer import notes_to_positions
 
 from . import theory_basic
-
 from .cache import load_scanned_chords, save_scanned_chords
-from .errors import ChordNotFoundException
-from .errors import UnslidableEmptyShapeException, UnknownTuningException
-
-from .types import KeyInfo, ChordsByShape, Shape
-from .types import BarreData, ChordShapes
 from .config import UkeConfig
+from .errors import ChordNotFoundException, UnknownTuningException, UnslidableEmptyShapeException
+from .types import BarreData, ChordsByShape, ChordShapes, KeyInfo, Shape
 
 
 def add_no5_quality() -> None:

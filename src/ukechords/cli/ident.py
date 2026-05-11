@@ -1,28 +1,42 @@
 #!/usr/bin/env python3
 """Simple command-line client to invoke ukechords functionality"""
 
-import sys
 import argparse
+import configparser
 import json
 import os
-import configparser
-from typing import Any
+import sys
 from collections.abc import Callable, Iterable
+from typing import Any
 
 from xdg import BaseDirectory
 
-from ukechords.theory import add_no5_quality, add_7sus2_quality
-from ukechords.errors import UnknownKeyException, ChordNotFoundException
-from ukechords.errors import error, InvalidCommandException, UnknownTuningException
+from ukechords.cli.render import (
+    render_chord_list,
+    render_chords_from_shape,
+    render_json,
+    render_key,
+)
 from ukechords.config import UkeConfig
-
-from ukechords.theory import show_chord, show_all, show_chords_by_shape
-from ukechords.theory import show_chords_by_notes, show_key
-from ukechords.theory import lookup_tuning, rank_shape_by_high_fret, rank_shape_by_difficulty
-
-from ukechords.cli.render import render_chord_list, render_chords_from_shape
-from ukechords.cli.render import render_key, render_json
-
+from ukechords.errors import (
+    ChordNotFoundException,
+    InvalidCommandException,
+    UnknownKeyException,
+    UnknownTuningException,
+    error,
+)
+from ukechords.theory import (
+    add_7sus2_quality,
+    add_no5_quality,
+    lookup_tuning,
+    rank_shape_by_difficulty,
+    rank_shape_by_high_fret,
+    show_all,
+    show_chord,
+    show_chords_by_notes,
+    show_chords_by_shape,
+    show_key,
+)
 from ukechords.types import ChordsByShape, ChordShapes, KeyInfo
 
 
