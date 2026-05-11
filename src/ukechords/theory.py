@@ -10,13 +10,11 @@ from collections.abc import Iterable
 from pychord.analyzer import notes_to_positions
 from pychord import Chord, QualityManager
 
+from . import theory_basic
+
 from .cache import load_scanned_chords, save_scanned_chords
 from .errors import ChordNotFoundException
 from .errors import UnslidableEmptyShapeException, UnknownTuningException
-
-from .theory_basic import ChordCollection, sharpify, flatify, normalize_chord
-from .theory_basic import flat_scale, chromatic_scale, note_intervals
-from .theory_basic import get_key_notes, get_dupe_scales_from_notes, is_flat
 
 from .types import KeyInfo, ChordsByShape, Shape
 from .types import BarreData, ChordShapes
@@ -70,7 +68,7 @@ def _get_chords_from_notes(notes: Iterable[str], force_flat: bool = False) -> li
         if (quality := _get_quality_map().get(positions)) is None:
             continue
         if force_flat:
-            chord = f"{flatify(root)}{quality}"
+            chord = f"{theory_basic.flatify(root)}{quality}"
         else:
             chord = f"{root}{quality}"
         chords.append(chord)
@@ -170,13 +168,13 @@ def _get_shape_notes(
     """
     notes: tuple[str, ...] = ()
     if force_flat:
-        scale = flat_scale
+        scale = theory_basic.flat_scale
     else:
-        scale = chromatic_scale
+        scale = theory_basic.chromatic_scale
     for string, position in enumerate(shape):
         if position == -1:
             continue
-        notes = notes + (scale[note_intervals[tuning[string]] + position],)
+        notes = notes + (scale[theory_basic.note_intervals[tuning[string]] + position],)
     return notes
 
 
@@ -200,13 +198,14 @@ def _get_shapes(
     fret_range = range(-1 if config.mute else 0, max_fret + 1)
     notes_set: set[str] = set()
     if notes:
-        notes_set = set(flatify(list(notes)))
+        notes_set = set(theory_basic.flatify(list(notes)))
     for i, string_note in enumerate(config.tuning):
         fret_options = []
         for pos in fret_range:
             if i == 0 and pos % partitions != partition:
                 continue
-            if not notes or pos == -1 or flat_scale[note_intervals[string_note] + pos] in notes_set:
+            note = theory_basic.flat_scale[theory_basic.note_intervals[string_note] + pos]
+            if not notes or pos == -1 or note in notes_set:
                 fret_options.append(pos)
         string_fret_options.append(fret_options)
     for shape in product(*string_fret_options):
@@ -220,8 +219,8 @@ def _get_chord_shapes_map(
     allowed_notes: tuple[str, ...] | None = None,
     partition: int = 0,
     partitions: int = 1,
-) -> ChordCollection:
-    my_shapes = ChordCollection()
+) -> theory_basic.ChordCollection:
+    my_shapes = theory_basic.ChordCollection()
     for shape in _get_shapes(config, max_fret, allowed_notes, partition, partitions):
         notes = frozenset(_get_shape_notes(shape, tuning=config.tuning))
         for chord in _get_chords_from_notes(notes):
@@ -233,13 +232,13 @@ def _get_chord_shapes_map(
 
 def _scan_chords(
     config: UkeConfig,
-    chord_shapes: ChordCollection,
+    chord_shapes: theory_basic.ChordCollection,
     max_fret: int = 12,
     notes: tuple[str, ...] | None = None,
 ) -> None:
     """
     Based on the provided configuration, scan for possible ways to
-    play chords. Store discovered shapes in a ChordCollection that
+    play chords. Store discovered shapes in a theory_basic.ChordCollection that
     maps chords to a list of shapes that will generate the notes of
     that chord.
     """
@@ -247,7 +246,7 @@ def _scan_chords(
         if load_scanned_chords(config, chord_shapes, max_fret):
             return
 
-    def mp_merge_shapes(mp_shapes: ChordCollection) -> None:
+    def mp_merge_shapes(mp_shapes: theory_basic.ChordCollection) -> None:
         for chord, shapes in mp_shapes.items():
             if chord not in chord_shapes:
                 chord_shapes[chord] = []
@@ -311,16 +310,16 @@ def _get_other_names(
     shape: tuple[int, ...], chord_name: str, tuning: tuple[str, ...]
 ) -> Iterable[str]:
     for chord in _get_chords_from_notes(_get_shape_notes(shape, tuning)):
-        if normalize_chord(chord) != normalize_chord(chord_name):
+        if theory_basic.normalize_chord(chord) != theory_basic.normalize_chord(chord_name):
             yield chord
 
 
 def _sanitize_notes(notes: list[str]) -> tuple[str, ...]:
     def sanitizer(note: str) -> str:
-        normal_notes = set(chromatic_scale) | set(flat_scale)
+        normal_notes = set(theory_basic.chromatic_scale) | set(theory_basic.flat_scale)
         if note in normal_notes:
             return note
-        return str(chromatic_scale[note_intervals[note]])
+        return str(theory_basic.chromatic_scale[theory_basic.note_intervals[note]])
 
     return tuple(map(sanitizer, notes))
 
@@ -341,7 +340,7 @@ def show_chord(config: UkeConfig, chord: str) -> ChordShapes:
     notes = _sanitize_notes(p_chord.components(visible=True))
     if config.show_notes:
         output["notes"] = notes
-    chord_shapes = ChordCollection()
+    chord_shapes = theory_basic.ChordCollection()
     _scan_chords(config, chord_shapes, notes=notes)
     if chord not in chord_shapes:
         output["chord"] = chord
@@ -365,8 +364,8 @@ def show_chord(config: UkeConfig, chord: str) -> ChordShapes:
 
 
 def _chord_built_from_notes(chord: str, notes: tuple[str, ...]) -> bool:
-    for note in sharpify(Chord(chord).components(visible=True)):
-        if note not in sharpify(list(notes)):
+    for note in theory_basic.sharpify(Chord(chord).components(visible=True)):
+        if note not in theory_basic.sharpify(list(notes)):
             return False
     return True
 
@@ -378,29 +377,29 @@ def show_all(config: UkeConfig) -> ChordShapes:
     restrict which chords are returned accordingly
     """
     notes: list[str] = []
-    chord_shapes = ChordCollection()
+    chord_shapes = theory_basic.ChordCollection()
     for key in config.keys or []:
-        notes.extend(get_key_notes(key))
+        notes.extend(theory_basic.get_key_notes(key))
     for chord in config.allowed_chords or []:
         notes.extend(Chord(chord).components(visible=True))
-    if notes and any(map(is_flat, notes)):
+    if notes and any(map(theory_basic.is_flat, notes)):
         config.force_flat = True
     _scan_chords(config, chord_shapes, notes=tuple(notes))
     ichords = list(chord_shapes.keys())
     sort_offset = 0
     if config.keys:
-        sort_offset = note_intervals[get_key_notes(config.keys[0])[0]]
+        sort_offset = theory_basic.note_intervals[theory_basic.get_key_notes(config.keys[0])[0]]
 
     def chord_sorter(name: str) -> tuple[int, str]:
-        pos = note_intervals[Chord(name).root] - sort_offset
-        return pos % len(chromatic_scale), name
+        pos = theory_basic.note_intervals[Chord(name).root] - sort_offset
+        return pos % len(theory_basic.chromatic_scale), name
 
     ichords.sort(key=chord_sorter)
     output: ChordShapes = {"shapes": []}
     for chord in ichords:
         chord_shapes[chord].sort(key=config.shape_ranker)
         if config.force_flat:
-            chord = flatify(Chord(chord).root) + Chord(chord).quality.quality
+            chord = theory_basic.flatify(Chord(chord).root) + Chord(chord).quality.quality
         if config.qualities and Chord(chord).quality.quality not in config.qualities:
             continue
         if notes and not _chord_built_from_notes(chord, tuple(notes)):
@@ -464,9 +463,9 @@ def show_chords_by_shape(config: UkeConfig, input_shape: tuple[str, ...]) -> Cho
 
 def show_chords_by_notes(config: UkeConfig, notes: set[str]) -> ChordShapes:
     """Return information on what chords are played by the specified notes"""
-    normalizer = sharpify
+    normalizer = theory_basic.sharpify
     if config.force_flat or any(note[-1] == "b" for note in notes):
-        normalizer = flatify
+        normalizer = theory_basic.flatify
     output: ChordShapes = {"notes": normalizer(tuple(notes)), "shapes": []}
     shapes = []
     for shape in _get_shapes(config, 12, notes=tuple(notes)):
@@ -492,8 +491,8 @@ def show_chords_by_notes(config: UkeConfig, notes: set[str]) -> ChordShapes:
 def show_key(_: UkeConfig | None, key: str | tuple[str, ...]) -> KeyInfo:
     """Return information on the specified key, including other names and the notes it includes"""
     if isinstance(key, str):
-        notes = get_key_notes(key)
-        other_keys, partial_keys = get_dupe_scales_from_notes(notes)
+        notes = theory_basic.get_key_notes(key)
+        other_keys, partial_keys = theory_basic.get_dupe_scales_from_notes(notes)
         output: KeyInfo = {
             "notes": notes,
             "key": key,
@@ -501,7 +500,7 @@ def show_key(_: UkeConfig | None, key: str | tuple[str, ...]) -> KeyInfo:
             "partial_keys": sorted(partial_keys, key=_rank_chord_name),
         }
     else:
-        keys, partial_keys = get_dupe_scales_from_notes(key)
+        keys, partial_keys = theory_basic.get_dupe_scales_from_notes(key)
         output = {
             "notes": tuple(key),
             "other_keys": list(keys),
