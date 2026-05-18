@@ -26,16 +26,16 @@ from .config import UkeConfig
 def add_no5_quality() -> None:
     """Add a fifth-less variant to many of pychord's known qualities"""
     for orig_name, quality in list(QualityManager().get_qualities().items()):
-        if "/" in orig_name or 7 not in quality.components or len(quality.components) < 4:
+        if "/" in orig_name or "5" not in quality.intervals or len(quality.components) < 4:
             continue
-        new = tuple(filter(lambda x: x != 7, quality.components))
+        new = tuple(filter(lambda x: x != "5", quality.intervals))
         QualityManager().set_quality(f"{orig_name}no5", new)
 
 
 def add_7sus2_quality() -> None:
     """Add a 7sus2 quality to pychord's known qualities"""
     sus2 = QualityManager().get_quality("sus2")
-    new = (*sus2.components, 10)
+    new = (*sus2.intervals, "b7")
     QualityManager().set_quality("7sus2", new)
 
 
@@ -66,7 +66,7 @@ def _get_chords_from_notes(notes: Iterable[str], force_flat: bool = False) -> li
     chords = []
     for seq in permutations(notes):
         root = seq[0]
-        positions: tuple[int, ...] = tuple(notes_to_positions(seq, root))
+        positions: tuple[int, ...] = tuple(notes_to_positions(list(seq), root))
         if (quality := _get_quality_map().get(positions)) is None:
             continue
         if force_flat:
@@ -315,6 +315,16 @@ def _get_other_names(
             yield chord
 
 
+def _sanitize_notes(notes: list[str]) -> tuple[str, ...]:
+    def sanitizer(note: str) -> str:
+        normal_notes = set(chromatic_scale) | set(flat_scale)
+        if note in normal_notes:
+            return note
+        return str(chromatic_scale[note_intervals[note]])
+
+    return tuple(map(sanitizer, notes))
+
+
 def show_chord(config: UkeConfig, chord: str) -> ChordShapes:
     """Return information on how to play a given chord, including:
 
@@ -328,9 +338,8 @@ def show_chord(config: UkeConfig, chord: str) -> ChordShapes:
         p_chord = Chord(chord)
     except ValueError as exc:
         raise ChordNotFoundException(f'Error looking up chord "{chord}"') from exc
-    notes = p_chord.components()
+    notes = _sanitize_notes(p_chord.components(visible=True))
     if config.show_notes:
-        notes = tuple(p_chord.components())
         output["notes"] = notes
     chord_shapes = ChordCollection()
     _scan_chords(config, chord_shapes, notes=notes)
@@ -356,7 +365,7 @@ def show_chord(config: UkeConfig, chord: str) -> ChordShapes:
 
 
 def _chord_built_from_notes(chord: str, notes: tuple[str, ...]) -> bool:
-    for note in sharpify(Chord(chord).components()):
+    for note in sharpify(Chord(chord).components(visible=True)):
         if note not in sharpify(list(notes)):
             return False
     return True
@@ -373,7 +382,7 @@ def show_all(config: UkeConfig) -> ChordShapes:
     for key in config.keys or []:
         notes.extend(get_key_notes(key))
     for chord in config.allowed_chords or []:
-        notes.extend(Chord(chord).components())
+        notes.extend(Chord(chord).components(visible=True))
     if notes and any(map(is_flat, notes)):
         config.force_flat = True
     _scan_chords(config, chord_shapes, notes=tuple(notes))

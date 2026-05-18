@@ -334,11 +334,11 @@ wheels = [
 
 [[package]]
 name = "pychord"
-version = "1.3.2"
+version = "1.4.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/0c/57/9b42e829d034d19dcba6b40f52d2884eaf036a2df05cdd09c6f49a203dcc/pychord-1.3.2.tar.gz", hash = "sha256:04dbdfe5b868eb2af6b0c7d3d04ce9e23f9c90751fd34b2d878365b2ce5314b5", size = 17089, upload-time = "2026-01-25T11:41:55.682Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c4/c5/83521bcdbc18572b1d44d9d7c021c7936b0e6353df3bdcc5a1d8b044b887/pychord-1.4.0.tar.gz", hash = "sha256:97ee54ab54a4478fc7330bf399cd5b8eba41158f55c502ea0ef9e21a55a33d1b", size = 18366, upload-time = "2026-04-29T06:53:07.192Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3c/0c/0bcf8a79b677cf7a2b7ab7dfbcf8db4a256fcf7b21ccbe31d6d0e0b292ea/pychord-1.3.2-py3-none-any.whl", hash = "sha256:a45abb15aa407339a903f389108297deaf0b3935f54070cb115b966addd18719", size = 13687, upload-time = "2026-01-25T11:41:54.596Z" },
+    { url = "https://files.pythonhosted.org/packages/87/81/94a57511c865f6290d436c8e648f9a89e462f10188c139bdb1616a0c7206/pychord-1.4.0-py3-none-any.whl", hash = "sha256:18f06e0dd72ffd2ffd1ec9354489fa9c4bbbc49ffcb7afbb32458c317ff99d54", size = 14271, upload-time = "2026-04-29T06:53:06.227Z" },
 ]
 
 [[package]]
@@ -527,8 +527,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "pychord", specifier = "<=1.3.2" },
-    { name = "pychord", specifier = ">=1.2.2" },
+    { name = "pychord", specifier = ">=1.4.0" },
     { name = "pyxdg" },
 ]
 

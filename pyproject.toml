@@ -10,8 +10,7 @@ license = {file = "LICENSE"}
 classifiers = ["License :: OSI Approved :: MIT License"]
 dynamic = ["version", "description"]
 dependencies = [
-    "pychord>=1.2.2",
-    "pychord<=1.3.2",
+    "pychord>=1.4.0",
     "pyxdg",
 ]
 [dependency-groups]
