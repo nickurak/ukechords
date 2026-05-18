@@ -163,7 +163,7 @@ def _get_shape_notes(
 ) -> tuple[str, ...]:
     """
     For a given shape in a specified tuning, return the notes played
-    by thet shape.
+    by that shape.
 
     If force_flat is True, return flat versions of those notes as
     appropriate.
