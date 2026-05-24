@@ -16,6 +16,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "coverage",
+    "ty",
     "mypy",
     "pylint",
     "pylint-pytest",

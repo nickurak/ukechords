@@ -5,7 +5,7 @@ set -Eeuo pipefail
 TEST_DIRS=(tests)
 SRC_DIRS=(src "${TEST_DIRS[@]}")
 
-RUNNERS=(run_ruff run_pylint run_mypy run_pytest run_shellcheck)
+RUNNERS=(run_ruff run_pylint run_ty run_mypy run_pytest run_shellcheck)
 [ "$#" -gt 0 ] && readarray -t RUNNERS < <(printf "%s" "$1" | xargs -d ',' -n1 | sed 's/^/run_/') && shift
 
 FIRST_RC=0 && FAILURES=()
@@ -30,6 +30,7 @@ find_sh0() {
 {
     run_pylint() { uv run pylint "$@" "${FILES[@]}"; }
     run_ruff() { uv run ruff check "$@" "${FILES[@]}"; }
+    run_ty() { uv run ty check "$@" "${FILES[@]}"; }
     run_mypy() { uv run mypy --strict "$@" "${FILES[@]}"; }
     run_pytest_base() { uv run pytest "$@" "${TEST_FILES[@]}"; }
     run_pytest_main() { run_pytest_base -p 'no:regtest' -m 'not characterization' "$@"; }
