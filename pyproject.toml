@@ -25,6 +25,7 @@ dev = [
     "pytest-regtest",
     "ruff",
     "types-pyxdg",
+    "pyrefly",
 ]
 
 [project.urls]
@@ -50,3 +51,6 @@ nested-string-quote-style = "preferred"
 [tool.ruff.lint.extend-per-file-ignores]
 "tests/**/*.py" = ["F811", "F401"]
 
+[tool.pyrefly]
+search-path = ["."]
+min-severity = "warn"

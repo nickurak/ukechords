@@ -5,7 +5,7 @@ set -Eeuo pipefail
 TEST_DIRS=(tests)
 SRC_DIRS=(src "${TEST_DIRS[@]}")
 
-RUNNERS=(run_ruff run_pylint run_ty run_mypy run_pytest run_shellcheck)
+RUNNERS=(run_ruff run_pylint run_ty run_mypy run_pytest run_pyrefly run_shellcheck)
 [ "$#" -gt 0 ] && readarray -t RUNNERS < <(printf "%s" "$1" | xargs -d ',' -n1 | sed 's/^/run_/') && shift
 
 FIRST_RC=0 && FAILURES=()
@@ -47,6 +47,7 @@ find_sh0() {
         find tests -path '*/_regtest_outputs/*' -type f -name '*.out' -delete
         run_pytest_char --regtest-reset
     }
+    run_pyrefly() { uv run pyrefly "$@" check "${FILES[@]}"; }
     run_shellcheck() { find_sh0 | xargs -0 shellcheck; }
 }
 
