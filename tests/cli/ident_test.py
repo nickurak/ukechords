@@ -1,20 +1,21 @@
 """Test for the ident (cli) module"""
 
 import io
-from collections.abc import Callable, Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from tempfile import TemporaryDirectory
 
 import pytest
 
-from ukechords.cli.ident import _get_config, _get_parser, run_command
+from ukechords.cli.cmd_runner import Runner
+from ukechords.cli.ident import _get_config, _get_parser
 from ukechords.errors import InvalidCommandException, error
 
 from .characterization import characterization
 
 
 @contextmanager
-def get_runner(cmdline: str) -> Iterator[Callable[[], None]]:
+def get_runner(cmdline: str) -> Generator[Runner]:
     """Generate a Runner based on the provided command line, enforcing
     a temporary directory and tuning"""
     args = cmdline.split()
@@ -24,8 +25,8 @@ def get_runner(cmdline: str) -> Iterator[Callable[[], None]]:
     if not p_args.tuning:
         config.tuning = ("G", "C", "E")
     with TemporaryDirectory() as tmp_dir:
-        config.cache_dir = str(tmp_dir)
-        yield lambda: run_command(config, p_args)
+        config.cache_dir = tmp_dir
+        yield Runner.make(config, p_args)
 
 
 argstrs = [
@@ -45,7 +46,7 @@ argstrs = [
 def test_ident(characterization: None, argstr: str) -> None:
     """Check that a bunch of commands work"""
     with get_runner(argstr) as runner:
-        runner()
+        runner.run()
 
 
 renderable_jsons = [
@@ -111,7 +112,7 @@ def test_rendercmd(
     argstr, json_data = renderable_json
     monkeypatch.setattr("sys.stdin", io.StringIO(json_data))
     with get_runner(argstr) as runner:
-        runner()
+        runner.run()
 
 
 def test_error(capsys: pytest.CaptureFixture[str]) -> None:

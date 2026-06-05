@@ -3,7 +3,6 @@
 
 import argparse
 import configparser
-import json
 import os
 import sys
 from collections.abc import Callable, Iterable
@@ -11,12 +10,7 @@ from typing import Any
 
 from xdg import BaseDirectory
 
-from ukechords.cli.render import (
-    render_chord_list,
-    render_chords_from_shape,
-    render_json,
-    render_key,
-)
+from ukechords.cli.cmd_runner import Runner
 from ukechords.config import UkeConfig
 from ukechords.errors import (
     ChordNotFoundException,
@@ -31,13 +25,7 @@ from ukechords.theory import (
     lookup_tuning,
     rank_shape_by_difficulty,
     rank_shape_by_high_fret,
-    show_all,
-    show_chord,
-    show_chords_by_notes,
-    show_chords_by_shape,
-    show_key,
 )
-from ukechords.types import ChordsByShape, ChordShapes, KeyInfo
 
 
 def _get_config_from_preferences() -> UkeConfig:
@@ -190,51 +178,6 @@ def _get_config(args: argparse.Namespace) -> UkeConfig:
     return config
 
 
-def _get_renderfunc_from_name(name: str) -> Callable[[UkeConfig, Any], None]:
-    render_funcs: list[Callable[[UkeConfig, Any], None]] = [
-        render_chord_list,
-        render_chords_from_shape,
-        render_key,
-    ]
-    render_func_map: dict[str, Callable[[UkeConfig, Any], None]] = {
-        str(f.__name__): f for f in render_funcs if hasattr(f, "__name__")
-    }
-    if name in render_func_map:
-        return render_func_map[name]
-
-    msg = f'No such rendering function "{name}". Options: {", ".join(render_func_map)}'
-    raise InvalidCommandException(msg)
-
-
-def run_command(config: UkeConfig, args: argparse.Namespace) -> None:
-    """Run a command specified by the argparsed options provided"""
-    renderer: Callable[[UkeConfig, Any], None]
-    data: ChordShapes | ChordsByShape | KeyInfo
-    if args.chord:
-        renderer = render_chord_list
-        data = show_chord(config, args.chord)
-    elif args.all_chords or args.keys or args.allowed_chords:
-        renderer = render_chord_list
-        data = show_all(config)
-    elif args.shape:
-        renderer = render_chords_from_shape
-        data = show_chords_by_shape(config, args.shape)
-    elif args.notes:
-        renderer = render_chord_list
-        data = show_chords_by_notes(config, args.notes)
-    elif args.show_key:
-        renderer = render_key
-        data = show_key(config, args.show_key)
-    elif args.render_cmd:
-        renderer = _get_renderfunc_from_name(args.render_cmd)
-        data = json.load(sys.stdin)
-    else:
-        assert not "No command configuration found"
-    if args.json:
-        renderer = render_json
-    renderer(config, data)
-
-
 def main() -> int:
     """Main function for the "ident" ukechords cli client"""
     add_no5_quality()
@@ -242,7 +185,7 @@ def main() -> int:
     try:
         args = _get_parser().parse_args(sys.argv[1:])
         config = _get_config(args)
-        run_command(config, args)
+        Runner.make(config, args).run()
     except UnknownKeyException as exc:
         error(10, exc)
     except UnknownTuningException as exc:
