@@ -9,17 +9,17 @@ from .uketestconfig import uke_config
 
 def test_save_load_cache(uke_config: UkeConfig) -> None:
     """Verify our ability to save and load chord information to disk"""
-    shapes: ChordCollection = {"SomeChord": [(1, 2, 3)]}  # type: ignore
+    shapes: ChordCollection = ChordCollection({"CNotReal": [(1, 2, 3)]})
     save_scanned_chords(uke_config, shapes, max_fret=4)
-    shapes = {}  # type: ignore
+    shapes = ChordCollection()
     res = load_scanned_chords(uke_config, shapes, max_fret=4)
     assert res
-    assert shapes["SomeChord"] == [(1, 2, 3)]
+    assert shapes["CNotReal"] == [(1, 2, 3)]
 
 
 def test_load_empty_cache(uke_config: UkeConfig) -> None:
     """Verify behavior of loading an empty cache"""
-    shapes: ChordCollection = {}  # type: ignore
+    shapes: ChordCollection = ChordCollection()
     res = load_scanned_chords(uke_config, shapes, max_fret=4)
     assert res is False
     assert not shapes
