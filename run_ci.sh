@@ -6,7 +6,7 @@ TEST_DIRS=(tests)
 SRC_DIRS=(src "${TEST_DIRS[@]}")
 
 RUNNERS=(run_ruff run_pylint run_mypy run_pytest)
-[ "$#" -gt 0 ] && RUNNERS=("run_$1") && shift
+[ "$#" -gt 0 ] && readarray -t RUNNERS < <(printf "%s" "$1" | xargs -d ',' -n1 | sed 's/^/run_/') && shift
 
 FIRST_RC=0 && FAILURES=()
 fail() {
