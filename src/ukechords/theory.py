@@ -4,6 +4,7 @@ import multiprocessing as mp
 import os
 from collections.abc import Iterable
 from functools import cache
+from dataclasses import dataclass
 from itertools import permutations, product
 from typing import NoReturn
 
@@ -173,13 +174,18 @@ def _get_shape_notes(
         notes = notes + (scale[theory_basic.note_intervals[tuning[string]] + position],)
     return notes
 
+@dataclass
+class Partition:
+    '''Description of partition setup, including current slice and number of slices'''
+    index: int
+    size: int
+
 
 def _get_shapes(
     config: UkeConfig,
     max_fret: int = 1,
     notes: tuple[str, ...] | None = None,
-    partition: int = 0,
-    partitions: int = 1,
+    part: Partition = Partition(0, 1),
 ) -> Iterable[tuple[int, ...]]:
     """
     Yield shapes playable on the fretboard, (optionally including
@@ -198,7 +204,7 @@ def _get_shapes(
     for i, string_note in enumerate(config.tuning):
         fret_options = []
         for pos in fret_range:
-            if i == 0 and pos % partitions != partition:
+            if i == 0 and pos % part.size != part.index:
                 continue
             note = theory_basic.flat_scale[theory_basic.note_intervals[string_note] + pos]
             if not notes or pos == -1 or note in notes_set:
@@ -213,11 +219,10 @@ def _get_chord_shapes_map(
     config: UkeConfig,
     max_fret: int,
     allowed_notes: tuple[str, ...] | None = None,
-    partition: int = 0,
-    partitions: int = 1,
+    part: Partition = Partition(0, 1)
 ) -> theory_basic.ChordCollection:
     my_shapes = theory_basic.ChordCollection()
-    for shape in _get_shapes(config, max_fret, allowed_notes, partition, partitions):
+    for shape in _get_shapes(config, max_fret, allowed_notes, part):
         notes = frozenset(_get_shape_notes(shape, tuning=config.tuning))
         for chord in _get_chords_from_notes(notes):
             if chord not in my_shapes:
@@ -256,7 +261,7 @@ def _scan_chords(
             raise e
 
         for partition in range(0, partitions):
-            args = (config, max_fret, notes, partition, partitions)
+            args = (config, max_fret, notes, Partition(partition, partitions))
             pool.apply_async(
                 _get_chord_shapes_map, args=args, callback=mp_merge_shapes, error_callback=mp_error
             )
