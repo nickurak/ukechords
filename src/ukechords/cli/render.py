@@ -1,7 +1,5 @@
 """rendering utilities for ukechords' cli"""
 
-import json
-import sys
 from collections.abc import Iterable
 from typing import Any
 
@@ -128,9 +126,3 @@ def render_key(_: UkeConfig | None, data: KeyInfo) -> None:
 
     if data.get("partial_keys"):
         print(f"Partial match for: {_csv(data["partial_keys"])}")
-
-
-def render_json(_: UkeConfig | None, data: Any) -> None:
-    """Render arbitrary input data as json"""
-    json.dump(data, sys.stdout, indent=2 if sys.stdout.isatty() else None)
-    print()
