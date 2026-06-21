@@ -197,7 +197,9 @@ def _get_renderfunc_from_name(name: str) -> Callable[[UkeConfig, Any], None]:
         render_chords_from_shape,
         render_key,
     ]
-    render_func_map = {f.__name__: f for f in render_funcs}
+    render_func_map: dict[str, Callable[[UkeConfig, Any], None]] = {
+        str(f.__name__): f for f in render_funcs if hasattr(f, "__name__")
+    }
     if name in render_func_map:
         return render_func_map[name]
 
