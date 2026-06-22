@@ -21,22 +21,6 @@ from ukechords.theory import (
 from ukechords.types import ChordsByShape, ChordShapes, KeyInfo
 
 
-def _get_renderfunc_from_name(name: str) -> Callable[[UkeConfig, Any], None]:
-    render_funcs: list[Callable[[UkeConfig, Any], None]] = [
-        render_chord_list,
-        render_chords_from_shape,
-        render_key,
-    ]
-    render_func_map: dict[str, Callable[[UkeConfig, Any], None]] = {
-        str(f.__name__): f for f in render_funcs if hasattr(f, "__name__")
-    }
-    if name in render_func_map:
-        return render_func_map[name]
-
-    msg = f'No such rendering function "{name}". Options: {", ".join(render_func_map)}'
-    raise InvalidCommandException(msg)
-
-
 class Runner:
     """Runner defines the API for command handlers, and provides a
     lookup method for finding appropriate subclass implementations
@@ -162,4 +146,16 @@ class RenderCmdRunner(Runner):
         return json.load(sys.stdin)
 
     def render(self) -> None:
-        _get_renderfunc_from_name(self.args.render_cmd)(self.config, self.get_data())
+        rf_type = Callable[[UkeConfig, Any], None]
+        render_funcs: list[rf_type] = [render_chord_list, render_chords_from_shape, render_key]
+        func_names: list[str] = []
+        for f in render_funcs:
+            if not hasattr(f, "__name__") or not isinstance(f.__name__, str):
+                continue
+            if f.__name__ == self.args.render_cmd:
+                return f(self.config, self.get_data())
+            func_names.append(f.__name__)
+
+        error_message = f'No such rendering function "{self.args.render_cmd}"'
+        options_message = f"Options: {", ".join(func_names)}"
+        raise InvalidCommandException(f"{error_message}. {options_message}")
