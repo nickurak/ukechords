@@ -59,3 +59,10 @@ def test_weird_flat_sharps(weird_note: str) -> None:
     """Test that B#/Cb/E#/Fb notes are correctly identified"""
     diff = get_weird_offset(weird_note)
     assert note_intervals[weird_note] == (note_intervals[weird_note[0]] + diff) % 12
+
+@pytest.mark.xfail
+def test_weirder_flat_sharps() -> None:
+    """Test that B#/Cb/E#/Fb notes are correctly identified"""
+    weird_note = "E##"
+    diff = get_weird_offset(weird_note)
+    assert note_intervals[weird_note] == (note_intervals[weird_note[0]] + diff) % 12
