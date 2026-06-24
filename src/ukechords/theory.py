@@ -3,8 +3,8 @@
 import multiprocessing as mp
 import os
 from collections.abc import Iterable
-from functools import cache
 from dataclasses import dataclass
+from functools import cache
 from itertools import permutations, product
 from typing import NoReturn
 
@@ -174,9 +174,11 @@ def _get_shape_notes(
         notes = notes + (scale[theory_basic.note_intervals[tuning[string]] + position],)
     return notes
 
+
 @dataclass
 class Partition:
-    '''Description of partition setup, including current slice and number of slices'''
+    """Description of partition setup, including current slice and number of slices"""
+
     index: int
     size: int
 
@@ -219,7 +221,7 @@ def _get_chord_shapes_map(
     config: UkeConfig,
     max_fret: int,
     allowed_notes: tuple[str, ...] | None = None,
-    part: Partition = Partition(0, 1)
+    part: Partition = Partition(0, 1),
 ) -> theory_basic.ChordCollection:
     my_shapes = theory_basic.ChordCollection()
     for shape in _get_shapes(config, max_fret, allowed_notes, part):
