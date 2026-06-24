@@ -49,7 +49,7 @@ def get_weird_offset(note: str) -> int:
     return 0
 
 
-weird_notes = ["B#", "Cb", "E#", "Fb"]
+weird_notes = ["B#", "Cb", "E#", "Fb", "E##"]
 weird_notes += ["A##", "C##", "D##", "F##", "G##"]
 weird_notes += ["Abb", "Bbb", "Cbb", "Dbb", "Ebb", "Fbb", "Gbb"]
 
@@ -57,12 +57,5 @@ weird_notes += ["Abb", "Bbb", "Cbb", "Dbb", "Ebb", "Fbb", "Gbb"]
 @pytest.mark.parametrize("weird_note", weird_notes)
 def test_weird_flat_sharps(weird_note: str) -> None:
     """Test that B#/Cb/E#/Fb notes are correctly identified"""
-    diff = get_weird_offset(weird_note)
-    assert note_intervals[weird_note] == (note_intervals[weird_note[0]] + diff) % 12
-
-@pytest.mark.xfail
-def test_weirder_flat_sharps() -> None:
-    """Test that B#/Cb/E#/Fb notes are correctly identified"""
-    weird_note = "E##"
     diff = get_weird_offset(weird_note)
     assert note_intervals[weird_note] == (note_intervals[weird_note[0]] + diff) % 12

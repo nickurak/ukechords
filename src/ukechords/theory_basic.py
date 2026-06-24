@@ -35,9 +35,9 @@ class _CircularList(list[Any]):
 
 chromatic_scale = _CircularList(["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"])
 flat_scale = _CircularList(["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"])
-_weird_sharps = {"B#": "C", "E#": "F"}
-_weird_flats = {"Cb": "B", "Fb": "E"}
+_weird_sharps = {"B#": "C", "E#": "F", "E##": "F#"}
 _weird_sharps |= {"A##": "B", "C##": "D", "D##": "E", "F##": "G", "G##": "A"}
+_weird_flats = {"Cb": "B", "Fb": "E"}
 _weird_flats |= {"Abb": "G", "Bbb": "A", "Cbb": "Bb", "Dbb": "C"}
 _weird_flats |= {"Ebb": "D", "Fbb": "Eb", "Gbb": "F"}
 _weird_notes = _weird_sharps | _weird_flats
