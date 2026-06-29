@@ -15,7 +15,6 @@ dependencies = [
 ]
 [dependency-groups]
 dev = [
-    "black",
     "coverage",
     "mypy",
     "pylint",
