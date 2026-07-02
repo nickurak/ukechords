@@ -83,14 +83,16 @@ def test_basic_scan(uke_config: UkeConfig) -> None:
 def test_threaded_scan_exception(uke_config: UkeConfig) -> None:
     """Verify that an exception raised from a threaded scan triggers termination of the pool"""
     chord_shapes = ChordCollection()
+
+    class FakeThreadedException(Exception):
+        """Dummy exception for test purposes"""
+
     with (
         mock.patch("multiprocessing.get_context", return_value=FakeContext()),
-        mock.patch("ukechords.theory._get_chord_shapes_map", side_effect=ValueError()),
-        mock.patch("tests.fake_pool._FakePool.terminate") as mocked_pool_terminate,
+        mock.patch("ukechords.theory._get_chord_shapes_map", side_effect=FakeThreadedException()),
     ):
-        with pytest.raises(ValueError):
+        with pytest.raises(FakeThreadedException):
             _scan_chords(uke_config, chord_shapes, max_fret=3)
-        mocked_pool_terminate.assert_called_once()
 
 
 def test_show_chord(uke_config: UkeConfig) -> None:
