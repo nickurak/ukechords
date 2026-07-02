@@ -4,17 +4,8 @@ from collections.abc import Callable
 from types import TracebackType
 from typing import Any, NoReturn, Self
 
-import pytest
-from pytest_mock import MockFixture
 
-
-@pytest.fixture(autouse=True)
-def fake_pool(mocker: MockFixture) -> None:
-    """Fixture to patch in FakePool as an alternative for multiprocessing.Pool"""
-    mocker.patch("multiprocessing.get_context", return_value=FakeContext())
-
-
-class FakePool:
+class _FakePool:
     """
     This is a dummy variation on multiprocessing.Pool, which simply
     calls the function and callback immediately with no parallelism.
@@ -59,9 +50,9 @@ class FakePool:
 
 class FakeContext:
     """
-    Dummy context for multiprocessing to return our FakePool
+    Dummy context for multiprocessing to return our _FakePool
     """
 
     # pylint: disable=too-few-public-methods,invalid-name,missing-function-docstring
-    def Pool(self) -> FakePool:
-        return FakePool()
+    def Pool(self) -> _FakePool:
+        return _FakePool()

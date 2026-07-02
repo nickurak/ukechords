@@ -2,10 +2,10 @@
 
 from collections.abc import Callable, Iterable
 from typing import Any
+from unittest import mock
 
 import pytest
 from pychord import Chord, QualityManager
-from pytest_mock import MockFixture
 
 from ukechords.config import UkeConfig
 from ukechords.errors import ChordNotFoundException, UnslidableEmptyShapeException
@@ -22,7 +22,7 @@ from ukechords.theory import (
 )
 from ukechords.theory_basic import ChordCollection
 
-from .fake_pool import fake_pool  # pylint: disable=unused-import
+from .fake_pool import FakeContext
 from .uketestconfig import uke_config
 
 
@@ -80,14 +80,17 @@ def test_basic_scan(uke_config: UkeConfig) -> None:
         _ = chord_shapes["C9"]
 
 
-def test_threaded_scan_exception(uke_config: UkeConfig, mocker: MockFixture) -> None:
+def test_threaded_scan_exception(uke_config: UkeConfig) -> None:
     """Verify that an exception raised from a threaded scan triggers termination of the pool"""
-    mocker.patch("ukechords.theory._get_chord_shapes_map", side_effect=ValueError())
-    mocked_pool_terminate = mocker.patch("tests.fake_pool.FakePool.terminate")
     chord_shapes = ChordCollection()
-    with pytest.raises(ValueError):
-        _scan_chords(uke_config, chord_shapes, max_fret=3)
-    mocked_pool_terminate.assert_called_once()
+    with (
+        mock.patch("multiprocessing.get_context", return_value=FakeContext()),
+        mock.patch("ukechords.theory._get_chord_shapes_map", side_effect=ValueError()),
+        mock.patch("tests.fake_pool._FakePool.terminate") as mocked_pool_terminate,
+    ):
+        with pytest.raises(ValueError):
+            _scan_chords(uke_config, chord_shapes, max_fret=3)
+        mocked_pool_terminate.assert_called_once()
 
 
 def test_show_chord(uke_config: UkeConfig) -> None:
