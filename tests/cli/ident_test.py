@@ -35,6 +35,8 @@ argstrs = [
     "-t A,B,C -c C",
     "-a -q 9",
     "--show-key C,D,E,G,A",
+    "-v -c C",
+    "-v -s 1,2,3",
 ]
 
 
