@@ -1,5 +1,6 @@
 """Test for the ident (cli) module"""
 
+import io
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from tempfile import TemporaryDirectory
@@ -43,6 +44,72 @@ argstrs = [
 @pytest.mark.parametrize("argstr", argstrs)
 def test_ident(characterization: None, argstr: str) -> None:
     """Check that a bunch of commands work"""
+    with get_runner(argstr) as runner:
+        runner()
+
+
+renderable_jsons = [
+    (
+        "--render-cmd render_chord_list",
+        (
+            '{"shapes": [{"shape": [0, 0, 0], "difficulty": 0.0, '
+            '"barre_data": null, "chord_names": ["C"]}]}'
+        ),
+    ),
+    (
+        "--render-cmd render_chord_list --visualize",
+        (
+            '{"shapes": [{"shape": [0, 0, 0], "difficulty": 0.0, '
+            '"barre_data": null, "chord_names": ["C"]}]}'
+        ),
+    ),
+    (
+        "--render-cmd render_chord_list --visualize",
+        (
+            '{"shapes": [{"shape": [1, 2, 3], "difficulty": 0.0, '
+            '"barre_data": null, "chord_names": ["C"]}]}'
+        ),
+    ),
+    (
+        "--render-cmd render_chord_list --visualize",
+        (
+            '{"shapes": [{"shape": [1, 1, 3], "difficulty": 0.0, '
+            '"barre_data": {"fret": 1, "barred": true, "shape": '
+            '[0, 0, 2], "chord": null, "unbarred_difficulty": 8.0}, "chord_names": ["C"]}]}'
+        ),
+    ),
+    (
+        "--render-cmd render_chord_list --visualize",
+        (
+            '{"shapes": [{"shape": [1, 1, 3], "difficulty": 0.0, '
+            '"barre_data": {"fret": 1, "barred": false, "shape": '
+            '[0, 0, 2], "chord": null, "barred_difficulty": 8.0}, "chord_names": ["C"]}]}'
+        ),
+    ),
+    (
+        "--render-cmd render_chords_from_shape --visualize",
+        (
+            '{"shapes": [{"shape": [2, 0, 0], "chords": ["Am", "C6no5"], '
+            '"notes": ["A", "E", "C"]}], "difficulty": 4.2, "barre_data": null}'
+        ),
+    ),
+    (
+        "--show-key C",
+        (
+            '{"notes": ["C", "D", "E", "F", "G", "A", "B"], "key": "C", '
+            '"other_keys": ["C", "Am", "Ephmod"], "partial_keys": []}'
+        ),
+    ),
+]
+
+
+@pytest.mark.parametrize("renderable_json", renderable_jsons)
+def test_rendercmd(
+    characterization: None, monkeypatch: pytest.MonkeyPatch, renderable_json: tuple[str, str]
+) -> None:
+    """Check that several rendercmd invocations work correctly"""
+    argstr, json_data = renderable_json
+    monkeypatch.setattr("sys.stdin", io.StringIO(json_data))
     with get_runner(argstr) as runner:
         runner()
 
