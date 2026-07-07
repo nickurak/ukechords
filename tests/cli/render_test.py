@@ -5,6 +5,7 @@ import pytest
 from ukechords.cli.render import (
     _csv,
     _diff_string,
+    _draw_shape,
     _get_shape_lines,
     render_chord_list,
     render_chords_from_shape,
@@ -30,6 +31,57 @@ def test_get_shape_lines() -> None:
 ║●│▒│╷│ 
 ║ │▒│╵│ 
 ║⃠ │▒│ │ 
+╙─┴─┴─┴──
+"""  # noqa
+    expected_lines = expected.split("\n")
+    expected_lines = expected_lines[1:-1]
+    assert len(lines) == len(expected_lines)
+    assert expected_lines == lines
+
+
+def test_draw_barred_shape(capsys: pytest.CaptureFixture[str]) -> None:
+    """Verify that rendering a shape as a unicode box drawing works"""
+    lines = list(_get_shape_lines((-1, 0, 1), 2))
+    barre_data: BarreData = {
+        "fret": 2,
+        "barred": True,
+        "shape": (0, 0, 2),
+        "chord": None,
+        "barred_difficulty": 8.0,
+    }
+    _draw_shape((-1, 0, 1), barre_data)
+    lines = _get_capsys_lines(capsys)
+    expected = """
+╓─┬─┬─┬──
+║●│▒│╷│ 
+║ │▒│╵│ 
+║⃠ │▒│ │ 
+╙─┴─┴─┴──
+"""  # noqa
+    expected_lines = expected.split("\n")
+    expected_lines = expected_lines[1:-1]
+    assert len(lines) == len(expected_lines)
+    assert expected_lines == lines
+
+
+@pytest.mark.xfail
+def test_draw_unbarred_shape(capsys: pytest.CaptureFixture[str]) -> None:
+    """Verify that rendering a shape as a unicode box drawing works"""
+    lines = list(_get_shape_lines((-1, 0, 1), 2))
+    barre_data: BarreData = {
+        "fret": 2,
+        "barred": False,
+        "shape": (0, 0, 2),
+        "chord": None,
+        "barred_difficulty": 8.0,
+    }
+    _draw_shape((-1, 0, 1), barre_data)
+    lines = _get_capsys_lines(capsys)
+    expected = """
+╓─┬─┬─┬──
+║●│ │╷│ 
+║ │ │╵│ 
+║⃠ │ │ │ 
 ╙─┴─┴─┴──
 """  # noqa
     expected_lines = expected.split("\n")
