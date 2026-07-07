@@ -21,6 +21,7 @@ dev = [
     "pylint-pytest",
     "pytest>=9.0.0",
     "pytest-cov",
+    "pytest-regtest",
     "ruff",
     "types-pyxdg",
 ]
@@ -36,6 +37,7 @@ line-length = 100
 
 [tool.pytest]
 strict = true
+markers = ["characterization"]
 
 [tool.ruff]
 line-length = 100

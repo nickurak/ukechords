@@ -31,8 +31,20 @@ find_sh0() {
     run_pylint() { uv run pylint "$@" "${FILES[@]}"; }
     run_ruff() { uv run ruff check "$@" "${FILES[@]}"; }
     run_mypy() { uv run mypy --strict "$@" "${FILES[@]}"; }
-    run_pytest() { uv run pytest "$@" "${TEST_FILES[@]}"; }
-    run_pytest-cov() { run_pytest --cov --cov-report=html --cov-branch "$@"; }
+    run_pytest_base() { uv run pytest "$@" "${TEST_FILES[@]}"; }
+    run_pytest_main() { run_pytest_base -p 'no:regtest' -m 'not characterization' "$@"; }
+    run_pytest_char() { run_pytest_base -m 'characterization' "$@"; }
+    run_pytest() {
+        run_pytest_main "$@"
+    }
+    run_pytest-cov() {
+        run_pytest_main --cov --cov-report=html --cov-branch "$@"
+        run_pytest_char --cov --cov-report=html:coverage_html_report/characterization --cov-branch "$@"
+    }
+    run_reset-char() {
+        find tests -path '*/_regtest_outputs/*' -type f -name '*.out' -delete
+        run_pytest_char --regtest-reset
+    }
     run_shellcheck() { find_sh0 | xargs -0 shellcheck; }
 }
 
