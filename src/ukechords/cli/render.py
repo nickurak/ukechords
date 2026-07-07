@@ -38,7 +38,7 @@ def _get_shape_lines(shape: tuple[int, ...], barre: int) -> Iterable[str]:
 
 
 def _draw_shape(shape: tuple[int, ...], barre_data: BarreData | None) -> None:
-    barre = barre_data["fret"] if barre_data else 0
+    barre = barre_data["fret"] if barre_data and barre_data["barred"] else 0
     for line in _get_shape_lines(shape, barre):
         print(line)
 

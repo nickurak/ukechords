@@ -64,7 +64,6 @@ def test_draw_barred_shape(capsys: pytest.CaptureFixture[str]) -> None:
     assert expected_lines == lines
 
 
-@pytest.mark.xfail
 def test_draw_unbarred_shape(capsys: pytest.CaptureFixture[str]) -> None:
     """Verify that rendering a shape as a unicode box drawing works"""
     lines = list(_get_shape_lines((-1, 0, 1), 2))
