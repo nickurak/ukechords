@@ -9,6 +9,8 @@ import pytest
 from ukechords.cli.ident import _get_config, _get_parser, run_command
 from ukechords.errors import InvalidCommandException, error
 
+from .characterization import characterization
+
 
 @contextmanager
 def get_runner(cmdline: str) -> Iterator[Callable[[], None]]:
@@ -23,6 +25,24 @@ def get_runner(cmdline: str) -> Iterator[Callable[[], None]]:
     with TemporaryDirectory() as tmp_dir:
         config.cache_dir = str(tmp_dir)
         yield lambda: run_command(config, p_args)
+
+
+argstrs = [
+    "-a",
+    "-c C",
+    "-s 0,0,0",
+    "--show-key C",
+    "-t A,B,C -c C",
+    "-a -q 9",
+    "--show-key C,D,E,G,A",
+]
+
+
+@pytest.mark.parametrize("argstr", argstrs)
+def test_ident(characterization: None, argstr: str) -> None:
+    """Check that a bunch of commands work"""
+    with get_runner(argstr) as runner:
+        runner()
 
 
 def test_error(capsys: pytest.CaptureFixture[str]) -> None:

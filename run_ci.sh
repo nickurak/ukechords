@@ -36,6 +36,7 @@ find_sh0() {
     run_pytest_char() { run_pytest_base -m 'characterization' "$@"; }
     run_pytest() {
         run_pytest_main "$@"
+        run_pytest_char "$@"
     }
     run_pytest-cov() {
         run_pytest_main --cov --cov-report=html --cov-branch "$@"
