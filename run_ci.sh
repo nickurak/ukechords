@@ -18,7 +18,7 @@ fail() {
 mapfile -d '' FILES < <(find "${SRC_DIRS[@]}" ! -name '*flycheck*' ! -name '.*' -name '*.py' -print0)
 mapfile -d '' TEST_FILES < <(find "${TEST_DIRS[@]}" ! -name '*flycheck*' ! -name '.*' -name '*.py' -name '*.py' -print0)
 
-run_pylint() { uv run pylint -j 4 "$@" "${FILES[@]}"; }
+run_pylint() { uv run pylint "$@" "${FILES[@]}"; }
 run_ruff() { uv run ruff check "$@" "${FILES[@]}"; }
 run_mypy() { uv run mypy --strict "$@" "${FILES[@]}"; }
 run_pytest() { uv run pytest "$@" "${TEST_FILES[@]}"; }
