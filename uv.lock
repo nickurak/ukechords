@@ -484,6 +484,15 @@ wheels = [
 ]
 
 [[package]]
+name = "types-pyxdg"
+version = "0.28.0.20260518"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/46/68/ef5d724be10cdb1c99bcd56dbdba280e771f89a78c555ecd996726da3072/types_pyxdg-0.28.0.20260518.tar.gz", hash = "sha256:959df4e1795554d43bc33a271664b954caaaaf3ec5f7d83d814ce2802a8cd1d8", size = 13062, upload-time = "2026-05-18T06:03:28.217Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1e/40/20aedf557a8f011da62d2bc5f43e89323e1dd7d57fb4a2d555394c16038a/types_pyxdg-0.28.0.20260518-py3-none-any.whl", hash = "sha256:f7ab4b3849f0d7093a3e872f3d517cb3e72d0ceef413a109c4adce13c29c1849", size = 16153, upload-time = "2026-05-18T06:03:27.425Z" },
+]
+
+[[package]]
 name = "typing-extensions"
 version = "4.16.0"
 source = { registry = "https://pypi.org/simple" }
@@ -509,6 +518,7 @@ dev = [
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "ruff" },
+    { name = "types-pyxdg" },
 ]
 
 [package.metadata]
@@ -526,4 +536,5 @@ dev = [
     { name = "pytest", specifier = ">=9.0.0" },
     { name = "pytest-cov" },
     { name = "ruff", specifier = "<0.16.0" },
+    { name = "types-pyxdg" },
 ]
