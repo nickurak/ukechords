@@ -126,7 +126,7 @@ def render_key(_: UkeConfig | None, data: KeyInfo) -> None:
         else:
             print(f"{_csv(data["other_keys"])}")
 
-    if "partial_keys" in data and data["partial_keys"]:
+    if data.get("partial_keys"):
         print(f"Partial match for: {_csv(data["partial_keys"])}")
 
 
