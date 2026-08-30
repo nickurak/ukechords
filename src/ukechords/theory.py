@@ -187,7 +187,7 @@ def _get_shapes(
     config: UkeConfig,
     max_fret: int = 1,
     notes: tuple[str, ...] | None = None,
-    part: Partition = Partition(0, 1),
+    part: Partition | None = None,
 ) -> Iterable[tuple[int, ...]]:
     """
     Yield shapes playable on the fretboard, (optionally including
@@ -201,6 +201,8 @@ def _get_shapes(
     string_fret_options = []
     fret_range = range(-1 if config.mute else 0, max_fret + 1)
     notes_set: set[str] = set()
+    if part is None:
+        part = Partition(0, 1)
     if notes:
         notes_set = set(theory_basic.flatify(list(notes)))
     for i, string_note in enumerate(config.tuning):
@@ -221,8 +223,10 @@ def _get_chord_shapes_map(
     config: UkeConfig,
     max_fret: int,
     allowed_notes: tuple[str, ...] | None = None,
-    part: Partition = Partition(0, 1),
+    part: Partition | None = None,
 ) -> theory_basic.ChordCollection:
+    if part is None:
+        part = Partition(0, 1)
     my_shapes = theory_basic.ChordCollection()
     for shape in _get_shapes(config, max_fret, allowed_notes, part):
         notes = frozenset(_get_shape_notes(shape, tuning=config.tuning))
