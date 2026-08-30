@@ -525,5 +525,5 @@ dev = [
     { name = "pylint-pytest" },
     { name = "pytest", specifier = ">=9.0.0" },
     { name = "pytest-cov" },
-    { name = "ruff" },
+    { name = "ruff", specifier = "<0.16.0" },
 ]

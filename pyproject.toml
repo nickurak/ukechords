@@ -21,7 +21,7 @@ dev = [
     "pylint-pytest",
     "pytest>=9.0.0",
     "pytest-cov",
-    "ruff",
+    "ruff<0.16.0",
 ]
 
 [project.urls]
