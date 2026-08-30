@@ -32,7 +32,7 @@ def test_get_shape_lines() -> None:
 ║ │▒│╵│ 
 ║⃠ │▒│ │ 
 ╙─┴─┴─┴──
-"""  # noqa
+"""
     expected_lines = expected.split("\n")
     expected_lines = expected_lines[1:-1]
     assert len(lines) == len(expected_lines)
@@ -57,7 +57,7 @@ def test_draw_barred_shape(capsys: pytest.CaptureFixture[str]) -> None:
 ║ │▒│╵│ 
 ║⃠ │▒│ │ 
 ╙─┴─┴─┴──
-"""  # noqa
+"""
     expected_lines = expected.split("\n")
     expected_lines = expected_lines[1:-1]
     assert len(lines) == len(expected_lines)
@@ -82,7 +82,7 @@ def test_draw_unbarred_shape(capsys: pytest.CaptureFixture[str]) -> None:
 ║ │ │╵│ 
 ║⃠ │ │ │ 
 ╙─┴─┴─┴──
-"""  # noqa
+"""
     expected_lines = expected.split("\n")
     expected_lines = expected_lines[1:-1]
     assert len(lines) == len(expected_lines)
@@ -170,7 +170,7 @@ def test_render_key(capsys: pytest.CaptureFixture[str]) -> None:
     data: KeyInfo = {
         "key": "test_key",
         "other_keys": ["alias1", "alias2"],
-        "notes": tuple(f"n{x}" for x in range(0, 10)),
+        "notes": tuple(f"n{x}" for x in range(10)),
     }
     render_key(None, data)
     lines = _get_capsys_lines(capsys)
@@ -183,7 +183,7 @@ def test_render_key_from_notes(capsys: pytest.CaptureFixture[str]) -> None:
     """Verify rendering a key from a specified set of notes"""
     data: KeyInfo = {
         "other_keys": ["test_key1", "test_key2"],
-        "notes": tuple(f"n{x}" for x in range(0, 10)),
+        "notes": tuple(f"n{x}" for x in range(10)),
         "partial_keys": ["partial1", "partial2"],
     }
     render_key(None, data)
@@ -197,7 +197,7 @@ def test_render_unknown_key_from_notes(capsys: pytest.CaptureFixture[str]) -> No
     """Verify correct handling of a list  of notes that doesn't match a known key"""
     data: KeyInfo = {
         "other_keys": [],
-        "notes": tuple(f"n{x}" for x in range(0, 10)),
+        "notes": tuple(f"n{x}" for x in range(10)),
         "partial_keys": ["partial1", "partial2"],
     }
     render_key(None, data)
@@ -218,7 +218,7 @@ def test_render_chords_from_shape_with_vis_and_notes(
             {
                 "shape": (-1, 0, 1),
                 "chords": ["tc1", "tc2"],
-                "notes": tuple(f"n{x}" for x in range(0, 10)),
+                "notes": tuple(f"n{x}" for x in range(10)),
             },
         ],
         "difficulty": 45.6,
@@ -242,7 +242,7 @@ def test_render_chords_from_shape_with_vis_and_notes(
 ║ │ │╵│ 
 ║⃠ │ │ │ 
 ╙─┴─┴─┴──
-"""  # noqa
+"""
     vis_lines = vis_expected.split("\n")
     vis_lines = vis_lines[1:-1]
     assert len(lines) == len(vis_lines)

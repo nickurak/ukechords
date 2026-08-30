@@ -27,7 +27,7 @@ class _FakePool:
         """Dummy apply_async which immediately calls its callbacks as required"""
         try:
             callback(func(*args))
-        except Exception as e:  # pylint: disable=broad-exception-caught
+        except Exception as e:  # noqa: BLE001 # pylint: disable=broad-exception-caught
             error_callback(e)
 
     def terminate(self) -> None:
@@ -43,7 +43,7 @@ class _FakePool:
         return self
 
     def __exit__(
-        self, _: type[BaseException], __: BaseException | None, ___: TracebackType | None
+        self, _: type[BaseException] | None, __: BaseException | None, ___: TracebackType | None
     ) -> None:
         pass
 

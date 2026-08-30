@@ -90,9 +90,9 @@ def test_threaded_scan_exception(uke_config: UkeConfig) -> None:
     with (
         mock.patch("multiprocessing.get_context", return_value=FakeContext()),
         mock.patch("ukechords.theory._get_chord_shapes_map", side_effect=FakeThreadedException()),
+        pytest.raises(FakeThreadedException),
     ):
-        with pytest.raises(FakeThreadedException):
-            _scan_chords(uke_config, chord_shapes, max_fret=3)
+        _scan_chords(uke_config, chord_shapes, max_fret=3)
 
 
 def test_show_chord(uke_config: UkeConfig) -> None:
@@ -253,13 +253,13 @@ def test_extra_quality(chord: str, loader: Callable[[], None]) -> None:
 
 def test_show_key_by_notes() -> None:
     """Verify that looking up a key by notes works"""
-    data = show_key(None, tuple("C,D,E,F,G,A,B".split(",")))
+    data = show_key(None, ("C", "D", "E", "F", "G", "A", "B"))
     assert "Am" in data["other_keys"]
 
 
 def test_show_key_by_notes_with_partial_match() -> None:
     """Verify that looking up a key by notes works"""
-    data = show_key(None, tuple("C,D,E,F,G,A".split(",")))
+    data = show_key(None, ("C", "D", "E", "F", "G", "A"))
     assert "Dm" in data["partial_keys"]
 
 
