@@ -99,7 +99,7 @@ def _get_scales() -> dict[str, list[int]]:
         (["phmod"], [0, 1, 3, 5, 7, 8, 10]),
         (["gypsymajor"], [0, 1, 4, 5, 7, 8, 11]),
         (["gypsyminor"], [0, 2, 3, 6, 7, 8, 11]),
-        (["chromatic"], list(range(0, 12))),
+        (["chromatic"], list(range(12))),
     ]
 
     mods = {}
@@ -112,11 +112,11 @@ def _get_scales() -> dict[str, list[int]]:
 
 def _get_all_keys() -> dict[str, set[str]]:
     def _get_all_key_pairs() -> Iterable[tuple[str, set[str]]]:
-        for root_index in range(0, 12):
+        for root_index in range(12):
             root = chromatic_scale[root_index]
             dupes: set[frozenset[str]] = set()
             for name, intervals in _get_scales().items():
-                notes = set(chromatic_scale[root_index + interval] for interval in intervals)
+                notes = {chromatic_scale[root_index + interval] for interval in intervals}
                 if frozenset(notes) in dupes:
                     continue
 
