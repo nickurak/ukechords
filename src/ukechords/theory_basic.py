@@ -17,13 +17,13 @@ class ChordCollection(dict[str, Any]):
     correctly with non-string keys.
     """
 
-    def __contains__(self, chord: str, /) -> bool:  # type: ignore[override]
+    def __contains__(self, chord: object, /) -> bool:
         return super().__contains__(normalize_chord(str(chord)))
 
-    def __setitem__(self, chord: str, /, *args: Any, **kwargs: Any) -> None:
+    def __setitem__(self, chord: object, /, *args: Any, **kwargs: Any) -> None:
         super().__setitem__(normalize_chord(str(chord)), *args, **kwargs)
 
-    def __getitem__(self, chord: str) -> list[tuple[int, ...]]:
+    def __getitem__(self, chord: object) -> list[tuple[int, ...]]:
         shapes: list[tuple[int, ...]] = super().__getitem__(normalize_chord(str(chord)))
         return shapes
 
