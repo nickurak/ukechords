@@ -245,9 +245,8 @@ def _scan_chords(
     maps chords to a list of shapes that will generate the notes of
     that chord.
     """
-    if not (notes or config.no_cache):
-        if load_scanned_chords(config, chord_shapes, max_fret):
-            return
+    if not (notes or config.no_cache) and load_scanned_chords(config, chord_shapes, max_fret):
+        return
 
     def mp_merge_shapes(mp_shapes: theory_basic.ChordCollection) -> None:
         for chord, shapes in mp_shapes.items():
@@ -262,7 +261,7 @@ def _scan_chords(
             pool.terminate()
             raise e
 
-        for partition in range(0, partitions):
+        for partition in range(partitions):
             args = (config, max_fret, notes, Partition(partition, partitions))
             pool.apply_async(
                 _get_chord_shapes_map, args=args, callback=mp_merge_shapes, error_callback=mp_error
