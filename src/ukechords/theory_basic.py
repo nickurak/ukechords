@@ -2,7 +2,7 @@
 
 import re
 from collections.abc import Iterable
-from typing import Any, TypeVar
+from typing import Any, TypeVar, cast
 
 from .errors import ChordNotFoundException, UnknownKeyException
 
@@ -62,22 +62,22 @@ def normalize_chord(chord: str) -> str:
 Normalizable = TypeVar("Normalizable", str, list[str], tuple[str, ...], set[str])
 
 
-def _normalizer(arg: Normalizable, scale: list[str]) -> Normalizable:
+def _normalizer(arg: Normalizable, scale: list[str]) -> Normalizable:  # noqa: UP047
     if isinstance(arg, list):
-        return [scale[note_intervals[note]] for note in arg]
+        return cast(Normalizable, [scale[note_intervals[note]] for note in arg])
     if isinstance(arg, tuple):
-        return tuple(scale[note_intervals[note]] for note in arg)
+        return cast(Normalizable, tuple(scale[note_intervals[note]] for note in arg))
     if isinstance(arg, set):
-        return {scale[note_intervals[note]] for note in arg}
-    return scale[note_intervals[arg]]
+        return cast(Normalizable, {scale[note_intervals[note]] for note in arg})
+    return cast(Normalizable, scale[note_intervals[arg]])  # type: ignore[redundant-cast]
 
 
-def sharpify(arg: Normalizable) -> Normalizable:
+def sharpify[T: (list[str], tuple[str, ...], set[str], str)](arg: T) -> T:
     """Return the sharp equivalent version of the note/chord or list/tuple/set of chords"""
     return _normalizer(arg, chromatic_scale)
 
 
-def flatify(arg: Normalizable) -> Normalizable:
+def flatify[T: (list[str], tuple[str, ...], set[str], str)](arg: T) -> T:
     """Return the flat equivalent version of the note/chord or list/tuple/set of chords"""
     return _normalizer(arg, flat_scale)
 
