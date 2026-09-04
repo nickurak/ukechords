@@ -32,6 +32,7 @@ while read -r OLDREV NEWREV REFNAME; do
     if [ "$OLDREV" != "0000000000000000000000000000000000000000" ]; then
         BADCOMMITS="$(git log --pretty=%h --grep "fixup!" --grep "squash!" "$OLDREV..$NEWREV")"
         if [ -n "$BADCOMMITS" ]; then
+            # shellcheck disable=SC2001
             fail "{$(echo "$BADCOMMITS" | sed 's/ /, /g')} are uncaught fixup/squash commits."
         fi
     fi

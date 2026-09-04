@@ -10,6 +10,7 @@ fi
 BADCOMMITS="$(git log --pretty=%h --grep "fixup!" --grep "squash!" "$1..$2")"
 
 if [ -n "$BADCOMMITS" ]; then
+    # shellcheck disable=SC2001
     echo "{$(echo "$BADCOMMITS" | sed 's/ /, /g')} are uncaught fixup/squash commits."
     exit 1
 fi
