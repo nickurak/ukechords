@@ -13,14 +13,8 @@ jobs:
         with:
           python-version: '3.x'
       - name: setup dnf dependencies
-        run: dnf install -y uv
+        run: dnf install -y uv shellcheck
       - name: install ukechords
         run:  uv sync --dev --link-mode=symlink
-      - name: Run ruff
-        run: uv run ruff check src tests
-      - name: Run pylint
-        run: uv run pylint src tests
-      - name: Run mypy
-        run: uv run mypy --strict src tests
-      - name: Run tests
-        run: uv run pytest tests
+      - name: Run CI linters and tests
+        run: ./run_ci.sh
