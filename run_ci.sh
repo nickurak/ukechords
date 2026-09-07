@@ -5,8 +5,8 @@ set -Eeuo pipefail
 TEST_DIRS=(tests)
 SRC_DIRS=(src "${TEST_DIRS[@]}")
 
-RUNNERS=(run_ruff run_pylint run_ty run_mypy run_pytest run_pyrefly run_shellcheck)
-[ "$#" -gt 0 ] && readarray -t RUNNERS < <(printf "%s" "$1" | xargs -d ',' -n1 | sed 's/^/run_/') && shift
+RUNNERS=(ruff pylint ty mypy pytest pyrefly shellcheck)
+[ "$#" -gt 0 ] && readarray -t RUNNERS < <(printf "%s" "$1" | xargs -d ',' -n1) && shift
 
 FIRST_RC=0 && FAILURES=()
 fail() {
@@ -52,7 +52,7 @@ find_sh0() {
 }
 
 for RUNNER in "${RUNNERS[@]}"; do
-    "$RUNNER" "$@" || fail $? "$RUNNER"
+    "run_${RUNNER}" "$@" || fail $? "$RUNNER"
 done
 [ "$FIRST_RC" -eq 0 ] && exit
 
