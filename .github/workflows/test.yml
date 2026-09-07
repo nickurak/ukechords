@@ -5,7 +5,7 @@ on: [pull_request,push]
 jobs:
   test:
     runs-on: ubuntu-latest
-    container: fedora:44
+    container: fedora:45
     steps:
       - uses: actions/checkout@v7
       - name: Set up Python
