@@ -5,7 +5,7 @@ set -Eeuo pipefail
 TEST_DIRS=(tests)
 SRC_DIRS=(src "${TEST_DIRS[@]}")
 
-RUNNERS=(ruff pylint ty mypy pytest pyrefly shellcheck)
+RUNNERS=(ruff ty mypy pytest pyrefly shellcheck pylint)
 [ "$#" -gt 0 ] && readarray -t RUNNERS < <(printf "%s" "$1" | xargs -d ',' -n1) && shift
 
 FIRST_RC=0 && FAILURES=()
