@@ -5,14 +5,15 @@ on: [pull_request,push]
 jobs:
   test:
     runs-on: ubuntu-latest
+    container: fedora:44
     steps:
       - uses: actions/checkout@v7
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
           python-version: '3.x'
-      - name: setup uv
-        run: pip install uv
+      - name: setup dnf dependencies
+        run: dnf install -y uv
       - name: install ukechords
         run:  uv sync --dev --link-mode=symlink
       - name: Run ruff
