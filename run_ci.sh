@@ -52,7 +52,7 @@ find_sh0() {
 }
 
 for RUNNER in "${RUNNERS[@]}"; do
-    "run_${RUNNER}" "$@" || fail $? "$RUNNER"
+    ("run_${RUNNER}" "$@" && echo "$RUNNER succeeded!") || fail $? "$RUNNER"
 done
 [ "$FIRST_RC" -eq 0 ] && exit
 
