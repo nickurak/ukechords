@@ -45,7 +45,7 @@ def get_weird_offset(note: str) -> int:
             return 2
         case "bb":
             return -2
-    assert not "invalid weird note"
+    assert False, "invalid weird note"
     return 0
 
 
