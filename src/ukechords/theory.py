@@ -2,7 +2,7 @@
 
 import multiprocessing as mp
 import os
-from collections.abc import Iterable
+from collections.abc import Collection, Iterable
 from dataclasses import dataclass
 from functools import cache
 from itertools import permutations, product
@@ -50,7 +50,7 @@ def _get_quality_map() -> dict[tuple[int, ...], str]:
 
 
 @cache
-def _get_chords_from_notes(notes: Iterable[str], force_flat: bool = False) -> list[str]:
+def _get_chords_from_notes(notes: Collection[str], force_flat: bool = False) -> list[str]:
     """
     Return a list of chords the specified notes will generate, with no
     consideration to the order of those notes. Returns flat versions
