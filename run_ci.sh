@@ -18,16 +18,15 @@ fail() {
 mapfile -d '' FILES < <(find "${SRC_DIRS[@]}" ! -name '*flycheck*' ! -name '.*' -name '*.py' -print0)
 mapfile -d '' TEST_FILES < <(find "${TEST_DIRS[@]}" ! -name '*flycheck*' ! -name '.*' -name '*.py' -name '*.py' -print0)
 
-FIND_NODOTDIR=(-mindepth 1 -type d -name '.*' -prune -o)
-# shellcheck disable=SC2329
-find_sh0() {
-    find . "${FIND_NODOTDIR[@]}" -type f -print0 |
-        xargs -0 grep -Z '^#!.*sh' -l | grep -zv '[.]sh$'
-    find . "${FIND_NODOTDIR[@]}" -name '*.sh' -print0
-}
-
 # shellcheck disable=SC2329
 {
+    find_sh0() {
+        local FIND_NODOTDIR=(-mindepth 1 -type d -name '.*' -prune -o)
+        find . "${FIND_NODOTDIR[@]}" -type f -print0 |
+            xargs -0 grep -Z '^#!.*sh' -l | grep -zv '[.]sh$'
+        find . "${FIND_NODOTDIR[@]}" -name '*.sh' -print0
+    }
+
     run_pylint() { uv run pylint "$@" "${FILES[@]}"; }
     run_ruff() { uv run ruff check "$@" "${FILES[@]}"; }
     run_ty() { uv run ty check "$@" "${FILES[@]}"; }
