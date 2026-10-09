@@ -64,6 +64,7 @@ omit = [
     "src/ukechords/conftest.py",
     "src/ukechords/__init__.py",
     "tests/__init__.py",
+    "tests/cli/__init__.py",
 ]
 
 [tool.coverage.html]
