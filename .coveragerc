@@ -1,8 +1,0 @@
-[run]
-source = .
-omit =
-    src/ukechords/conftest.py
-    src/ukechords/__init__.py
-    tests/__init__.py
-[html]
-directory = coverage_html_report

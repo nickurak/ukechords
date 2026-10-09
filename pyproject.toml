@@ -55,3 +55,16 @@ nested-string-quote-style = "preferred"
 [tool.pyrefly]
 search-path = ["."]
 min-severity = "warn"
+
+[tool.pylint.main]
+load-plugins = ["pylint_pytest"]
+
+[tool.coverage.run]
+omit = [
+    "src/ukechords/conftest.py",
+    "src/ukechords/__init__.py",
+    "tests/__init__.py",
+]
+
+[tool.coverage.html]
+directory = "coverage_html_report"
