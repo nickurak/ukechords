@@ -15,7 +15,7 @@ from . import theory_basic
 from .cache import load_scanned_chords, save_scanned_chords
 from .config import UkeConfig
 from .errors import ChordNotFoundException, UnknownTuningException, UnslidableEmptyShapeException
-from .types import BarreData, ChordsByShape, ChordShapes, KeyInfo, Shape
+from .types import BarreData, ChordsByShape, ChordShape, ChordShapes, KeyInfo, Shape
 
 
 def add_no5_quality() -> None:
@@ -104,12 +104,12 @@ def _get_tuned_barre_details(
     chords = sorted(_get_chords_from_notes(frozenset(_get_shape_notes(barre_shape, tuning=tuning))))
     chords.sort(key=_rank_chord_name)
     chord = chords[0] if len(chords) > 0 else None
-    barre_data: BarreData = {
-        "fret": min(shape),
-        "barred": barre_difficulty < unbarred_difficulty,
-        "shape": barre_shape,
-        "chord": chord,
-    }
+    barre_data = BarreData(
+        fret=min(shape),
+        barred=barre_difficulty < unbarred_difficulty,
+        shape=barre_shape,
+        chord=chord,
+    )
     if barre_data["barred"]:
         barre_data["unbarred_difficulty"] = unbarred_difficulty
     else:
@@ -338,7 +338,7 @@ def show_chord(config: UkeConfig, chord: str) -> ChordShapes:
     - Other names
     - Optionally the notes in the chord, if config.show_notes is set
     """
-    output: ChordShapes = {"shapes": []}
+    output = ChordShapes(shapes=[])
     try:
         p_chord = Chord(chord)
     except ValueError as exc:
@@ -359,12 +359,12 @@ def show_chord(config: UkeConfig, chord: str) -> ChordShapes:
             other_names = list(_get_other_names(shape, chord, config.tuning))
         difficulty, barre_data = _get_shape_difficulty(shape, tuning=config.tuning)
         output["shapes"].append(
-            {
-                "shape": shape,
-                "difficulty": difficulty,
-                "barre_data": barre_data,
-                "chord_names": [chord] + sorted(other_names),
-            }
+            ChordShape(
+                shape=shape,
+                difficulty=difficulty,
+                barre_data=barre_data,
+                chord_names=[chord] + sorted(other_names),
+            )
         )
     return output
 
@@ -401,7 +401,7 @@ def show_all(config: UkeConfig) -> ChordShapes:
         return pos % len(theory_basic.chromatic_scale), name
 
     ichords.sort(key=chord_sorter)
-    output: ChordShapes = {"shapes": []}
+    output = ChordShapes(shapes=[])
     for chord in ichords:
         chord_shapes[chord].sort(key=config.shape_ranker)
         if config.force_flat:
@@ -415,12 +415,12 @@ def show_all(config: UkeConfig) -> ChordShapes:
             if difficulty > config.max_difficulty:
                 continue
             output["shapes"].append(
-                {
-                    "shape": shape,
-                    "difficulty": difficulty,
-                    "barre_data": barre_data,
-                    "chord_names": [chord],
-                }
+                ChordShape(
+                    shape=shape,
+                    difficulty=difficulty,
+                    barre_data=barre_data,
+                    chord_names=[chord],
+                )
             )
     return output
 
@@ -456,15 +456,15 @@ def show_chords_by_shape(config: UkeConfig, input_shape: tuple[str, ...]) -> Cho
     shapes: list[Shape] = []
 
     for shape, chords, notes in _get_chords_by_shape(config, pshape):
-        shapes.append({"shape": shape, "chords": chords, "notes": tuple(notes)})
+        shapes.append(Shape(shape=shape, chords=chords, notes=tuple(notes)))
     if not shapes:
         notes = set(_get_shape_notes(pshape, tuning=config.tuning, force_flat=config.force_flat))
-        shapes.append({"shape": pshape, "chords": [], "notes": tuple(notes)})
+        shapes.append(Shape(shape=pshape, chords=[], notes=tuple(notes)))
 
     if not config.slide:
         difficulty, barre_data = _get_shape_difficulty(pshape, config.tuning)
-        return {"shapes": shapes, "difficulty": difficulty, "barre_data": barre_data}
-    return {"shapes": shapes}
+        return ChordsByShape(shapes=shapes, difficulty=difficulty, barre_data=barre_data)
+    return ChordsByShape(shapes=shapes)
 
 
 def show_chords_by_notes(config: UkeConfig, notes: set[str]) -> ChordShapes:
@@ -472,8 +472,8 @@ def show_chords_by_notes(config: UkeConfig, notes: set[str]) -> ChordShapes:
     normalizer = theory_basic.sharpify
     if config.force_flat or any(note[-1] == "b" for note in notes):
         normalizer = theory_basic.flatify
-    output: ChordShapes = {"notes": normalizer(tuple(notes)), "shapes": []}
-    shapes = []
+    output = ChordShapes(notes=normalizer(tuple(notes)), shapes=[])
+    shapes: list[tuple[int, ...]] = []
     for shape in _get_shapes(config, 12, notes=tuple(notes)):
         shape_notes = set(normalizer(_get_shape_notes(shape, tuning=config.tuning)))
         if shape_notes == normalizer(notes):
@@ -483,12 +483,12 @@ def show_chords_by_notes(config: UkeConfig, notes: set[str]) -> ChordShapes:
     for shape in shapes[: config.num or len(shapes)]:
         difficulty, barre_data = _get_shape_difficulty(shape, tuning=config.tuning)
         output["shapes"].append(
-            {
-                "shape": shape,
-                "difficulty": difficulty,
-                "barre_data": barre_data,
-                "chord_names": chords,
-            }
+            ChordShape(
+                shape=shape,
+                difficulty=difficulty,
+                barre_data=barre_data,
+                chord_names=chords,
+            )
         )
 
     return output
@@ -496,22 +496,21 @@ def show_chords_by_notes(config: UkeConfig, notes: set[str]) -> ChordShapes:
 
 def show_key(_: UkeConfig | None, key: str | tuple[str, ...]) -> KeyInfo:
     """Return information on the specified key, including other names and the notes it includes"""
-    output: KeyInfo
     if isinstance(key, str):
         notes = theory_basic.get_key_notes(key)
         other_keys, partial_keys = theory_basic.get_dupe_scales_from_notes(notes)
-        output = {
-            "notes": notes,
-            "key": key,
-            "other_keys": list(other_keys),
-            "partial_keys": sorted(partial_keys, key=_rank_chord_name),
-        }
+        output = KeyInfo(
+            notes=notes,
+            key=key,
+            other_keys=list(other_keys),
+            partial_keys=sorted(partial_keys, key=_rank_chord_name),
+        )
     else:
         keys, partial_keys = theory_basic.get_dupe_scales_from_notes(key)
-        output = {
-            "notes": tuple(key),
-            "other_keys": list(keys),
-            "partial_keys": sorted(partial_keys, key=_rank_chord_name),
-        }
+        output = KeyInfo(
+            notes=tuple(key),
+            other_keys=list(keys),
+            partial_keys=sorted(partial_keys, key=_rank_chord_name),
+        )
     output["other_keys"].sort(key=_rank_chord_name)
     return output
