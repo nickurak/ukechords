@@ -8,8 +8,8 @@ from tempfile import TemporaryDirectory
 import pytest
 
 from ukechords.cli.cmd_runner import Runner
-from ukechords.cli.ident import _get_config, _get_parser
-from ukechords.errors import InvalidCommandException, error
+from ukechords.cli.ident import _get_config, _get_parser, error
+from ukechords.errors import InvalidCommandException
 
 from .characterization import characterization
 

@@ -1,7 +1,4 @@
-"""Our defined errors/exceptions and error handling logic"""
-
-import sys
-from typing import Any, NoReturn
+"""Our defined errors/exceptions"""
 
 
 class UnknownKeyException(Exception):
@@ -22,9 +19,3 @@ class InvalidCommandException(Exception):
 
 class UnslidableEmptyShapeException(Exception):
     """Raised in the event of an attempt to slide an empty shape"""
-
-
-def error(return_code: int, message: Any) -> NoReturn:
-    """Display an error and exit with the given status"""
-    print(message, file=sys.stderr)
-    sys.exit(return_code)

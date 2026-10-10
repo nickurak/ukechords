@@ -6,7 +6,7 @@ import configparser
 import os
 import sys
 from collections.abc import Callable, Iterable
-from typing import Any
+from typing import Any, NoReturn
 
 from xdg import BaseDirectory
 
@@ -17,7 +17,6 @@ from ukechords.errors import (
     InvalidCommandException,
     UnknownKeyException,
     UnknownTuningException,
-    error,
 )
 from ukechords.theory import (
     add_7sus2_quality,
@@ -26,6 +25,12 @@ from ukechords.theory import (
     rank_shape_by_difficulty,
     rank_shape_by_high_fret,
 )
+
+
+def error(return_code: int, message: Any) -> NoReturn:
+    """Display an error and exit with the given status"""
+    print(message, file=sys.stderr)
+    sys.exit(return_code)
 
 
 def _get_config_from_preferences() -> UkeConfig:
