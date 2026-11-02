@@ -5,6 +5,7 @@ implementation can handle a given command."""
 import argparse
 import json
 import sys
+from abc import ABC, abstractmethod
 from collections.abc import Callable
 from typing import Any
 
@@ -21,7 +22,7 @@ from ukechords.theory import (
 from ukechords.types import ChordsByShape, ChordShapes, KeyInfo
 
 
-class Runner:
+class Runner(ABC):
     """Runner defines the API for command handlers, and provides a
     lookup method for finding appropriate subclass implementations
     based on provided arguments."""
@@ -51,13 +52,13 @@ class Runner:
                 return runner(config, args)
         assert False, "No command configuration found"
 
+    @abstractmethod
     def get_data(self) -> ChordShapes | ChordsByShape | KeyInfo:
         """Return the (unrendered) data for this command"""
-        raise NotImplementedError
 
+    @abstractmethod
     def render(self) -> None:
         """Render this command's output on stdout"""
-        raise NotImplementedError
 
     def run(self) -> None:
         """Run this command and render it either in its pretty form or
