@@ -41,7 +41,7 @@ while read -r OLDREV NEWREV REFNAME; do
     export SRC_DIR
     git archive "$NEWREV" | tar -x -C "$SRC_DIR"
 
-    cd "$SRC_DIR" && uv sync --dev --link-mode=symlink
+    cd "$SRC_DIR" && (unset GIT_QUARANTINE_PATH GIT_DIR GIT_ALTERNATE_OBJECT_DIRECTORIES GIT_OBJECT_DIRECTORY; uv sync --dev --link-mode=symlink)
 
     if ! ./run_ci.sh; then
         fail "CI checks failed, rejecting commit"
