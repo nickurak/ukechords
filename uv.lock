@@ -831,7 +831,7 @@ dev = [
     { name = "pylint" },
     { name = "pylint-pytest" },
     { name = "pyrefly" },
-    { name = "pytest", specifier = ">=9.0.0" },
+    { name = "pytest", specifier = ">=9.0.0,<9.2" },
     { name = "pytest-cov" },
     { name = "pytest-regtest" },
     { name = "ruff" },
